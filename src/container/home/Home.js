@@ -26,7 +26,7 @@ export default class Home extends React.Component {
   }
 
   handleMenuClicked = (navigateTo) => {
-    this.setState({navigationFocus: navigateTo});
+    this.setState({ navigationFocus: navigateTo });
     this.changeRequestPINVisibility(true);
   }
 
@@ -54,11 +54,20 @@ export default class Home extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <TouchableOpacity style={styles.button} onPress={() => this.handleMenuClicked("BalanceInquiry")}>
+      <View style={[styles.container, this.state.isRequestPINVisible ?
+        { backgroundColor: 'rgba(0, 0, 0, 0.8)' } :
+        'rgba(0, 0, 0, 0)']}
+      >
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => this.handleMenuClicked("BalanceInquiry")}
+        >
           <Text style={styles.buttonText}>Balance Inquiry</Text>
         </TouchableOpacity>
-        <TouchableOpacity underlayColor="rgb(230, 230, 230)" style={styles.button} onPress={() => this.handleMenuClicked("AccountStatementPickDate")}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => this.handleMenuClicked("AccountStatementPickDate")}
+        >
           <Text style={styles.buttonText}>Account Statement</Text>
         </TouchableOpacity>
         <Modal
@@ -70,7 +79,10 @@ export default class Home extends React.Component {
             activeOpacity={1}
             onPressOut={() => { this.changeRequestPINVisibility(false) }}>
             <TouchableWithoutFeedback>
-              <RequestPIN changeRequestPINVisibility={this.changeRequestPINVisibility} validatePIN={this.validatePIN}/>
+              <RequestPIN
+                changeRequestPINVisibility={this.changeRequestPINVisibility}
+                validatePIN={this.validatePIN}
+              />
             </TouchableWithoutFeedback>
           </TouchableOpacity>
         </Modal>

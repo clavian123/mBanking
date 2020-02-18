@@ -66,15 +66,22 @@ export default class TransferToAnotherAccount extends React.Component {
 
   render() {
 
-    const {route} = this.props;
+    const { route } = this.props;
     var name = route.params?.name;
     var number = route.params?.number;
 
     return (
-      <View style={styles.container}>
+      <View
+        style={[styles.container, this.state.isRequestPINVisible ?
+          { backgroundColor: 'rgba(0, 0, 0, 0.8)' } :
+          'rgba(0, 0, 0, 0)']}
+      >
         <View style={styles.subContainer}>
           <Text style={styles.textLabel}>Destination Account</Text>
-          <TouchableHighlight onPress={() => this.handleChooseAccount()} underlayColor="rgb(230, 230, 230)" style={styles.buttonDestinationAccount}>
+          <TouchableHighlight
+            onPress={() => this.handleChooseAccount()}
+            style={styles.buttonDestinationAccount}
+          >
             <TextInput
               editable={false}
               placeholder="-Choose-"
@@ -92,9 +99,16 @@ export default class TransferToAnotherAccount extends React.Component {
           <TextInput placeholder="E.g. buy new shoes" style={styles.textInput}></TextInput>
         </View>
         <View style={styles.subContainer}>
-          <TouchableOpacity underlayColor="rgb(230, 230, 230)" style={styles.button} onPress={() => this.handleTransfer()}>
-            <Text style={styles.buttonText}>Transfer</Text>
-          </TouchableOpacity>
+          <TouchableHighlight
+            style={styles.button}
+            onPress={() => this.handleTransfer()}
+          >
+            <Text
+              style={[styles.buttonText, this.state.isRequestPINVisible ? { color: 'rgb(89, 89, 89)' } : 'rgb(255, 255, 255)']}
+            >
+              Transfer
+            </Text>
+          </TouchableHighlight>
         </View>
         <Modal
           visible={this.state.isRequestPINVisible}
