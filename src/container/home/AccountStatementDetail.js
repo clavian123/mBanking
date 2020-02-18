@@ -15,9 +15,9 @@ class AccountStatementDetail extends React.Component {
             search: '',
             statements:
                 [
-                    {date: new Date(2020, 2, 1), type: 'DB', title: '9 SQUARE POOL', amount: '50000', note: 'Main Billiard'},
-                    {date: new Date(2020, 2, 2), type: 'CR', title: 'TOKOPEDIA', amount: '60000', note: 'Jual Baju'},
-                    {date: new Date(2020, 2, 3), type: 'CR', title: 'TOKOPEDIA', amount: '400000', note: 'Jual Sepatu Vans'}
+                    { key: '0', date: new Date(2020, 2, 1), type: 'DB', title: '9 SQUARE POOL', amount: '50000', note: 'Main Billiard' },
+                    { key: '1', date: new Date(2020, 2, 2), type: 'CR', title: 'TOKOPEDIA', amount: '60000', note: 'Jual Baju' },
+                    { key: '2', date: new Date(2020, 2, 3), type: 'CR', title: 'TOKOPEDIA', amount: '400000', note: 'Jual Sepatu Vans' }
                 ]
         };
     }

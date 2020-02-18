@@ -26,7 +26,7 @@ class AccountList extends React.Component {
             <ScrollView>
                 {
                     accounts.map(account =>
-                        <View style={styles.container}>
+                        <View style={styles.container} key={account.id}>
                             <TouchableOpacity style={styles.touchable} onPress={() => this.handleClick(account.name, account.number)}>
                                 <Text style={styles.textName}>{account.name}</Text>
                                 <Text>{account.number}</Text>

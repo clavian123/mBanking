@@ -17,9 +17,9 @@ class ChooseDestinationAccount extends React.Component {
             search: '',
             accounts:
                 [
-                    { number: '123123123', name: 'MICHAEL JORDAN' },
-                    { number: '234234234', name: 'LIONEL MESSI' },
-                    { number: '350350350', name: 'FRANK LAMPARD' },
+                    { id: '0', number: '123123123', name: 'MICHAEL JORDAN' },
+                    { id: '1', number: '234234234', name: 'LIONEL MESSI' },
+                    { id: '2', number: '350350350', name: 'FRANK LAMPARD' },
                 ],
         };
     }
@@ -29,9 +29,11 @@ class ChooseDestinationAccount extends React.Component {
     }
 
     setChosenAccount = (number, name) => {
-        const { navigation, route } = this.props
-        route.params.onSelectAccount(name, number)
-        navigation.goBack();
+        const { navigation } = this.props
+        navigation.navigate('TransferToAnotherAccount', {
+            name: name,
+            number: number,
+        });
     }
 
     registerAccount = () => {

@@ -19,23 +19,13 @@ export default class TransferToAnotherAccount extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      chosenAccount: {
-        name: '',
-        number: ''
-      },
       isRequestPINVisible: false,
     }
   }
 
-  onSelectAccount = (name, number) => {
-    this.setState({
-      chosenAccount: { name: name, number: number }
-    })
-  }
-
   handleChooseAccount = () => {
     const { navigation } = this.props;
-    navigation.navigate('ChooseDestinationAccount', { onSelectAccount: this.onSelectAccount })
+    navigation.navigate('ChooseDestinationAccount');
   }
 
   componentDidMount() {
@@ -75,6 +65,11 @@ export default class TransferToAnotherAccount extends React.Component {
   }
 
   render() {
+
+    const {route} = this.props;
+    var name = route.params?.name;
+    var number = route.params?.number;
+
     return (
       <View style={styles.container}>
         <View style={styles.subContainer}>
@@ -84,7 +79,7 @@ export default class TransferToAnotherAccount extends React.Component {
               editable={false}
               placeholder="-Choose-"
               style={[styles.textInput, { color: 'black' }]}
-              value={this.state.chosenAccount.name}
+              value={name !== undefined ? name + ' - ' + number : null}
             />
           </TouchableHighlight>
         </View>

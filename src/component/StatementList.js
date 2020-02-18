@@ -22,7 +22,7 @@ class StatementList extends React.Component {
             <ScrollView>
                 {
                     statements.map(statement => 
-                        <View style={styles.container}>
+                        <View style={styles.container} key={statement.key}>
                             <View style={styles.viewSubLeft}>
                                 <Text style={styles.textDate}>{moment(statement.date).format('DD/MM/YY')}</Text>
                                 <Text style={styles.textTitle}>{statement.title}</Text>
