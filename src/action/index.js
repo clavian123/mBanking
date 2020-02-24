@@ -1,17 +1,18 @@
-import { SYNC_ASYNC, LOGIN, LOGOUT } from './actionTypes';
+//LOGIN;
+export const SYNC_STORAGE = 'SYNC_STORAGE';
+export const STORAGE_EMPTY = 'STORAGE_EMPTY';
+export const POST_CLIENT_LOGIN_BEGIN = 'POST_CLIENT_LOGIN_BEGIN';
+export const POST_VALIDATE_CLIENT_LOGIN = 'POST_VALIDATE_CLIENT_LOGIN';
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const POST_CLIENT_LOGIN_FAILURE = 'POST_CLIENT_LOGIN_FAILURE';
+export const LOGOUT = 'LOGOUT';
 
-export const syncAsync = (email, pin) => ({
-    type: SYNC_ASYNC,
-    email,
-    pin,
-})
-
-export const login = (email, pin) => ({
-    type: LOGIN,
-    email,
-    pin
-})
-
-export const logout =  () => ({
-    type: LOGOUT
-})
+//HOME
+//BALANCE INQUIRY
+export const GET_BALANCE_BEGIN = 'GET_BALANCE_BEGIN';
+export const GET_BALANCE_SUCCESS = 'GET_BALANCE_SUCCESS';
+export const GET_BALANCE_FAILURE = 'GET_BALANCE_FAILURE';
+//ACCOUNT STATEMENT
+export const GET_ACCOUNT_STATEMENT_BEGIN = 'GET_ACCOUNT_STATEMENT_BEGIN';
+export const GET_ACCOUNT_STATEMENT_SUCCESS = 'GET_ACCOUNT_STATEMENT_SUCCESS';
+export const GET_ACCOUNT_STATEMENT_FAILURE = 'GET_ACCOUNT_STATEMENT_FAILURE';

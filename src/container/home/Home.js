@@ -1,17 +1,20 @@
 import React from 'react';
 import {
-  StyleSheet,
-  View,
-  Text,
+  Alert,
   Modal,
+  StyleSheet,
+  Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Alert
+  View,
 } from 'react-native';
+import { connect } from 'react-redux';
 
 import RequestPIN from '../../component/RequestPIN'
 
-export default class Home extends React.Component {
+class Home extends React.Component {
+
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -21,8 +24,18 @@ export default class Home extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false
+  }
+
   changeRequestPINVisibility = (bool) => {
-    this.setState({ isRequestPINVisible: bool });
+    if (this._isMounted) {
+      this.setState({ isRequestPINVisible: bool });
+    }
   }
 
   handleMenuClicked = (navigateTo) => {
@@ -31,11 +44,12 @@ export default class Home extends React.Component {
   }
 
   navigateTo = (screen) => {
-    this.props.navigation.navigate(screen);
+    const {navigate} = this.props.navigation;
+    navigate(screen);
   }
 
   validatePIN = (pin) => {
-    if (pin != "123456") {
+    if (pin != this.props.pin) {
       Alert.alert(
         'Failed',
         'Your PIN is wrong. Please try again.',
@@ -114,3 +128,9 @@ const styles = StyleSheet.create({
     width: 300,
   },
 });
+
+const mapStateToProps = state => ({
+  pin: state.login.pin
+})
+
+export default connect(mapStateToProps)(Home);

@@ -1,23 +1,39 @@
 import React from 'react';
 import {
-    View,
     StyleSheet,
     Text,
+    View
 } from 'react-native';
+import { connect } from 'react-redux';
 
-export default class BalanceInquiry extends React.Component {
+import Loading from '../../Loading';
+import { getBalance } from '../../action/home/homeFunction'
+import { numberWithCommas } from '../../generalFunction';
+
+class BalanceInquiry extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {};
     }
 
+    componentDidMount = () => {
+        const { accNumber } = this.props;
+        this.props.dispatch(getBalance(accNumber));
+    }
+
     render() {
+        const { accNumber, loading, balance } = this.props;
+
+        if (loading) {
+            return <Loading />
+        }
+
         return (
             <View style={styles.container}>
                 <View style={styles.subContainer}>
                     <Text>Account Number</Text>
-                    <Text style={styles.textInformation}>1234567890</Text>
+                    <Text style={styles.textInformation}>{accNumber}</Text>
                 </View>
                 <View style={styles.subContainer}>
                     <Text>Currency</Text>
@@ -25,7 +41,7 @@ export default class BalanceInquiry extends React.Component {
                 </View>
                 <View style={styles.subContainer}>
                     <Text>Available Balance</Text>
-                    <Text style={styles.textInformation}>130.000.000</Text>
+                    <Text style={styles.textInformation}>{numberWithCommas(balance)}</Text>
                 </View>
             </View>
         );
@@ -51,3 +67,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     }
 });
+
+const mapStateToProps = state => ({
+    accNumber: state.login.accNumber,
+    loading: state.home.loading,
+    balance: state.home.balance
+})
+
+export default connect(mapStateToProps)(BalanceInquiry);

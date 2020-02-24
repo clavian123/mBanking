@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { StyleSheet, Dimensions, View, TouchableOpacity, TouchableHighlight, Text, TextInput } from 'react-native';
+import {
+    Dimensions,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableHighlight,
+    TouchableOpacity,
+    View
+} from 'react-native';
 
 export default class RequestPIN extends Component {
 
@@ -31,14 +39,21 @@ export default class RequestPIN extends Component {
                             keyboardType='number-pad'
                             secureTextEntry={true}
                             maxLength={6}
-                            onChangeText={(text) => this.setState({pin: text})}
+                            onChangeText={(text) => this.setState({ pin: text })}
                         />
                     </View>
                     <View style={styles.buttonView}>
-                        <TouchableHighlight onPress={() => this.closeModal()} style={styles.touchableHighlight} underlayColor={'#f1f1f1'}>
+                        <TouchableHighlight
+                            onPress={() => this.closeModal()}
+                            style={styles.touchableHighlight}
+                        >
                             <Text style={[styles.text, { color: 'black' }]}>Cancel</Text>
                         </TouchableHighlight>
-                        <TouchableHighlight onPress={() => this.props.validatePIN(this.state.pin)} style={styles.touchableHighlight} underlayColor={'#f1f1f1'}>
+                        <TouchableHighlight
+                            onPress={() => this.props.validatePIN(this.state.pin)}
+                            style={styles.touchableHighlight}
+                            underlayColor={'#f1f1f1'}
+                        >
                             <Text style={[styles.text, { color: 'green' }]}>OK</Text>
                         </TouchableHighlight>
                     </View>

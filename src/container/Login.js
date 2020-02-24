@@ -1,27 +1,33 @@
 import React, { Component } from 'react';
 import {
+  Image,
   StyleSheet,
-  View,
   TextInput,
   Text,
-  Image,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import { connect } from 'react-redux';
 
-import { onSignIn } from '../Auth';
-import { login } from '../action/index'
+import { handleLogin } from '../action/login/loginFunction'
 
 class Login extends Component {
 
-  state = {
-    email: '',
-    pin: '',
+  constructor(props) {
+    super(props);
+    this.state = {
+      accNumber: '',
+      pin: '',
+    }
   }
 
-  handleSignIn = () => {
-    this.props.dispatch(login(this.state.email, this.state.pin));
-    onSignIn(this.state.email, this.state.pin)
+  handleLogin = () => {
+    const { accNumber, pin } = this.state;
+    if (accNumber == '' || pin == '') {
+      alert("Please fill your account number and PIN!");
+    } else {
+      this.props.dispatch(handleLogin(accNumber, pin));
+    }
   }
 
   render() {
@@ -36,11 +42,11 @@ class Login extends Component {
         </View>
         <View style={styles.viewInput}>
           <TextInput
-            value={this.state.email}
-            onChangeText={(email) => this.setState({ email: email })}
-            placeholder="Email"
+            value={this.state.accNumber}
+            onChangeText={(accNumber) => this.setState({ accNumber: accNumber })}
+            placeholder="Account Number"
             style={styles.textInput}
-            underlineColorAndroid='rgba(0,0,0,0)'
+            keyboardType="number-pad"
           ></TextInput>
           <TextInput
             value={this.state.pin}
@@ -48,11 +54,12 @@ class Login extends Component {
             placeholder="PIN"
             style={styles.textInput}
             secureTextEntry={true}
+            keyboardType="number-pad"
           >
           </TextInput>
           <TouchableOpacity
             onPress={
-              () => this.handleSignIn()
+              () => this.handleLogin()
             }
             style={styles.buttonLogin}
           >
@@ -137,8 +144,4 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = state => ({
-  state: state.login
-})
-
-export default connect(mapStateToProps)(Login)
+export default connect()(Login)

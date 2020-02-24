@@ -1,11 +1,10 @@
 import React from 'react';
 import {
-    StyleSheet,
-    View,
-    TouchableOpacity,
     ScrollView,
+    StyleSheet,
     Text,
-    Picker
+    TouchableOpacity,
+    View,
 } from 'react-native';
 
 class AccountList extends React.Component {

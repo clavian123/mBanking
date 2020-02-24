@@ -4,8 +4,11 @@ import {
     View,
 } from 'react-native';
 import { SearchBar } from 'react-native-elements';
+import { connect } from 'react-redux';
 
-import StatementList from '../../component/StatementList'
+import StatementList from '../../component/StatementList';
+import { getStatements } from '../../action/home/homeFunction';
+import Loading from '../../Loading';
 
 class AccountStatementDetail extends React.Component {
 
@@ -26,12 +29,23 @@ class AccountStatementDetail extends React.Component {
         this.setState({ search });
     }
 
+    // componentDidMount = () => {
+    //     const { startDate, endDate } = this.props.route.params;
+    //     const { accNumber } = this.props;
+    //     var moment = require('moment');
+    //     this.props.dispatch(getStatements(accNumber, moment(startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'))));
+    // }
+
     render() {
 
         const { search, statements } = this.state;
+        const { loading } = this.props;
+
+        if (loading) {
+            return <Loading />;
+        }
 
         return (
-
             <View>
                 <SearchBar
                     onChangeText={this.updateSearch}
@@ -55,4 +69,10 @@ const styles = StyleSheet.create({
     }
 })
 
-export default AccountStatementDetail;
+const mapStateToProps = state => ({
+    accNumber: state.login.accNumber,
+    statements: state.home.statements,
+    loading: state.home.loading
+});
+
+export default connect(mapStateToProps)(AccountStatementDetail);

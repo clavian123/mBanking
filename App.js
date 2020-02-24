@@ -6,11 +6,18 @@ import { Provider } from 'react-redux';
 
 export default class App extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            users: []
+        }
+    }
+
     render() {
         return (
             <Provider store={store}>
                 <CounterApp />
-            </Provider>    
+            </Provider>
         );
     }
 }

@@ -1,34 +1,21 @@
 import React from 'react';
-import AsyncStorage from '@react-native-community/async-storage';
 import { connect } from 'react-redux';
 
 import RootNavigator from './Router';
-import { syncAsync } from './action/index'
-
-const USER_EMAIL = 'USER_EMAIL'
-const USER_PIN = 'USER_PIN'
+import { handleSyncStorage } from './action/login/loginFunction'
+import Loading from './Loading';
 
 class CounterApp extends React.Component {
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            checkedSignIn: false
-        };
-    }
-
     componentDidMount = () => {
-        this.props.checkSignIn()
-        this.setState({ checkedSignIn: true })
+        this.props.dispatch(handleSyncStorage());
     }
 
     render() {
+        const { loading } = this.props;
 
-        const { checkedSignIn } = this.state;
-
-        if (!checkedSignIn) {
-            return null;
+        if (loading) {
+            return <Loading />
         }
 
         return (
@@ -37,15 +24,9 @@ class CounterApp extends React.Component {
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    checkSignIn: async () => {
-        var email = await AsyncStorage.getItem(USER_EMAIL);
-        var pin = await AsyncStorage.getItem(USER_PIN);
-        if (email != null && pin != null) {
-            dispatch(syncAsync(email, pin))
-        }
-    }
-})
+const mapStateToProps = state => ({
+    loading: state.login.loading
+});
 
-export default connect(null, mapDispatchToProps)(CounterApp);
+export default connect(mapStateToProps)(CounterApp);
 

@@ -1,14 +1,13 @@
 import React from 'react';
 import {
-  View,
+  StyleSheet,
   Text,
-  Button,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { connect } from 'react-redux';
 
-import { onSignOut } from '../../Auth';
-import { logout } from '../../action/index';
-
+import { handleLogout } from '../../action/login/loginFunction';
 
 class Account extends React.Component {
 
@@ -16,29 +15,55 @@ class Account extends React.Component {
     title: 'Accounts',
   };
 
-  handleSignOut = () =>{
-    this.props.dispatch(logout());
-    onSignOut();
+  handleLogout = () => {
+    this.props.dispatch(handleLogout());
+  }
+
+  handleMenuClicked = (navigateTo) => {
+    const { navigate } = this.props.navigation;
+    navigate(navigateTo);
   }
 
   render() {
 
     return (
-      <View>
-        <Text>Account</Text>
-        <Button
-          title="Logout"
-          onPress={
-            () => this.handleSignOut()
-          }
-        />
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.button} onPress={() => this.handleMenuClicked("ChangePIN")}>
+          <Text style={styles.buttonText}>Change PIN</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => this.handleMenuClicked("AboutUs")}>
+          <Text style={styles.buttonText}>About Us</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => this.handleLogout()}>
+          <Text style={styles.buttonText}>Logout</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 };
 
-const mapStateToProps = state => ({
-  state: state.login
-})
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignSelf: "center",
+    alignContent: "center",
+    alignItems: "center",
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#ffffff',
+    textAlign: 'center',
+  },
+  button: {
+    backgroundColor: '#1c313a',
+    marginVertical: 10,
+    borderRadius: 10,
+    paddingVertical: 16,
+    width: 300,
+  },
+});
 
-export default connect(mapStateToProps)(Account);
+export default connect()(Account);
