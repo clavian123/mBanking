@@ -6,8 +6,11 @@ import {
     TouchableOpacity
 } from 'react-native';
 import { SearchBar } from 'react-native-elements';
+import { connect } from 'react-redux';
 
-import AccountList from '../../component/AccountList'
+import { getListClientDestination } from '../../action/transfer/transferFunction';
+import AccountList from '../../component/AccountList';
+import Loading from '../../Loading';
 
 class ChooseDestinationAccount extends React.Component {
 
@@ -15,13 +18,18 @@ class ChooseDestinationAccount extends React.Component {
         super(props);
         this.state = {
             search: '',
-            accounts:
-                [
-                    { id: '0', number: '123123123', name: 'MICHAEL JORDAN' },
-                    { id: '1', number: '234234234', name: 'LIONEL MESSI' },
-                    { id: '2', number: '350350350', name: 'FRANK LAMPARD' },
-                ],
+            // accounts:
+            //     [
+            //         { id: '0', number: '123123123', name: 'MICHAEL JORDAN' },
+            //         { id: '1', number: '234234234', name: 'LIONEL MESSI' },
+            //         { id: '2', number: '350350350', name: 'FRANK LAMPARD' },
+            //     ],
         };
+    }
+
+    componentDidMount = () => {
+        const { accNumber } = this.props;
+        this.props.dispatch(getListClientDestination(accNumber));
     }
 
     updateSearch = search => {
@@ -29,7 +37,7 @@ class ChooseDestinationAccount extends React.Component {
     }
 
     setChosenAccount = (number, name) => {
-        const { navigation } = this.props
+        const { navigation } = this.props;
         navigation.navigate('TransferToAnotherAccount', {
             name: name,
             number: number,
@@ -43,7 +51,8 @@ class ChooseDestinationAccount extends React.Component {
 
     render() {
 
-        const { search, accounts } = this.state;
+        const { search } = this.state;
+        const { listDest } = this.props;
 
         return (
 
@@ -65,7 +74,7 @@ class ChooseDestinationAccount extends React.Component {
                     </TouchableOpacity>
                 </View>
                 <AccountList
-                    accounts={accounts}
+                    accounts={listDest}
                     setChosenAccount={this.setChosenAccount}
                     style={styles.list}
                 />
@@ -73,6 +82,8 @@ class ChooseDestinationAccount extends React.Component {
         )
     }
 }
+
+
 
 const styles = StyleSheet.create({
     container: {
@@ -105,4 +116,10 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ChooseDestinationAccount;
+const mapStateToProps = state => ({
+    accNumber: state.login.accNumber,
+    pin: state.login.pin,
+    listDest: state.transfer.listDest
+});
+
+export default connect(mapStateToProps)(ChooseDestinationAccount);

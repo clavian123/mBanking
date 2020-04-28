@@ -1,18 +1,22 @@
 import React from 'react';
 import {
+  Alert,
+  Modal,
   StyleSheet,
-  View,
   Text,
+  TextInput,
   TouchableHighlight,
   TouchableOpacity,
-  TextInput,
-  Modal,
   TouchableWithoutFeedback,
+  View,
 } from 'react-native';
+import { connect } from 'react-redux';
 
 import RequestPIN from '../../component/RequestPIN'
+import { handleTransfer } from '../../action/transfer/transferFunction'
+import Loading from '../../Loading';
 
-export default class TransferToAnotherAccount extends React.Component {
+class TransferToAnotherAccount extends React.Component {
 
   _isMounted = false;
 
@@ -20,6 +24,8 @@ export default class TransferToAnotherAccount extends React.Component {
     super(props);
     this.state = {
       isRequestPINVisible: false,
+      amount: '',
+      description: ''
     }
   }
 
@@ -40,9 +46,9 @@ export default class TransferToAnotherAccount extends React.Component {
     this.setState({ isRequestPINVisible: bool });
   }
 
-  validatePIN = (pin) => {
-    const { navigation } = this.props;
-    if (pin != "123456") {
+  validatePIN = (input) => {
+    const { navigation, pin } = this.props;
+    if (input != pin) {
       Alert.alert(
         'Failed',
         'Your PIN is wrong. Please try again.',
@@ -54,21 +60,41 @@ export default class TransferToAnotherAccount extends React.Component {
         ]
       )
     } else {
+      let req = this.createRequest();
+      this.props.dispatch(handleTransfer(req));
       this.changeRequestPINVisibility(false);
       alert('Transfer success.')
       navigation.goBack();
     }
   }
 
-  handleTransfer = () => {
+  handleEvent = () => {
     this.changeRequestPINVisibility(true);
+  }
+
+  createRequest = () => {
+    const { route, accNumber } = this.props;
+    const { amount, description } = this.state;
+    var accNumberDest = route.params?.number;
+    let req = {
+      accNumberSender: accNumber,
+      accNumberReceiver: accNumberDest,
+      amount: amount,
+      type: 'Regular Transfer',
+      note: description
+    }
+    return req;
   }
 
   render() {
 
-    const { route } = this.props;
+    const { route, loading } = this.props;
     var name = route.params?.name;
     var number = route.params?.number;
+
+    if (loading) {
+      return <Loading />
+    }
 
     return (
       <View
@@ -86,22 +112,35 @@ export default class TransferToAnotherAccount extends React.Component {
               editable={false}
               placeholder="-Choose-"
               style={[styles.textInput, { color: 'black' }]}
-              value={name !== undefined ? name + ' - ' + number : null}
+              value={name !== undefined ? name.toUpperCase() + ' - ' + number : null}
             />
           </TouchableHighlight>
         </View>
         <View style={styles.subContainer}>
           <Text style={styles.textLabel}>Total Amount (IDR)</Text>
-          <TextInput placeholder="E.g. 50000" style={styles.textInput} keyboardType="number-pad"></TextInput>
+          <TextInput
+            value={this.state.amount}
+            onChangeText={(amount) => this.setState({ amount })}
+            placeholder="E.g. 50000"
+            style={styles.textInput}
+            keyboardType="number-pad"
+          >
+          </TextInput>
         </View>
         <View style={styles.subContainer}>
           <Text style={styles.textLabel}>Description</Text>
-          <TextInput placeholder="E.g. buy new shoes" style={styles.textInput}></TextInput>
+          <TextInput
+            value={this.state.description}
+            onChangeText={(description) => this.setState({ description })}
+            placeholder="E.g. buy new shoes"
+            style={styles.textInput}
+          >
+          </TextInput>
         </View>
         <View style={styles.subContainer}>
           <TouchableHighlight
             style={styles.button}
-            onPress={() => this.handleTransfer()}
+            onPress={() => this.handleEvent()}
           >
             <Text
               style={[styles.buttonText, this.state.isRequestPINVisible ? { color: 'rgb(89, 89, 89)' } : 'rgb(255, 255, 255)']}
@@ -169,3 +208,12 @@ const styles = StyleSheet.create({
     width: 250,
   },
 });
+
+const mapStateToProps = state => ({
+  accNumber: state.login.accNumber,
+  pin: state.login.pin,
+  destAccNumber: state.transfer.newDest.accNumber,
+  loading: state.transfer.loading
+});
+
+export default connect(mapStateToProps)(TransferToAnotherAccount);

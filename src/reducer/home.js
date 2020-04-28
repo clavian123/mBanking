@@ -8,8 +8,8 @@ import {
 } from '../action/index';
 
 initialState = {
-    balance: 0,
-    statements: null,
+    balance: '',
+    statements: [],
     loading: false,
     error: null,
 };
@@ -34,13 +34,14 @@ const home = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                balance: null,
+                balance: '',
                 error: action.error
             };
 
         case GET_ACCOUNT_STATEMENT_BEGIN:
             return {
                 ...state,
+                statements: [],
                 loading: true,
                 error: null
             };
@@ -56,7 +57,7 @@ const home = (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                statements: null,
+                statements: [],
                 error: action.error
             };
 

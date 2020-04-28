@@ -1,5 +1,6 @@
 import {
-    SYNC_STORAGE,
+    SYNC_STORAGE_BEGIN,
+    SYNC_STORAGE_SUCCESS,
     STORAGE_EMPTY,
     POST_CLIENT_LOGIN_BEGIN,
     POST_VALIDATE_CLIENT_LOGIN,
@@ -12,17 +13,25 @@ initialState = {
     isLogin: false,
     accNumber: '',
     pin: '',
-    loading: true,
+    loading: false,
     error: null,
 };
 
 const login = (state = initialState, action) => {
     switch (action.type) {
-        case SYNC_STORAGE:
+        case SYNC_STORAGE_BEGIN:
             return {
                 ...state,
-                isLogin: true,
+                accNumber: '',
+                pin: '',
+                loading: true
+            };
+
+        case SYNC_STORAGE_SUCCESS:
+            return {
+                ...state,
                 loading: false,
+                isLogin: true,
                 accNumber: action.accNumber,
                 pin: action.pin
             };

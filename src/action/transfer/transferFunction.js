@@ -1,0 +1,95 @@
+import axios from 'axios';
+
+import {
+    checkClientDestinationBegin,
+    checkClientDestinationSuccess,
+    checkClientDestinationEmpty,
+    checkClientDestinationFailure,
+    saveClientDestinationBegin,
+    saveClientDestinationSuccess,
+    saveClientDestinationFailure,
+    getListClientDestinationBegin,
+    getListClientDestinationSuccess,
+    getListClientDestinationFailure,
+    transferProcessBegin,
+    transferProcessSuccess,
+    transferProcessFailure
+} from './transferAction';
+
+export function checkClientDestination(accNumber, navigate) {
+    let req = {
+        accNumber: accNumber
+    };
+    let address = "http://localhost:8080/validateDestinationAccount";
+    return dispatch => {
+        dispatch(checkClientDestinationBegin());
+        return axios.post(address, req).then(
+            (res) => {
+                if (res.data.accNumber) {
+                    dispatch(checkClientDestinationSuccess(res.data.accNumber, res.data.fullName));
+                    navigate('ConfirmRegisterDestination');
+                } else {
+                    dispatch(checkClientDestinationEmpty());
+                    alert("Account number is not found!")
+                }
+            }, (error) => {
+                console.log(error);
+                dispatch(checkClientDestinationFailure(error));
+            }
+        );
+    }
+};
+
+export function saveClientDestination(accNumberMain, accNumberDest) {
+    let req = {
+        accNumberMain: accNumberMain,
+        accNumberDest: accNumberDest
+    };
+    let address = "http://localhost:8080/saveNewRelation";
+    return dispatch => {
+        dispatch(saveClientDestinationBegin());
+        return axios.post(address, req).then(
+            (res) => {
+                dispatch(saveClientDestinationSuccess());
+            }, (error) => {
+                console.log(error);
+                dispatch(saveClientDestinationFailure(error));
+            }
+        );
+    }
+};
+
+export function getListClientDestination(accNumber) {
+    let req = {
+        accNumber: accNumber
+    };
+    let address = "http://localhost:8080/getAllRelationsByAccNumber";
+    return dispatch => {
+        dispatch(getListClientDestinationBegin());
+        return axios.post(address, req).then(
+            (res) => {
+                console.log(res.data);
+                dispatch(getListClientDestinationSuccess(res.data));
+            }, (error) => {
+                console.log(error);
+                dispatch(getListClientDestinationFailure(error));
+            }
+        );
+    }
+};
+
+export function handleTransfer(transfer) {
+    let address = "http://localhost:8080/saveNewTransaction";
+    return dispatch => {
+        dispatch(transferProcessBegin());
+        return axios.post(address, transfer).then(
+            (res) => {
+                console.log(res.data);
+                dispatch(transferProcessSuccess());
+            }, (error) => {
+                console.log(error);
+                dispatch(transferProcessFailure(error));
+            }
+        );
+    }
+};

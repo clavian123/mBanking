@@ -2,7 +2,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 
 import { 
-    syncStorage, 
+    syncStorageBegin,
+    syncStorageSuccess, 
     storageEmpty, 
     postClientLoginBegin, 
     postValidateClientLogin, 
@@ -17,10 +18,11 @@ const CLIENT_PIN = 'CLIENT_PIN'
 
 export function handleSyncStorage() {
     return async dispatch => {
+        dispatch(syncStorageBegin());
         var accNumber = await AsyncStorage.getItem(CLIENT_ACC_NUMBER);
         var pin = await AsyncStorage.getItem(CLIENT_PIN);
         if (accNumber != null && pin != null) {
-            dispatch(syncStorage(accNumber, pin));
+            dispatch(syncStorageSuccess(accNumber, pin));
         } else {
             dispatch(storageEmpty());
         }

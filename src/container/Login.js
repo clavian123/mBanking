@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-import { handleLogin } from '../action/login/loginFunction'
+import { handleLogin } from '../action/login/loginFunction';
 
 class Login extends Component {
 

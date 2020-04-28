@@ -6,21 +6,49 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
+import { connect } from 'react-redux';
 
-export default class RegisterDestinationAccount extends React.Component {
+import { checkClientDestination } from '../../action/transfer/transferFunction';
+import Loading from '../../Loading';
+
+class RegisterDestinationAccount extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      accNumber: '',
+    };
+  }
+
+  handleRegisterDestination = () => {
+    const { accNumber } = this.state;
+    const { navigate } = this.props.navigation;
+    this.props.dispatch(checkClientDestination(accNumber, navigate));
+  }
 
   render() {
+    const { loading } = this.props;
+
+    if (loading) {
+      return <Loading />;
+    }
+
     return (
       <View style={styles.container}>
         <Text style={styles.textLabel}>
           Destination Account Number
         </Text>
         <TextInput
+          value={this.state.accNumber}
+          onChangeText={(accNumber) => { this.setState({ accNumber }) }}
           placeholder="Account Number"
           style={styles.textInput}
           keyboardType="number-pad"
         />
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => this.handleRegisterDestination()}
+        >
           <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
       </View>
@@ -62,3 +90,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+const mapStateToProps = state => ({
+  loading: state.transfer.loading,
+  destAccNumber: state.transfer.newDest.accNumber,
+  destFullName: state.transfer.newDest.fullName
+});
+
+export default connect(mapStateToProps)(RegisterDestinationAccount);

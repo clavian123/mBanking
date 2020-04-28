@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 
 import Loading from '../../Loading';
 import { getBalance } from '../../action/home/homeFunction'
-import { numberWithCommas } from '../../generalFunction';
+import {numberWithCommas} from '../../generalFunction'
 
 class BalanceInquiry extends React.Component {
 
@@ -41,7 +41,7 @@ class BalanceInquiry extends React.Component {
                 </View>
                 <View style={styles.subContainer}>
                     <Text>Available Balance</Text>
-                    <Text style={styles.textInformation}>{numberWithCommas(balance)}</Text>
+                    <Text style={styles.textInformation}>Rp {balance ? numberWithCommas(balance) : 0}</Text>
                 </View>
             </View>
         );

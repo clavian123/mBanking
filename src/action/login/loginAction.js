@@ -1,5 +1,6 @@
 import { 
-    SYNC_STORAGE, 
+    SYNC_STORAGE_BEGIN,
+    SYNC_STORAGE_SUCCESS, 
     STORAGE_EMPTY, 
     LOGIN_SUCCESS, 
     LOGOUT, 
@@ -8,8 +9,12 @@ import {
     POST_CLIENT_LOGIN_FAILURE 
 } from '../index';
 
-export const syncStorage = (accNumber, pin) => ({
-    type: SYNC_STORAGE,
+export const syncStorageBegin = () => ({
+    type: SYNC_STORAGE_BEGIN,
+})
+
+export const syncStorageSuccess = (accNumber, pin) => ({
+    type: SYNC_STORAGE_SUCCESS,
     accNumber,
     pin,
 })

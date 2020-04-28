@@ -1,16 +1,14 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 
 import CounterApp from './src/CounterApp';
 import store from './src/store/index';
-import { Provider } from 'react-redux';
 
 export default class App extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            users: []
-        }
+        this.state = {}
     }
 
     render() {

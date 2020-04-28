@@ -1,7 +1,8 @@
 import React from 'react';
 import {
     StyleSheet,
-    View,
+    Text,
+    View
 } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { connect } from 'react-redux';
@@ -16,12 +17,6 @@ class AccountStatementDetail extends React.Component {
         super(props);
         this.state = {
             search: '',
-            statements:
-                [
-                    { key: '0', date: new Date(2020, 2, 1), type: 'DB', title: '9 SQUARE POOL', amount: '50000', note: 'Main Billiard' },
-                    { key: '1', date: new Date(2020, 2, 2), type: 'CR', title: 'TOKOPEDIA', amount: '60000', note: 'Jual Baju' },
-                    { key: '2', date: new Date(2020, 2, 3), type: 'CR', title: 'TOKOPEDIA', amount: '400000', note: 'Jual Sepatu Vans' }
-                ]
         };
     }
 
@@ -29,43 +24,53 @@ class AccountStatementDetail extends React.Component {
         this.setState({ search });
     }
 
-    // componentDidMount = () => {
-    //     const { startDate, endDate } = this.props.route.params;
-    //     const { accNumber } = this.props;
-    //     var moment = require('moment');
-    //     this.props.dispatch(getStatements(accNumber, moment(startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'))));
-    // }
+    componentDidMount = () => {
+        const { startDate, endDate } = this.props.route.params;
+        const { accNumber } = this.props;
+        var moment = require('moment');
+        this.props.dispatch(getStatements(accNumber,startDate, endDate));
+    }
 
     render() {
 
-        const { search, statements } = this.state;
-        const { loading } = this.props;
+        const { search } = this.state;
+        const { loading, statements } = this.props;
 
         if (loading) {
             return <Loading />;
         }
 
-        return (
-            <View>
-                <SearchBar
-                    onChangeText={this.updateSearch}
-                    value={search}
-                    platform="android"
-                    placeholder="Search statement"
-                />
-                <StatementList statements={statements} />
-            </View>
-        )
+
+        if (statements && statements.length) {
+            return (
+                <View>
+                    <SearchBar
+                        onChangeText={this.updateSearch}
+                        value={search}
+                        platform="android"
+                        placeholder="Search statement"
+                    />
+                    <StatementList statements={statements} />
+                </View>
+            )
+        } else {
+            return (
+                <View style={styles.container}>
+                    <Text>You don't have any statements.</Text>
+                </View>
+            );
+        }
     }
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-    },
-    iconImage: {
-        width: 35,
-        height: 35,
+        width: "100%",
+        height: "100%",
+        justifyContent: "center",
+        alignSelf: "center",
+        alignContent: "center",
+        alignItems: "center",
     }
 })
 

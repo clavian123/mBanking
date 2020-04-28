@@ -60,9 +60,11 @@ export default class AccountStatementPickDate extends React.Component {
     }
 
     handleViewStatement = () => {
+        const { startDate, endDate } = this.state;
+        var moment = require('moment');
         this.props.navigation.navigate('AccountStatementDetail', {
-            startDate: this.state.startDate,
-            endDate: this.state.endDate
+            startDate: moment(startDate).format('YYYY-MM-DD'),
+            endDate: moment(endDate).format('YYYY-MM-DD')
         });
     }
 
