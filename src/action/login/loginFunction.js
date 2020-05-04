@@ -49,7 +49,7 @@ export function handleLogin(accNumber, pin) {
             }, (error) => {
                 console.log(error);
                 dispatch(postClientLoginFailure(error));
-            }
+            }   
         )
     }
 };

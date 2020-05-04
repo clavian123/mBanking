@@ -18,6 +18,7 @@ import AccountStatementPickDateScreen from './container/home/AccountStatementPic
 import AccountStatementDetail from './container/home/AccountStatementDetail';
 
 import TransferScreen from './container/transfer/Transfer';
+import ConfirmTransferScreen from './container/transfer/ConfirmTransfer';
 import RegisterDestinationAccountScreen from './container/transfer/RegisterDestinationAccount';
 import ConfirmRegisterDestinationScreen from './container/transfer/ConfirmRegisterDestination';
 import TransferToAnotherAccountScreen from './container/transfer/TransferToAnotherAccount';
@@ -101,6 +102,12 @@ function TransferStackScreen() {
                 name="ChooseDestinationAccount"
                 component={ChooseDestinationAccountScreen}
                 options={{ headerShown: false }}
+            >
+            </Stack.Screen>
+            <Stack.Screen
+                name="ConfirmTransfer"
+                component={ConfirmTransferScreen}
+                options={{ title: 'Confirm Transfer' }}
             >
             </Stack.Screen>
         </Stack.Navigator>

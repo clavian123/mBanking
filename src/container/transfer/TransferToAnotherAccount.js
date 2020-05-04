@@ -34,6 +34,20 @@ class TransferToAnotherAccount extends React.Component {
     navigation.navigate('ChooseDestinationAccount');
   }
 
+  handleConfirmTransfer = () => {
+    const { navigation, route, accNumber } = this.props;
+    const { amount, description } = this.state;
+    var accNumberDest = route.params?.number;
+    navigation.navigate('ConfirmTransfer',{
+      accNumber: accNumber,
+      amount:amount,
+      note: description,
+      accNumberDest: accNumberDest,
+      accNameDest: route.params.name,
+      type: 'Regular Transfer'
+    })
+  }
+
   componentDidMount() {
     this._isMounted = true;
   }
@@ -140,7 +154,7 @@ class TransferToAnotherAccount extends React.Component {
         <View style={styles.subContainer}>
           <TouchableHighlight
             style={styles.button}
-            onPress={() => this.handleEvent()}
+            onPress={() => this.handleConfirmTransfer()}
           >
             <Text
               style={[styles.buttonText, this.state.isRequestPINVisible ? { color: 'rgb(89, 89, 89)' } : 'rgb(255, 255, 255)']}
