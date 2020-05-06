@@ -15,14 +15,16 @@ import { syncLoginToStorage, syncLogoutToStorage } from '../../Auth'
 
 const CLIENT_ACC_NUMBER = 'CLIENT_ACC_NUMBER'
 const CLIENT_PIN = 'CLIENT_PIN'
+const CLIENT_ACC_NAME = 'CLIENT_ACC_NAME'
 
 export function handleSyncStorage() {
     return async dispatch => {
         dispatch(syncStorageBegin());
         var accNumber = await AsyncStorage.getItem(CLIENT_ACC_NUMBER);
-        var pin = await AsyncStorage.getItem(CLIENT_PIN);
+        var pin = await AsyncStorage.getItem(CLIENT_PIN);       
+        var accName = await AsyncStorage.getItem(CLIENT_ACC_NAME);
         if (accNumber != null && pin != null) {
-            dispatch(syncStorageSuccess(accNumber, pin));
+            dispatch(syncStorageSuccess(accNumber, pin, accName));
         } else {
             dispatch(storageEmpty());
         }
@@ -39,12 +41,14 @@ export function handleLogin(accNumber, pin) {
         dispatch(postClientLoginBegin());
         return axios.post(address, clientLogin).then(
             (res) => {
-                dispatch(postValidateClientLogin(res.data));
-                if (res.data) {
-                    dispatch(loginSuccess(accNumber, pin));
-                    syncLoginToStorage(accNumber, pin);
+                if (res.data!="") {
+                    dispatch(postValidateClientLogin(true));
+                    console.log(res.data)
+                    dispatch(loginSuccess(accNumber, pin, res.data));
+                    syncLoginToStorage(accNumber, pin, res.data);
                 } else {
                     alert('Your account number or PIN is wrong!');
+                    dispatch(postClientLoginFailure('Your account number or PIN is wrong!'));
                 }
             }, (error) => {
                 console.log(error);

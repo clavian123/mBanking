@@ -44,7 +44,7 @@ class TransferToAnotherAccount extends React.Component {
       note: description,
       accNumberDest: accNumberDest,
       accNameDest: route.params.name,
-      type: 'Regular Transfer'
+      type: 'Regular Transfer',
     })
   }
 

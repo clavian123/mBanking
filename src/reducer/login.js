@@ -15,6 +15,7 @@ initialState = {
     pin: '',
     loading: false,
     error: null,
+    accName: '',
 };
 
 const login = (state = initialState, action) => {
@@ -24,7 +25,8 @@ const login = (state = initialState, action) => {
                 ...state,
                 accNumber: '',
                 pin: '',
-                loading: true
+                loading: true,
+                accName: '',
             };
 
         case SYNC_STORAGE_SUCCESS:
@@ -33,7 +35,8 @@ const login = (state = initialState, action) => {
                 loading: false,
                 isLogin: true,
                 accNumber: action.accNumber,
-                pin: action.pin
+                pin: action.pin,
+                accName: action.accName
             };
 
         case STORAGE_EMPTY: 
@@ -61,7 +64,8 @@ const login = (state = initialState, action) => {
             return {
                 ...state,
                 accNumber: action.accNumber,
-                pin: action.pin
+                pin: action.pin,
+                accName: action.accName
             };
 
         case POST_CLIENT_LOGIN_FAILURE:

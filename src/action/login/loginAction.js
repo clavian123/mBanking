@@ -13,10 +13,11 @@ export const syncStorageBegin = () => ({
     type: SYNC_STORAGE_BEGIN,
 })
 
-export const syncStorageSuccess = (accNumber, pin) => ({
+export const syncStorageSuccess = (accNumber, pin, accName) => ({
     type: SYNC_STORAGE_SUCCESS,
     accNumber,
     pin,
+    accName,
 })
 
 export const storageEmpty = () => ({
@@ -32,10 +33,11 @@ export const postValidateClientLogin = (isLogin) => ({
     isLogin,
 })
 
-export const loginSuccess = (accNumber, pin) => ({
+export const loginSuccess = (accNumber, pin, accName) => ({
     type: LOGIN_SUCCESS,
     accNumber,
-    pin
+    pin,
+    accName,
 })
 
 export const postClientLoginFailure = (error) => ({

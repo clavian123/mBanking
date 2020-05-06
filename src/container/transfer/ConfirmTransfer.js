@@ -13,6 +13,7 @@ import store from '../../store/index';
 
 import RequestPIN from '../../component/RequestPIN'
 import { handleTransfer } from '../../action/transfer/transferFunction'
+import PushNotification from 'react-native-push-notification'
 import Loading from '../../Loading';
 
 class ConfirmTransfer extends React.Component {
@@ -20,8 +21,33 @@ class ConfirmTransfer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isRequestPINVisible: false
+            isRequestPINVisible: false,
+            accName: store.getState().login.accName
         };
+
+        PushNotification.configure({
+            
+            onRegister: function (token) {
+                console.log("TOKEN:", token);
+            },
+            onNotification: function (notification) {
+                console.log("NOTIFICATION:", notification);
+            },
+            permissions: {
+                alert: true,
+                badge: true,
+                sound: true,
+            },
+            popInitialNotification: true,
+            requestPermissions: Platform.OS === 'ios'
+        });
+    }
+
+    transferNotification = (amount, sender, receiver) => {
+        PushNotification.localNotification({
+            title: "MBanking", // (optional)
+            message: sender + " Just Transfered " + amount + " to " + receiver, // (required)
+          });
     }
 
     validatePIN = (input) => {
@@ -45,15 +71,16 @@ class ConfirmTransfer extends React.Component {
             let req = this.createRequest();
             this.props.dispatch(handleTransfer(req));
             this.changeRequestPINVisibility(false);
-            console.log("sender: "+ state.login.accNumber)
-            console.log("receiver: "+ state.transfer.newDest.accNumber)
             alert('Transfer success.')
             navigation.goBack();
+            this.transferNotification(req.amount, state.login.accName, this.props.route.params.accNameDest)
         }
     }
 
     handleConfirm = () => {
         this.changeRequestPINVisibility(true);
+        console.log(store.getState().transfer);
+        
     }
 
     changeRequestPINVisibility = (bool) => {
@@ -86,12 +113,12 @@ class ConfirmTransfer extends React.Component {
                     'rgba(0, 0, 0, 0)']}
             >
                 <View style={styles.subContainer}>
-                    <Text>Account Number Source</Text>
-                    <Text style={styles.textInformation}>{this.props.route.params.accNumber}</Text>
+                    <Text>Account Source</Text>
+                    <Text style={styles.textInformation}>{this.props.route.params.accNumber} - {this.state.accName}</Text>
                 </View>
                 <View style={styles.subContainer}>
-                    <Text>Account Number Destination</Text>
-                    <Text style={styles.textInformation}>{this.props.route.params.accNameDest}</Text>
+                    <Text>Account Destination</Text>
+                <Text style={styles.textInformation}>{this.props.route.params.accNumberDest} - {this.props.route.params.accNameDest}</Text>
                 </View>
                 <View style={styles.subContainer}>
                     <Text>Amount</Text>
