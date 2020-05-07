@@ -11,22 +11,21 @@ import {
 import { connect } from 'react-redux';
 import store from '../../store/index';
 
-import RequestPIN from '../../component/RequestPIN'
-import { handleTransfer } from '../../action/transfer/transferFunction'
+import { getClientToken, handleTransfer } from '../../action/transfer/transferFunction'
 import PushNotification from 'react-native-push-notification'
 import Loading from '../../Loading';
+import RequestOTP from '../../component/RequestOTP';
 
 class ConfirmTransfer extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            isRequestPINVisible: false,
+            isRequestOTPVisible: false,
             accName: store.getState().login.accName
         };
 
         PushNotification.configure({
-            
             onRegister: function (token) {
                 console.log("TOKEN:", token);
             },
@@ -43,6 +42,12 @@ class ConfirmTransfer extends React.Component {
         });
     }
 
+    requestToken = () => {
+        const { route } = this.props;
+        const accNumber = route.params.accNumber;
+        this.props.dispatch(getClientToken(accNumber));
+    }
+    
     transferNotification = (amount, sender, receiver) => {
         PushNotification.localNotification({
             title: "MBanking", // (optional)
@@ -50,16 +55,16 @@ class ConfirmTransfer extends React.Component {
           });
     }
 
-    validatePIN = (input) => {
+    validateOTP = (input) => {
         const state = store.getState()
         const { navigation } = this.props;
-        let pin = state.login.pin;
-        console.log(input, pin, state.transfer.newDest)
+        let token = state.transfer.token;
+        console.log(input, token, state.transfer.newDest)
 
-        if (input != pin) {
+        if (input != token) {
             Alert.alert(
                 'Failed',
-                'Your PIN is wrong. Please try again.',
+                'Your OTP Token is wrong. Please try again.',
                 [
                     {
                         text: 'OK',
@@ -70,7 +75,7 @@ class ConfirmTransfer extends React.Component {
         } else {
             let req = this.createRequest();
             this.props.dispatch(handleTransfer(req));
-            this.changeRequestPINVisibility(false);
+            this.changeRequestOTPVisibility(false);
             alert('Transfer success.')
             navigation.goBack();
             this.transferNotification(req.amount, state.login.accName, this.props.route.params.accNameDest)
@@ -78,13 +83,13 @@ class ConfirmTransfer extends React.Component {
     }
 
     handleConfirm = () => {
-        this.changeRequestPINVisibility(true);
+        this.changeRequestOTPVisibility(true);
+        this.requestToken();
         console.log(store.getState().transfer);
-        
     }
 
-    changeRequestPINVisibility = (bool) => {
-        this.setState({ isRequestPINVisible: bool });
+    changeRequestOTPVisibility = (bool) => {
+        this.setState({ isRequestOTPVisible: bool });
     }
 
     createRequest = () => {
@@ -133,21 +138,21 @@ class ConfirmTransfer extends React.Component {
                     <Text style={styles.textInformation}>{this.props.route.params.type}</Text>
                 </View>
                 <TouchableOpacity
-                    style={{ ...styles.button, opacity: this.state.isRequestPINVisible ? 0.5 : 1 }}
+                    style={styles.button}
                     onPress={() => this.handleConfirm()}
-                    disabled={this.state.isRequestPINVisible}>
-                    <Text style={{ ...styles.buttonText, opacity: this.state.isRequestPINVisible ? 0.5 : 1 }}>Confirm</Text>
+                    disabled={this.state.isRequestOTPVisible}>
+                    <Text style={[styles.buttonText, this.state.isRequestOTPVisible ? { color: 'rgb(89, 89, 89)' } : 'rgb(255, 255, 255)' ]}>Confirm</Text>
                 </TouchableOpacity>
                 <Modal
-                    visible={this.state.isRequestPINVisible}
+                    visible={this.state.isRequestOTPVisible}
                     transparent={true}
-                    onRequestClose={() => this.changeRequestPINVisibility(false)}>
+                    onRequestClose={() => this.changeRequestOTPVisibility(false)}>
                     <TouchableOpacity
-                        style={styles.container}
-                        activeOpacity={1}
-                        onPressOut={() => { this.changeRequestPINVisibility(false) }}>
+                        style={[styles.container]}
+                        activeOpacity= {1}
+                        onPressOut={() => { this.changeRequestOTPVisibility(false) }}>
                         <TouchableWithoutFeedback>
-                            <RequestPIN changeRequestPINVisibility={this.changeRequestPINVisibility} validatePIN={this.validatePIN} />
+                            <RequestOTP changeRequestOTPVisibility={this.changeRequestOTPVisibility} validateOTP={this.validateOTP} otpNotification={this.handleConfirm} />
                         </TouchableWithoutFeedback>
                     </TouchableOpacity>
                 </Modal>

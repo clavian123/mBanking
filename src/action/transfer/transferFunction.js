@@ -11,16 +11,39 @@ import {
     getListClientDestinationBegin,
     getListClientDestinationSuccess,
     getListClientDestinationFailure,
+    getClientTokenBegin,
+    getClientTokenSuccess,
+    getClientTokenFailure,
     transferProcessBegin,
     transferProcessSuccess,
     transferProcessFailure
 } from './transferAction';
 
+import store from '../../store/index';
+import PushNotification from 'react-native-push-notification'
+
+PushNotification.configure({
+    onNotification: function (notification) {
+        console.log("NOTIFICATION:", notification);
+    },
+    permissions: {
+        alert: true,
+        badge: true,
+        sound: true,
+    },
+    popInitialNotification: true,
+    requestPermissions: Platform.OS === 'ios'
+});
+
+const otpNotification = () => {
+    
+}
+
 export function checkClientDestination(accNumber, navigate) {
     let req = {
         accNumber: accNumber
     };
-    let address = "http://localhost:8080/validateDestinationAccount";
+    let address = "http://192.168.0.111:8080/validateDestinationAccount";
     return dispatch => {
         dispatch(checkClientDestinationBegin());
         return axios.post(address, req).then(
@@ -45,7 +68,7 @@ export function saveClientDestination(accNumberMain, accNumberDest) {
         accNumberMain: accNumberMain,
         accNumberDest: accNumberDest
     };
-    let address = "http://localhost:8080/saveNewRelation";
+    let address = "http://192.168.0.111:8080/saveNewRelation";
     return dispatch => {
         dispatch(saveClientDestinationBegin());
         return axios.post(address, req).then(
@@ -63,7 +86,7 @@ export function getListClientDestination(accNumber) {
     let req = {
         accNumber: accNumber
     };
-    let address = "http://localhost:8080/getAllRelationsByAccNumber";
+    let address = "http://192.168.0.111:8080/getAllRelationsByAccNumber";
     return dispatch => {
         dispatch(getListClientDestinationBegin());
         return axios.post(address, req).then(
@@ -78,8 +101,34 @@ export function getListClientDestination(accNumber) {
     }
 };
 
+export function getClientToken(accNumber) {
+    let req = {
+        accNumber: accNumber
+    };
+    const state = store.getState();
+    let address = "http://192.168.0.111:8080/otp";
+    return dispatch => {
+        dispatch(getClientTokenBegin());
+        return axios.post(address, req).then(
+            (res) => {
+                console.log(res.data);
+                dispatch(getClientTokenSuccess(res.data.token));
+                console.log(store.getState().transfer);
+                PushNotification.localNotification({
+                    title: "MBanking",
+                    message: "Your OTP Token is " + res.data.token
+                });
+            }, (error) => {
+                console.log(error);
+                dispatch(getClientTokenFailure(error));
+            }
+        );
+    }
+    
+};
+
 export function handleTransfer(transfer) {
-    let address = "http://localhost:8080/saveNewTransaction";
+    let address = "http://192.168.0.111:8080/saveNewTransaction";
     return dispatch => {
         dispatch(transferProcessBegin());
         return axios.post(address, transfer).then(

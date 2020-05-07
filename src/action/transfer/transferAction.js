@@ -9,6 +9,9 @@ import {
     GET_LIST_CLIENT_DESTINATION_BEGIN,
     GET_LIST_CLIENT_DESTINATION_SUCCESS,
     GET_LIST_CLIENT_DESTINATION_FAILURE,
+    GET_CLIENT_TOKEN_BEGIN,
+    GET_CLIENT_TOKEN_SUCCESS,
+    GET_CLIENT_TOKEN_FAILURE,
     TRANSFER_PROCESS_BEGIN,
     TRANSFER_PROCESS_SUCCESS,
     TRANSFER_PROCESS_FAILURE,
@@ -57,6 +60,20 @@ export const getListClientDestinationSuccess = (listDest) => ({
 
 export const getListClientDestinationFailure = (error) => ({
     type: GET_LIST_CLIENT_DESTINATION_FAILURE,
+    error
+});
+
+export const getClientTokenBegin = () => ({
+    type: GET_CLIENT_TOKEN_BEGIN
+});
+
+export const getClientTokenSuccess = (token) => ({
+    type: GET_CLIENT_TOKEN_SUCCESS,
+    token
+});
+
+export const getClientTokenFailure = (error) => ({
+    type: GET_CLIENT_TOKEN_FAILURE,
     error
 });
 

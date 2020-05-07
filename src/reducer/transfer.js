@@ -9,6 +9,9 @@ import {
     GET_LIST_CLIENT_DESTINATION_BEGIN,
     GET_LIST_CLIENT_DESTINATION_SUCCESS,
     GET_LIST_CLIENT_DESTINATION_FAILURE,
+    GET_CLIENT_TOKEN_BEGIN,
+    GET_CLIENT_TOKEN_SUCCESS,
+    GET_CLIENT_TOKEN_FAILURE,
     TRANSFER_PROCESS_BEGIN,
     TRANSFER_PROCESS_SUCCESS,
     TRANSFER_PROCESS_FAILURE,
@@ -19,6 +22,7 @@ initialState = {
         accNumber: '',
         fullName: '',
     },
+    token: '',
     listDest: [],
     loading: false,
     error: null
@@ -108,6 +112,28 @@ const transfer = (state = initialState, action) => {
                 error: action.error,
                 listDest: []
             };
+        
+        case GET_CLIENT_TOKEN_BEGIN:
+            return {
+                ...state,
+                loading: true
+            }
+        
+        case GET_CLIENT_TOKEN_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                token: action.token,
+                error: null
+            }
+
+        case GET_CLIENT_TOKEN_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                token: '',
+                error: action.error
+            }
 
         case TRANSFER_PROCESS_BEGIN:
             return {
