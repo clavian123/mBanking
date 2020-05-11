@@ -36,7 +36,7 @@ export function handleLogin(accNumber, pin) {
         accNumber: accNumber,
         pin: pin
     };
-    let address = "http://192.168.0.111:8080/validateLogin";
+    let address = "http://localhost:8080/validateLogin";
     return dispatch => {
         dispatch(postClientLoginBegin());
         return axios.post(address, clientLogin).then(

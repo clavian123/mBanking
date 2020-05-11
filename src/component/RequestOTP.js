@@ -32,7 +32,7 @@ export default class RequestOTP extends Component {
                 <View style={[styles.modal, { width: this.state.width - 80 }]}>
                     <View style={styles.textView}>
                         <Text style={[styles.text, { fontSize: 20 }]}>Authentication</Text>
-                        <Text style={styles.text}>We have seen your OTP Token through notification. Please Input your OTP Token:</Text>
+                        <Text style={styles.text}>We have sent your OTP Token through notification. Please Input your OTP Token:</Text>
                         <TextInput
                             placeholder="OTP Token"
                             style={styles.textInput}

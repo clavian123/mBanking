@@ -11,10 +11,11 @@ import {
 import { connect } from 'react-redux';
 import store from '../../store/index';
 
-import { getClientToken, handleTransfer } from '../../action/transfer/transferFunction'
+import { getClientToken, handleTransfer, validateToken } from '../../action/transfer/transferFunction'
 import PushNotification from 'react-native-push-notification'
 import Loading from '../../Loading';
 import RequestOTP from '../../component/RequestOTP';
+
 
 class ConfirmTransfer extends React.Component {
 
@@ -47,39 +48,44 @@ class ConfirmTransfer extends React.Component {
         const accNumber = route.params.accNumber;
         this.props.dispatch(getClientToken(accNumber));
     }
-    
+
     transferNotification = (amount, sender, receiver) => {
         PushNotification.localNotification({
             title: "MBanking", // (optional)
             message: sender + " Just Transfered " + amount + " to " + receiver, // (required)
-          });
+        });
     }
 
     validateOTP = (input) => {
         const state = store.getState()
         const { navigation } = this.props;
-        let token = state.transfer.token;
-        console.log(input, token, state.transfer.newDest)
+        let accNumber = state.login.accNumber
 
-        if (input != token) {
-            Alert.alert(
-                'Failed',
-                'Your OTP Token is wrong. Please try again.',
-                [
-                    {
-                        text: 'OK',
-                        style: 'cancel',
-                    }
-                ]
-            )
-        } else {
-            let req = this.createRequest();
-            this.props.dispatch(handleTransfer(req));
-            this.changeRequestOTPVisibility(false);
-            alert('Transfer success.')
-            navigation.goBack();
-            this.transferNotification(req.amount, state.login.accName, this.props.route.params.accNameDest)
-        }
+        validateToken(accNumber, input).then((res) => {
+            if (res == true) {
+                console.log("OTP bener dan jalanin transaksi")
+                let req = this.createRequest();
+                this.props.dispatch(handleTransfer(req));
+                this.changeRequestOTPVisibility(false);
+                alert('Transfer success.')
+                navigation.goBack();
+                this.transferNotification(req.amount, state.login.accName, this.props.route.params.accNameDest)
+            } else {
+                console.log("OTP salah");
+                
+                Alert.alert(
+                    'Failed',
+                    'Your OTP Token is wrong. Please try again.',
+                    [
+                        {
+                            text: 'OK',
+                            style: 'cancel',
+                        }
+                    ]
+                )
+
+            }
+        })
     }
 
     handleConfirm = () => {
@@ -98,7 +104,7 @@ class ConfirmTransfer extends React.Component {
         const amount = route.params.amount;
         const description = route.params.note
         const accNumber = route.params.accNumber
-        
+
         let req = {
             accNumberSender: accNumber,
             accNumberReceiver: accNumberDest,
@@ -123,7 +129,7 @@ class ConfirmTransfer extends React.Component {
                 </View>
                 <View style={styles.subContainer}>
                     <Text>Account Destination</Text>
-                <Text style={styles.textInformation}>{this.props.route.params.accNumberDest} - {this.props.route.params.accNameDest}</Text>
+                    <Text style={styles.textInformation}>{this.props.route.params.accNumberDest} - {this.props.route.params.accNameDest}</Text>
                 </View>
                 <View style={styles.subContainer}>
                     <Text>Amount</Text>
@@ -141,7 +147,7 @@ class ConfirmTransfer extends React.Component {
                     style={styles.button}
                     onPress={() => this.handleConfirm()}
                     disabled={this.state.isRequestOTPVisible}>
-                    <Text style={[styles.buttonText, this.state.isRequestOTPVisible ? { color: 'rgb(89, 89, 89)' } : 'rgb(255, 255, 255)' ]}>Confirm</Text>
+                    <Text style={[styles.buttonText, this.state.isRequestOTPVisible ? { color: 'rgb(89, 89, 89)' } : 'rgb(255, 255, 255)']}>Confirm</Text>
                 </TouchableOpacity>
                 <Modal
                     visible={this.state.isRequestOTPVisible}
@@ -149,7 +155,7 @@ class ConfirmTransfer extends React.Component {
                     onRequestClose={() => this.changeRequestOTPVisibility(false)}>
                     <TouchableOpacity
                         style={[styles.container]}
-                        activeOpacity= {1}
+                        activeOpacity={1}
                         onPressOut={() => { this.changeRequestOTPVisibility(false) }}>
                         <TouchableWithoutFeedback>
                             <RequestOTP changeRequestOTPVisibility={this.changeRequestOTPVisibility} validateOTP={this.validateOTP} otpNotification={this.handleConfirm} />
@@ -198,6 +204,6 @@ const mapStateToProps = state => ({
     pin: state.login.pin,
     destAccNumber: state.transfer.newDest.accNumber,
     loading: state.transfer.loading
-  });
-  
+});
+
 export default connect(mapStateToProps)(ConfirmTransfer);

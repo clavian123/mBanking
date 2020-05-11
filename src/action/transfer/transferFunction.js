@@ -43,7 +43,7 @@ export function checkClientDestination(accNumber, navigate) {
     let req = {
         accNumber: accNumber
     };
-    let address = "http://192.168.0.111:8080/validateDestinationAccount";
+    let address = "http://localhost:8080/validateDestinationAccount";
     return dispatch => {
         dispatch(checkClientDestinationBegin());
         return axios.post(address, req).then(
@@ -68,7 +68,7 @@ export function saveClientDestination(accNumberMain, accNumberDest) {
         accNumberMain: accNumberMain,
         accNumberDest: accNumberDest
     };
-    let address = "http://192.168.0.111:8080/saveNewRelation";
+    let address = "http://localhost:8080/saveNewRelation";
     return dispatch => {
         dispatch(saveClientDestinationBegin());
         return axios.post(address, req).then(
@@ -86,7 +86,7 @@ export function getListClientDestination(accNumber) {
     let req = {
         accNumber: accNumber
     };
-    let address = "http://192.168.0.111:8080/getAllRelationsByAccNumber";
+    let address = "http://localhost:8080/getAllRelationsByAccNumber";
     return dispatch => {
         dispatch(getListClientDestinationBegin());
         return axios.post(address, req).then(
@@ -106,7 +106,7 @@ export function getClientToken(accNumber) {
         accNumber: accNumber
     };
     const state = store.getState();
-    let address = "http://192.168.0.111:8080/otp";
+    let address = "http://localhost:8080/otp";
     return dispatch => {
         dispatch(getClientTokenBegin());
         return axios.post(address, req).then(
@@ -127,8 +127,24 @@ export function getClientToken(accNumber) {
     
 };
 
+export function validateToken(accNumber, token) {
+    let req = {
+        accNumber: accNumber,
+        token: token
+    }
+    let address = "http://localhost:8080/checkOtp"
+    return axios.post(address, req).then(
+        (res) => {
+            console.log(res.data);
+            return res.data
+        }, (error) => {
+            console.log(error);
+        }
+    )
+}
+
 export function handleTransfer(transfer) {
-    let address = "http://192.168.0.111:8080/saveNewTransaction";
+    let address = "http://localhost:8080/saveNewTransaction";
     return dispatch => {
         dispatch(transferProcessBegin());
         return axios.post(address, transfer).then(
