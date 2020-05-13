@@ -179,7 +179,7 @@ function HomeTabScreen() {
         imageIcon: {
             width: 29,
             height: 29,
-        }
+        },
     })
     return (
         <Tab.Navigator
@@ -205,14 +205,14 @@ function HomeTabScreen() {
                 },
                 tabBarLabel: ({ focused }) => {
                     return focused ? <Text style={{ fontSize: 12 }}>{route.name}</Text> : null
-                }
+                },
             })}
             tabBarOptions={{
-                activeTintColor: 'blue',
-                inactiveTintColor: 'black',
+                activeTintColor: 'black',
+                inactiveTintColor: 'white',
             }}
         >
-            <Tab.Screen name="Home" component={HomeStackScreen} options={{ title: 'Home' }} />
+            <Tab.Screen name="Home" component={HomeStackScreen} options={{ title: 'Home'}} />
             <Tab.Screen name="Transfer" component={TransferStackScreen} options={{ title: 'Transfer' }} />
             <Tab.Screen name="Payment" component={PaymentStackScreen} options={{ title: 'Payment' }} />
             <Tab.Screen name="Account" component={AccountStackScreen} options={{ title: 'Account' }} />

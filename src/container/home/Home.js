@@ -115,9 +115,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '500',
-    color: '#ffffff',
+    color: 'white',
     textAlign: 'center',
   },
   button: {
