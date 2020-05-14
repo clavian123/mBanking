@@ -45,13 +45,13 @@ export default class RequestPIN extends Component {
                     <View style={styles.buttonView}>
                         <TouchableHighlight
                             onPress={() => this.closeModal()}
-                            style={styles.touchableHighlight}
+                            style={{...styles.touchableHighlight, borderBottomLeftRadius: 5}}
                         >
-                            <Text style={[styles.text, { color: 'black' }]}>Cancel</Text>
+                            <Text style={[styles.text, { color: 'white' }]}>Cancel</Text>
                         </TouchableHighlight>
                         <TouchableHighlight
                             onPress={() => this.props.validatePIN(this.state.pin)}
-                            style={styles.touchableHighlight}
+                            style={{...styles.touchableHighlight, backgroundColor: 'white', borderBottomRightRadius: 5}}
                             underlayColor={'#f1f1f1'}
                         >
                             <Text style={[styles.text, { color: 'green' }]}>OK</Text>
@@ -75,10 +75,11 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         alignItems: 'center',
         textAlign: 'center',
-        backgroundColor: 'white',
+        backgroundColor: '#eeeeee',
         borderRadius: 5,
         borderWidth: 0.5,
         borderColor: 'black',
+        elevation: 5
     },
     text: {
         margin: 5,
@@ -92,15 +93,16 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor: 'black',
         marginTop: 12,
+        backgroundColor:'white'
     },
     touchableHighlight: {
         flex: 1,
-        backgroundColor: 'white',
+        backgroundColor: '#c10000',
         paddingVertical: 10,
         alignSelf: 'stretch',
         alignItems: 'center',
-        borderRadius: 5,
-        borderWidth: 0.5,
+        // borderRadius: 5,
+        // borderWidth: 0.5,
         borderColor: 'white',
     },
     textView: {

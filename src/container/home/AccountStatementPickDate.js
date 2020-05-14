@@ -91,7 +91,7 @@ export default class AccountStatementPickDate extends React.Component {
                 marginVertical: 10,
             },
             buttonPickDate: {
-                backgroundColor: 'lightgray',
+                backgroundColor: '#ffd1d1',
                 padding: 10,
                 borderRadius: 10,
             },
@@ -101,7 +101,7 @@ export default class AccountStatementPickDate extends React.Component {
                 textAlign: 'center',
             },
             textLabelTitle: {
-                fontSize: 12,
+                fontSize: 13,
             },
             textDate: {
                 fontSize: 14,
@@ -110,7 +110,7 @@ export default class AccountStatementPickDate extends React.Component {
                 fontSize: 15,
             },
             button: {
-                backgroundColor: '#1c313a',
+                backgroundColor: '#c10000',
                 marginVertical: 15,
                 borderRadius: 10,
                 paddingVertical: 16,
