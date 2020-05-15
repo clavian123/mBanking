@@ -68,9 +68,8 @@ class Home extends React.Component {
 
   render() {
     return (
-      <View style={[styles.container, this.state.isRequestPINVisible ?
-        { backgroundColor: 'rgba(0, 0, 0, 0.8)' } :
-        'rgba(0, 0, 0, 0)']}
+      <View style={{...styles.container, backgroundColor: this.state.isRequestPINVisible ? 'rgba(0,0,0,0.8)' : '#dedede'}}
+        
       >
         <TouchableOpacity
           style={styles.button}
@@ -113,6 +112,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     alignContent: "center",
     alignItems: "center",
+    // backgroundColor:'#dedede'
   },
   buttonText: {
     fontSize: 17,

@@ -75,11 +75,12 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         alignItems: 'center',
         textAlign: 'center',
-        backgroundColor: '#eeeeee',
+        backgroundColor: 'white',
         borderRadius: 5,
         borderWidth: 0.5,
         borderColor: 'black',
-        elevation: 5
+        elevation: 5,
+        backgroundColor: '#eeeeee'
     },
     text: {
         margin: 5,

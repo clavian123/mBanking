@@ -42,12 +42,10 @@ function HomeStackScreen() {
             initialRouteName="Home"
             screenOptions = {{
                 headerStyle:{
-                    // backgroundColor: '#c10000',
+                    backgroundColor: '#c10000',
                     elevation: 10
                 },
-                headerTitleStyle:{
-                    // color: '#dedede'
-                },
+                headerTintColor: 'white'
             }}
         >
             <Stack.Screen
