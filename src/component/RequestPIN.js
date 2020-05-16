@@ -45,16 +45,16 @@ export default class RequestPIN extends Component {
                     <View style={styles.buttonView}>
                         <TouchableHighlight
                             onPress={() => this.closeModal()}
-                            style={styles.touchableHighlight}
+                            style={{...styles.touchableHighlight, borderBottomLeftRadius: 12}}
                         >
-                            <Text style={[styles.text, { color: 'black' }]}>Cancel</Text>
+                            <Text style={{...styles.text,  color: 'red', fontWeight: "normal" }}>Cancel</Text>
                         </TouchableHighlight>
                         <TouchableHighlight
                             onPress={() => this.props.validatePIN(this.state.pin)}
-                            style={styles.touchableHighlight}
+                            style={{...styles.touchableHighlight, borderBottomRightRadius: 12}}
                             underlayColor={'#f1f1f1'}
                         >
-                            <Text style={[styles.text, { color: 'green' }]}>OK</Text>
+                            <Text style={[styles.text, { color: 'red' }]}>OK</Text>
                         </TouchableHighlight>
                     </View>
                 </View>
@@ -76,9 +76,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         textAlign: 'center',
         backgroundColor: 'white',
-        borderRadius: 5,
+        borderRadius: 12,
         borderWidth: 0.5,
         borderColor: 'black',
+        elevation: 5,
+        backgroundColor: '#eeeeee'
     },
     text: {
         margin: 5,
@@ -92,16 +94,17 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor: 'black',
         marginTop: 12,
+        backgroundColor:'white'
     },
     touchableHighlight: {
         flex: 1,
-        backgroundColor: 'white',
+        backgroundColor: '#eeeeee',
         paddingVertical: 10,
         alignSelf: 'stretch',
         alignItems: 'center',
-        borderRadius: 5,
+        // borderRadius: 5,
         borderWidth: 0.5,
-        borderColor: 'white',
+        borderColor: '#888888',
     },
     textView: {
         flex: 1,
