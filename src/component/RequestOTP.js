@@ -87,10 +87,10 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         alignItems: 'center',
         textAlign: 'center',
-        backgroundColor: 'white',
         borderRadius: 5,
         borderWidth: 0.5,
         borderColor: 'black',
+        backgroundColor: '#dedede',
     },
     text: {
         marginLeft: 15,
@@ -117,23 +117,24 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 5,
         borderWidth: 0.5,
+        borderTopWidth: 0,
         borderColor: 'white',
+        backgroundColor: '#dedede',
     },
     textView: {
         flex: 1,
-        alignItems: 'center',
-
+        alignItems: 'center'
     },
     buttonView: {
         marginTop: 0,
         width: '100%',
         flexDirection: 'row',
-        borderColor: '#888888'
+        borderColor: '#888888',
     },
     buttonView2: {
         marginTop: 0,
         width: '50%',
         flexDirection: 'row',
-        borderColor: '#888888'
+        borderColor: '#888888',
     }
 })
