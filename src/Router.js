@@ -40,6 +40,13 @@ function HomeStackScreen() {
     return (
         <Stack.Navigator
             initialRouteName="Home"
+            screenOptions = {{
+                headerStyle:{
+                    backgroundColor: '#c10000',
+                    elevation: 10
+                },
+                headerTintColor: 'white'
+            }}
         >
             <Stack.Screen
                 name="Home"
@@ -209,16 +216,25 @@ function HomeTabScreen() {
 
                     return <Image
                         source={iconAddress}
+<<<<<<< HEAD
                         style={{ ...styles.imageIcon, tintColor: focused ? '#c10000' : '#888888' }}
                     />;
                 },
                 tabBarLabel: ({ focused }) => {
                     return focused ? <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#c10000' }}>{route.name}</Text> : null
+=======
+                        style={{...styles.imageIcon, tintColor: focused ? '#c10000' : '#888888'}}
+                    />;
+                },
+                tabBarLabel: ({ focused }) => {
+                    return focused ? <Text style={{ fontSize: 12, color: '#c10000' }}>{route.name}</Text> : null
+>>>>>>> 7283d7c4411f3eedbae7a8789a42a63b8fede80d
                 },
             })}
             tabBarOptions={{
                 activeTintColor: '#c10000',
                 inactiveTintColor: 'white',
+                elevation: 20
             }}
         >
             <Tab.Screen name="Home" component={HomeStackScreen} options={{ title: 'Home'}} />

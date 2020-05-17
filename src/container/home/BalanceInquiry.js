@@ -32,15 +32,15 @@ class BalanceInquiry extends React.Component {
         return (
             <View style={styles.container}>
                 <View style={styles.subContainer}>
-                    <Text>Account Number</Text>
+                    <Text style={styles.textTitle}>Account Number</Text>
                     <Text style={styles.textInformation}>{accNumber}</Text>
                 </View>
                 <View style={styles.subContainer}>
-                    <Text>Currency</Text>
+                    <Text style={styles.textTitle}>Currency</Text>
                     <Text style={styles.textInformation}>IDR</Text>
                 </View>
                 <View style={styles.subContainer}>
-                    <Text>Available Balance</Text>
+                    <Text style={styles.textTitle}>Available Balance</Text>
                     <Text style={styles.textInformation}>Rp {balance ? numberWithCommas(balance) : 0}</Text>
                 </View>
             </View>
@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         alignContent: "center",
         alignItems: "center",
+        backgroundColor: '#dedede'
     },
     subContainer: {
         alignItems: 'center',
@@ -65,6 +66,9 @@ const styles = StyleSheet.create({
     textInformation: {
         fontSize: 25,
         fontWeight: 'bold',
+    },
+    textTitle:{
+        fontSize: 17
     }
 });
 
