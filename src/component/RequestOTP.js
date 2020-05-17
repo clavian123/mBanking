@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor: 'black',
         marginTop: 12,
+        backgroundColor: '#fff'
     },
     touchableHighlight: {
         flex: 1,

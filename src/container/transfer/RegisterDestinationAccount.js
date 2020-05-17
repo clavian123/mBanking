@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#dedede'
   },
   textLabel: {
-    fontSize: 18,
+    fontSize: 17,
     marginHorizontal: 35
   },
   textInput: {
