@@ -75,6 +75,7 @@ export default class AccountStatementPickDate extends React.Component {
             container: {
                 width: "100%",
                 height: "100%",
+                backgroundColor: '#dedede'
             },
             viewTitle: {
                 flex: 2,
@@ -91,23 +92,25 @@ export default class AccountStatementPickDate extends React.Component {
                 marginVertical: 10,
             },
             buttonPickDate: {
-                backgroundColor: '#ffd1d1',
+                backgroundColor: 'white',
                 padding: 10,
                 borderRadius: 10,
+                borderWidth: 1,
+
             },
             textTitle: {
                 fontWeight: 'bold',
-                fontSize: 20,
+                fontSize: 22,
                 textAlign: 'center',
             },
             textLabelTitle: {
-                fontSize: 13,
+                fontSize: 17,
             },
             textDate: {
-                fontSize: 14,
+                fontSize: 16,
             },
             textViewStatement: {
-                fontSize: 15,
+                fontSize: 16,
             },
             button: {
                 backgroundColor: '#c10000',
