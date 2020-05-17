@@ -45,18 +45,21 @@ export default class RequestOTP extends Component {
                     <View style={styles.buttonView}>
                         <TouchableHighlight
                             onPress={() => this.props.otpNotification()}
-                            style={[styles.touchableHighlight, {paddingVertical: 0}]}
+                            style={[styles.touchableHighlight, {paddingVertical: 3}]}
                             >
                             <Text style={[styles.text, { color: 'blue' }]}>Resend OTP Token</Text>
                         </TouchableHighlight>
                     </View>
-                    <View style={styles.buttonView}>
+                    <View style={{...styles.buttonView, borderTopWidth: 1}}>
+                        <View style={{...styles.buttonView2, borderRightWidth: 1}}>
                         <TouchableHighlight
                             onPress={() => this.closeModal()}
                             style={styles.touchableHighlight}
                         >
                             <Text style={[styles.text, { color: 'black' }]}>Cancel</Text>
                         </TouchableHighlight>
+                        </View>
+                        <View style={styles.buttonView2}>
                         <TouchableHighlight
                             onPress={() => this.props.validateOTP(this.state.token)}
                             style={styles.touchableHighlight}
@@ -64,6 +67,7 @@ export default class RequestOTP extends Component {
                         >
                             <Text style={[styles.text, { color: 'green' }]}>OK</Text>
                         </TouchableHighlight>
+                        </View>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -78,7 +82,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     modal: {
-        height: 330,
+        height: 305,
         paddingTop: 10,
         alignSelf: 'center',
         alignItems: 'center',
@@ -108,7 +112,7 @@ const styles = StyleSheet.create({
     touchableHighlight: {
         flex: 1,
         backgroundColor: 'white',
-        paddingVertical: 10,
+        paddingVertical: 3,
         alignSelf: 'stretch',
         alignItems: 'center',
         borderRadius: 5,
@@ -124,5 +128,12 @@ const styles = StyleSheet.create({
         marginTop: 0,
         width: '100%',
         flexDirection: 'row',
+        borderColor: '#888888'
+    },
+    buttonView2: {
+        marginTop: 0,
+        width: '50%',
+        flexDirection: 'row',
+        borderColor: '#888888'
     }
 })

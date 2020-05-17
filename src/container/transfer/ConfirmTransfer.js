@@ -6,7 +6,8 @@ import {
     Text,
     TouchableOpacity,
     TouchableWithoutFeedback,
-    View
+    View,
+    ToastAndroid
 } from 'react-native';
 import { connect } from 'react-redux';
 import store from '../../store/index';
@@ -15,7 +16,7 @@ import { getClientToken, handleTransfer, validateToken } from '../../action/tran
 import PushNotification from 'react-native-push-notification'
 import Loading from '../../Loading';
 import RequestOTP from '../../component/RequestOTP';
-
+import {numberWithCommas} from '../../generalFunction'
 
 class ConfirmTransfer extends React.Component {
 
@@ -67,7 +68,7 @@ class ConfirmTransfer extends React.Component {
                 let req = this.createRequest();
                 this.props.dispatch(handleTransfer(req));
                 this.changeRequestOTPVisibility(false);
-                alert('Transfer success.')
+                ToastAndroid.show("Success", ToastAndroid.SHORT);
                 navigation.goBack();
                 this.transferNotification(req.amount, state.login.accName, this.props.route.params.accNameDest)
             } else {
@@ -124,23 +125,23 @@ class ConfirmTransfer extends React.Component {
                     'rgba(0, 0, 0, 0)']}
             >
                 <View style={styles.subContainer}>
-                    <Text>Account Source</Text>
+                    <Text style={styles.textTitle}>Account Source:</Text>
                     <Text style={styles.textInformation}>{this.props.route.params.accNumber} - {this.state.accName}</Text>
                 </View>
                 <View style={styles.subContainer}>
-                    <Text>Account Destination</Text>
+                    <Text style={styles.textTitle}>Account Destination:</Text>
                     <Text style={styles.textInformation}>{this.props.route.params.accNumberDest} - {this.props.route.params.accNameDest}</Text>
                 </View>
                 <View style={styles.subContainer}>
-                    <Text>Amount</Text>
-                    <Text style={styles.textInformation}>{this.props.route.params.amount}</Text>
+                    <Text style={styles.textTitle}>Amount:</Text>
+                    <Text style={styles.textInformation}>Rp {this.props.route.params.amount ? numberWithCommas(this.props.route.params.amount) : 0}</Text>
                 </View>
                 <View style={styles.subContainer}>
-                    <Text>Note</Text>
+                    <Text style={styles.textTitle}>Note:</Text>
                     <Text style={styles.textInformation}>{this.props.route.params.note}</Text>
                 </View>
                 <View style={styles.subContainer}>
-                    <Text>Transfer Type</Text>
+                    <Text style={styles.textTitle}>Transfer Type:</Text>
                     <Text style={styles.textInformation}>{this.props.route.params.type}</Text>
                 </View>
                 <TouchableOpacity
@@ -154,7 +155,7 @@ class ConfirmTransfer extends React.Component {
                     transparent={true}
                     onRequestClose={() => this.changeRequestOTPVisibility(false)}>
                     <TouchableOpacity
-                        style={[styles.container]}
+                        style={styles.modalContainer}
                         activeOpacity={1}
                         onPressOut={() => { this.changeRequestOTPVisibility(false) }}>
                         <TouchableWithoutFeedback>
@@ -174,21 +175,36 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignSelf: "center",
         alignContent: "center",
+        alignItems: "flex-start",
+        backgroundColor: "#dedede"
+    },
+    modalContainer: {
+        width: "100%",
+        height: "100%",
+        justifyContent: "center",
+        alignSelf: "center",
+        alignContent: "center",
         alignItems: "center",
+        backgroundColor: 'rgba(0,0,0,0.6)'
     },
     subContainer: {
-        alignItems: 'center',
+        justifyContent: 'flex-start',
         marginVertical: 10,
+        marginHorizontal: 20,
+    },
+    textTitle: {
+        fontSize: 18,
     },
     textInformation: {
-        fontSize: 25,
+        fontSize: 20,
         fontWeight: 'bold',
     },
     button: {
-        backgroundColor: '#1c313a',
+        backgroundColor: '#c10000',
         borderRadius: 10,
         paddingVertical: 16,
-        width: 130,
+        marginHorizontal: 20,
+        width: '90%',
         marginVertical: 20,
     },
     buttonText: {

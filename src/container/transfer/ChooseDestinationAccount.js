@@ -68,7 +68,7 @@ class ChooseDestinationAccount extends React.Component {
                     </View>
                     <TouchableOpacity style={styles.buttonAdd} onPress={() => this.registerAccount()}>
                         <Image
-                            style={styles.imageAdd}
+                            style={{...styles.imageAdd, tintColor: '#c10000'}}
                             source={require('../../../assets/icon-add.png')}
                         />
                     </TouchableOpacity>
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     },
     imageAdd: {
         height: 22,
-        width: 22,
+        width: 22
     }
 })
 

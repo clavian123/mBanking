@@ -16,14 +16,16 @@ class RegisterDestinationAccount extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      accNumber: '',
+      destAccNumber: '',
     };
   }
 
   handleRegisterDestination = () => {
-    const { accNumber } = this.state;
+    const { destAccNumber } = this.state;
+    const { accNumber } = this.props;
     const { navigate } = this.props.navigation;
-    this.props.dispatch(checkClientDestination(accNumber, navigate));
+    console.log(accNumber);
+    this.props.dispatch(checkClientDestination(destAccNumber, navigate));
   }
 
   render() {
@@ -36,16 +38,18 @@ class RegisterDestinationAccount extends React.Component {
     return (
       <View style={styles.container}>
         <Text style={styles.textLabel}>
-          Destination Account Number
+          Destination Account Number:
         </Text>
         <TextInput
           value={this.state.accNumber}
-          onChangeText={(accNumber) => { this.setState({ accNumber }) }}
+          onChangeText={(destAccNumber) => { this.setState({ destAccNumber }) }}
           placeholder="Account Number"
+          placeholderTextColor="#888888"
           style={styles.textInput}
           keyboardType="number-pad"
         />
         <TouchableOpacity
+          underlayColor="#888888"
           style={styles.button}
           onPress={() => this.handleRegisterDestination()}
         >
@@ -63,25 +67,32 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignSelf: "center",
     alignContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
+    backgroundColor: '#dedede'
   },
   textLabel: {
     fontSize: 18,
+    marginHorizontal: 35
   },
   textInput: {
+    fontSize: 16,
     marginVertical: 10,
+    paddingHorizontal: 15,
     borderColor: 'black',
     borderStyle: 'solid',
     borderWidth: 1,
-    borderRadius: 5,
-    width: 250,
-    textAlign: 'center',
+    borderRadius: 10,
+    backgroundColor: 'white',
+    width: '85%',
+    textAlign: 'left',
+    marginHorizontal: 30,
   },
   button: {
-    backgroundColor: '#1c313a',
+    backgroundColor: '#c10000',
     borderRadius: 10,
     paddingVertical: 16,
-    width: 250,
+    width: '85%',
+    marginHorizontal: 30
   },
   buttonText: {
     fontSize: 16,
@@ -93,6 +104,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   loading: state.transfer.loading,
+  accNumber: state.login.accNumber,
   destAccNumber: state.transfer.newDest.accNumber,
   destFullName: state.transfer.newDest.fullName
 });

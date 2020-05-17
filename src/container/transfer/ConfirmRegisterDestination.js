@@ -6,7 +6,8 @@ import {
     Text,
     TouchableOpacity,
     TouchableWithoutFeedback,
-    View
+    View,
+    ToastAndroid
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -45,7 +46,7 @@ class BalanceInquiry extends React.Component {
         } else {
             this.saveClientDestination();
             this.changeRequestPINVisibility(false);
-            alert('Success.')
+            ToastAndroid.show("Success", ToastAndroid.SHORT);
             navigation.navigate('Transfer');
         }
     }
@@ -76,11 +77,11 @@ class BalanceInquiry extends React.Component {
                     'rgba(0, 0, 0, 0)']}
             >
                 <View style={styles.subContainer}>
-                    <Text>Account Number</Text>
+                    <Text style={styles.textLabel}>Account Number:</Text>
                     <Text style={styles.textInformation}>{destAccNumber}</Text>
                 </View>
                 <View style={styles.subContainer}>
-                    <Text>Account Name</Text>
+                    <Text style={styles.textLabel}>Account Name:</Text>
                     <Text style={styles.textInformation}>{destAccName ? destAccName.toUpperCase() : null}</Text>
                 </View>
                 <TouchableOpacity
@@ -115,22 +116,29 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignSelf: "center",
         alignContent: "center",
-        alignItems: "center",
+        alignItems: "flex-start",
     },
     subContainer: {
         alignItems: 'center',
         marginVertical: 10,
+        marginHorizontal: 30
+    },
+    textLabel: {
+        fontSize: 18,
+        alignSelf: 'flex-start'
     },
     textInformation: {
         fontSize: 25,
         fontWeight: 'bold',
+        alignSelf: 'flex-start'
     },
     button: {
-        backgroundColor: '#1c313a',
+        backgroundColor: '#c10000',
         borderRadius: 10,
         paddingVertical: 16,
-        width: 130,
+        width: '85%',
         marginVertical: 20,
+        marginHorizontal: 30
     },
     buttonText: {
         fontSize: 16,

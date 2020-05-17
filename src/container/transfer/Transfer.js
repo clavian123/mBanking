@@ -22,10 +22,10 @@ export default class Transfer extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <TouchableHighlight underlayColor="rgb(230, 230, 230)" style={styles.button} onPress={() => this.handleMenuClicked("RegisterDestinationAccount")}>
+        <TouchableHighlight underlayColor="#888888" style={styles.button} onPress={() => this.handleMenuClicked("RegisterDestinationAccount")}>
           <Text style={styles.buttonText}>Register Destination Account</Text>
         </TouchableHighlight>
-        <TouchableHighlight underlayColor="rgb(230, 230, 230)" style={styles.button} onPress={() => this.handleMenuClicked("TransferToAnotherAccount")}>
+        <TouchableHighlight underlayColor="#888888" style={styles.button} onPress={() => this.handleMenuClicked("TransferToAnotherAccount")}>
           <Text style={styles.buttonText}>Transfer to Another Account</Text>
         </TouchableHighlight>
       </View>
@@ -41,9 +41,10 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     alignContent: "center",
     alignItems: "center",
+    backgroundColor: '#dedede'
   },
   button: {
-    backgroundColor: '#1c313a',
+    backgroundColor: '#c10000',
     marginVertical: 10,
     borderRadius: 10,
     paddingVertical: 16,

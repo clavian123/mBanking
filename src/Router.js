@@ -77,7 +77,16 @@ function TransferStackScreen() {
             <Stack.Screen
                 name="Transfer"
                 component={TransferScreen}
-                options={{ title: 'Transfer' }}
+                options={{ 
+                    title: 'Transfer',
+                    headerStyle: {
+                        backgroundColor: '#fff'
+                    },
+                    headerTintColor: '#000',
+                    headerTitleStyle: {
+                        
+                    }
+                 }}
             >
             </Stack.Screen>
             <Stack.Screen
@@ -200,15 +209,15 @@ function HomeTabScreen() {
 
                     return <Image
                         source={iconAddress}
-                        style={styles.imageIcon}
+                        style={{ ...styles.imageIcon, tintColor: focused ? '#c10000' : '#888888' }}
                     />;
                 },
                 tabBarLabel: ({ focused }) => {
-                    return focused ? <Text style={{ fontSize: 12 }}>{route.name}</Text> : null
+                    return focused ? <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#c10000' }}>{route.name}</Text> : null
                 },
             })}
             tabBarOptions={{
-                activeTintColor: 'black',
+                activeTintColor: '#c10000',
                 inactiveTintColor: 'white',
             }}
         >

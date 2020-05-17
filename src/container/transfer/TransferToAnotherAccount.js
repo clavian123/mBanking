@@ -60,48 +60,47 @@ class TransferToAnotherAccount extends React.Component {
     this.setState({ isRequestPINVisible: bool });
   }
 
-  validatePIN = (input) => {
-    const { navigation, pin } = this.props;
-    if (input != pin) {
-      Alert.alert(
-        'Failed',
-        'Your PIN is wrong. Please try again.',
-        [
-          {
-            text: 'OK',
-            style: 'cancel',
-          }
-        ]
-      )
-    } else {
-      let req = this.createRequest();
-      this.props.dispatch(handleTransfer(req));
-      this.changeRequestPINVisibility(false);
-      alert('Transfer success.')
-      navigation.goBack();
-    }
-  }
+  // validatePIN = (input) => {
+  //   const { navigation, pin } = this.props;
+  //   if (input != pin) {
+  //     Alert.alert(
+  //       'Failed',
+  //       'Your PIN is wrong. Please try again.',
+  //       [
+  //         {
+  //           text: 'OK',
+  //           style: 'cancel',
+  //         }
+  //       ]
+  //     )
+  //   } else {
+  //     let req = this.createRequest();
+  //     this.props.dispatch(handleTransfer(req));
+  //     this.changeRequestPINVisibility(false);
+  //     alert('Transfer success.')
+  //     navigation.goBack();
+  //   }
+  // }
 
   handleEvent = () => {
     this.changeRequestPINVisibility(true);
   }
 
-  createRequest = () => {
-    const { route, accNumber } = this.props;
-    const { amount, description } = this.state;
-    var accNumberDest = route.params?.number;
-    let req = {
-      accNumberSender: accNumber,
-      accNumberReceiver: accNumberDest,
-      amount: amount,
-      type: 'Regular Transfer',
-      note: description
-    }
-    return req;
-  }
+  // createRequest = () => {
+  //   const { route, accNumber } = this.props;
+  //   const { amount, description } = this.state;
+  //   var accNumberDest = route.params?.number;
+  //   let req = {
+  //     accNumberSender: accNumber,
+  //     accNumberReceiver: accNumberDest,
+  //     amount: amount,
+  //     type: 'Regular Transfer',
+  //     note: description
+  //   }
+  //   return req;
+  // }
 
   render() {
-
     const { route, loading } = this.props;
     var name = route.params?.name;
     var number = route.params?.number;
@@ -117,7 +116,7 @@ class TransferToAnotherAccount extends React.Component {
           'rgba(0, 0, 0, 0)']}
       >
         <View style={styles.subContainer}>
-          <Text style={styles.textLabel}>Destination Account</Text>
+          <Text style={styles.textLabel}>Destination Account:</Text>
           <TouchableHighlight
             onPress={() => this.handleChooseAccount()}
             style={styles.buttonDestinationAccount}
@@ -131,7 +130,7 @@ class TransferToAnotherAccount extends React.Component {
           </TouchableHighlight>
         </View>
         <View style={styles.subContainer}>
-          <Text style={styles.textLabel}>Total Amount (IDR)</Text>
+          <Text style={styles.textLabel}>Total Amount (IDR):</Text>
           <TextInput
             value={this.state.amount}
             onChangeText={(amount) => this.setState({ amount })}
@@ -142,7 +141,7 @@ class TransferToAnotherAccount extends React.Component {
           </TextInput>
         </View>
         <View style={styles.subContainer}>
-          <Text style={styles.textLabel}>Description</Text>
+          <Text style={styles.textLabel}>Description (Optional):</Text>
           <TextInput
             value={this.state.description}
             onChangeText={(description) => this.setState({ description })}
@@ -163,19 +162,19 @@ class TransferToAnotherAccount extends React.Component {
             </Text>
           </TouchableHighlight>
         </View>
-        <Modal
+        {/* <Modal
           visible={this.state.isRequestPINVisible}
           transparent={true}
           onRequestClose={() => this.changeRequestPINVisibility(false)}>
           <TouchableOpacity
-            style={styles.container}
+            style={styles.modalContainer}
             activeOpacity={1}
             onPressOut={() => { this.changeRequestPINVisibility(false) }}>
             <TouchableWithoutFeedback>
               <RequestPIN changeRequestPINVisibility={this.changeRequestPINVisibility} validatePIN={this.validatePIN} />
             </TouchableWithoutFeedback>
           </TouchableOpacity>
-        </Modal>
+        </Modal> */}
       </View>
     );
   }
@@ -188,26 +187,33 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignSelf: "center",
     alignContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
+    backgroundColor: "#dedede"
   },
   subContainer: {
     marginVertical: 10,
+    width: '85%'
   },
   buttonDestinationAccount: {
     borderRadius: 10,
-    width: 250,
+    width: '100%',
   },
   textLabel: {
+    fontSize: 17,
     paddingLeft: 5,
     width: 250,
     textAlign: 'left',
+    marginHorizontal: 30,
   },
   textInput: {
+    fontSize: 16,
     borderWidth: 1,
     paddingLeft: 10,
     paddingVertical: 8,
     borderRadius: 10,
-    width: 250,
+    backgroundColor: 'white',
+    width: '100%',
+    marginHorizontal: 30
   },
   buttonText: {
     fontSize: 16,
@@ -216,10 +222,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    backgroundColor: '#1c313a',
+    backgroundColor: '#c10000',
     borderRadius: 10,
     paddingVertical: 16,
-    width: 250,
+    width: '100%',
+    marginHorizontal: 30
   },
 });
 
