@@ -117,6 +117,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         alignContent: "center",
         alignItems: "flex-start",
+        backgroundColor: "#dedede"
     },
     subContainer: {
         alignItems: 'center',

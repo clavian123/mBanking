@@ -87,31 +87,46 @@ function TransferStackScreen() {
                 options={{ 
                     title: 'Transfer',
                     headerStyle: {
-                        backgroundColor: '#fff'
+                        backgroundColor: '#c10000'
                     },
-                    headerTintColor: '#000',
-                    headerTitleStyle: {
-                        
-                    }
+                    headerTintColor: '#fff',
                  }}
             >
             </Stack.Screen>
             <Stack.Screen
                 name="RegisterDestinationAccount"
                 component={RegisterDestinationAccountScreen}
-                options={{ title: 'Register Account' }}
+                options={{ 
+                    title: 'Register Account',
+                    headerStyle: {
+                        backgroundColor: '#c10000'
+                    },
+                    headerTintColor: '#fff',
+                }}
             >
             </Stack.Screen>
             <Stack.Screen
                 name="ConfirmRegisterDestination"
                 component={ConfirmRegisterDestinationScreen}
-                options={{ title: 'Confirmation' }}
+                options={{ 
+                    title: 'Confirmation' ,
+                    headerStyle: {
+                        backgroundColor: '#c10000'
+                    },
+                    headerTintColor: '#fff',
+                }}
             >
             </Stack.Screen>
             <Stack.Screen
                 name="TransferToAnotherAccount"
                 component={TransferToAnotherAccountScreen}
-                options={{ title: 'Transfer' }}
+                options={{ 
+                    title: 'Transfer',
+                    headerStyle: {
+                        backgroundColor: '#c10000'
+                    },
+                    headerTintColor: '#fff', 
+                }}
             >
             </Stack.Screen>
             <Stack.Screen
@@ -123,7 +138,13 @@ function TransferStackScreen() {
             <Stack.Screen
                 name="ConfirmTransfer"
                 component={ConfirmTransferScreen}
-                options={{ title: 'Confirm Transfer' }}
+                options={{ 
+                    title: 'Confirm Transfer',
+                    headerStyle: {
+                        backgroundColor: '#c10000'
+                    },
+                    headerTintColor: '#fff', 
+                }}
             >
             </Stack.Screen>
         </Stack.Navigator>
@@ -216,19 +237,11 @@ function HomeTabScreen() {
 
                     return <Image
                         source={iconAddress}
-<<<<<<< HEAD
                         style={{ ...styles.imageIcon, tintColor: focused ? '#c10000' : '#888888' }}
                     />;
                 },
                 tabBarLabel: ({ focused }) => {
                     return focused ? <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#c10000' }}>{route.name}</Text> : null
-=======
-                        style={{...styles.imageIcon, tintColor: focused ? '#c10000' : '#888888'}}
-                    />;
-                },
-                tabBarLabel: ({ focused }) => {
-                    return focused ? <Text style={{ fontSize: 12, color: '#c10000' }}>{route.name}</Text> : null
->>>>>>> 7283d7c4411f3eedbae7a8789a42a63b8fede80d
                 },
             })}
             tabBarOptions={{
