@@ -43,19 +43,19 @@ export default class RequestPIN extends Component {
                         />
                     </View>
                     <View style={styles.buttonView}>
-                        <TouchableHighlight
+                        <TouchableOpacity
                             onPress={() => this.closeModal()}
-                            style={{...styles.touchableHighlight, borderBottomLeftRadius: 12}}
+                            style={{...styles.touchableOpacity, borderBottomLeftRadius: 12}}
                         >
                             <Text style={{...styles.text,  color: 'red', fontWeight: "normal" }}>Cancel</Text>
-                        </TouchableHighlight>
-                        <TouchableHighlight
+                        </TouchableOpacity>
+                        <TouchableOpacity
                             onPress={() => this.props.validatePIN(this.state.pin)}
-                            style={{...styles.touchableHighlight, borderBottomRightRadius: 12}}
+                            style={{...styles.touchableOpacity, borderBottomRightRadius: 12}}
                             underlayColor={'#f1f1f1'}
                         >
                             <Text style={[styles.text, { color: 'red' }]}>OK</Text>
-                        </TouchableHighlight>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     modal: {
-        height: 200,
+        height: 220,
         paddingTop: 10,
         alignSelf: 'center',
         alignItems: 'center',
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
         marginTop: 12,
         backgroundColor:'white'
     },
-    touchableHighlight: {
+    touchableOpacity: {
         flex: 1,
         backgroundColor: '#eeeeee',
         paddingVertical: 10,
@@ -112,7 +112,6 @@ const styles = StyleSheet.create({
 
     },
     buttonView: {
-        marginTop: 15,
         width: '100%',
         flexDirection: 'row',
     }

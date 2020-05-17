@@ -4,6 +4,7 @@ import {
   View,
   Text,
   TouchableHighlight,
+  TouchableOpacity
 } from 'react-native';
 
 import RequestPIN from '../../component/RequestPIN'
@@ -22,12 +23,18 @@ export default class Transfer extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <TouchableHighlight underlayColor="#888888" style={styles.button} onPress={() => this.handleMenuClicked("RegisterDestinationAccount")}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => this.handleMenuClicked("RegisterDestinationAccount")}
+        >
           <Text style={styles.buttonText}>Register Destination Account</Text>
-        </TouchableHighlight>
-        <TouchableHighlight underlayColor="#888888" style={styles.button} onPress={() => this.handleMenuClicked("TransferToAnotherAccount")}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => this.handleMenuClicked("TransferToAnotherAccount")}
+        >
           <Text style={styles.buttonText}>Transfer to Another Account</Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     );
   }

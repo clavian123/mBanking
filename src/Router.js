@@ -40,8 +40,8 @@ function HomeStackScreen() {
     return (
         <Stack.Navigator
             initialRouteName="Home"
-            screenOptions = {{
-                headerStyle:{
+            screenOptions={{
+                headerStyle: {
                     backgroundColor: '#c10000',
                     elevation: 10
                 },
@@ -84,19 +84,19 @@ function TransferStackScreen() {
             <Stack.Screen
                 name="Transfer"
                 component={TransferScreen}
-                options={{ 
+                options={{
                     title: 'Transfer',
                     headerStyle: {
                         backgroundColor: '#c10000'
                     },
                     headerTintColor: '#fff',
-                 }}
+                }}
             >
             </Stack.Screen>
             <Stack.Screen
                 name="RegisterDestinationAccount"
                 component={RegisterDestinationAccountScreen}
-                options={{ 
+                options={{
                     title: 'Register Account',
                     headerStyle: {
                         backgroundColor: '#c10000'
@@ -108,8 +108,8 @@ function TransferStackScreen() {
             <Stack.Screen
                 name="ConfirmRegisterDestination"
                 component={ConfirmRegisterDestinationScreen}
-                options={{ 
-                    title: 'Confirmation' ,
+                options={{
+                    title: 'Confirmation',
                     headerStyle: {
                         backgroundColor: '#c10000'
                     },
@@ -120,12 +120,12 @@ function TransferStackScreen() {
             <Stack.Screen
                 name="TransferToAnotherAccount"
                 component={TransferToAnotherAccountScreen}
-                options={{ 
+                options={{
                     title: 'Transfer',
                     headerStyle: {
                         backgroundColor: '#c10000'
                     },
-                    headerTintColor: '#fff', 
+                    headerTintColor: '#fff',
                 }}
             >
             </Stack.Screen>
@@ -138,12 +138,12 @@ function TransferStackScreen() {
             <Stack.Screen
                 name="ConfirmTransfer"
                 component={ConfirmTransferScreen}
-                options={{ 
+                options={{
                     title: 'Confirm Transfer',
                     headerStyle: {
                         backgroundColor: '#c10000'
                     },
-                    headerTintColor: '#fff', 
+                    headerTintColor: '#fff'
                 }}
             >
             </Stack.Screen>
@@ -159,25 +159,49 @@ function PaymentStackScreen() {
             <Stack.Screen
                 name="Payment"
                 component={PaymentScreen}
-                options={{ title: 'Payment' }}
+                options={{
+                    title: 'Payment',
+                    headerStyle: {
+                        backgroundColor: '#c10000'
+                    },
+                    headerTintColor: '#fff'
+                }}
             >
             </Stack.Screen>
             <Stack.Screen
                 name="CreditCard"
                 component={CreditCardScreen}
-                options={{ title: 'Credit Card' }}
+                options={{
+                    title: 'Credit Card',
+                    headerStyle: {
+                        backgroundColor: '#c10000'
+                    },
+                    headerTintColor: '#fff'
+                }}
             >
             </Stack.Screen>
             <Stack.Screen
                 name="Insurance"
                 component={InsuranceScreen}
-                options={{ title: 'Insurance' }}
+                options={{
+                    title: 'Insurance',
+                    headerStyle: {
+                        backgroundColor: '#c10000'
+                    },
+                    headerTintColor: '#fff'
+                }}
             >
             </Stack.Screen>
             <Stack.Screen
                 name="PhoneBalance"
                 component={PhoneBalanceScreen}
-                options={{ title: 'Phone Balance' }}
+                options={{
+                    title: 'Phone Balance',
+                    headerStyle: {
+                        backgroundColor: '#c10000'
+                    },
+                    headerTintColor: '#fff'
+                }}
             >
             </Stack.Screen>
         </Stack.Navigator>
@@ -192,19 +216,37 @@ function AccountStackScreen() {
             <Stack.Screen
                 name="Account"
                 component={AccountScreen}
-                options={{ title: 'Account' }}
+                options={{
+                    title: 'Account',
+                    headerStyle: {
+                        backgroundColor: '#c10000'
+                    },
+                    headerTintColor: '#fff'
+                }}
             >
             </Stack.Screen>
             <Stack.Screen
                 name="ChangePIN"
                 component={ChangePINScreen}
-                options={{ title: 'Change PIN' }}
+                options={{
+                    title: 'Change PIN',
+                    headerStyle: {
+                        backgroundColor: '#c10000'
+                    },
+                    headerTintColor: '#fff'
+                }}
             >
             </Stack.Screen>
             <Stack.Screen
                 name="AboutUs"
                 component={AboutUsScreen}
-                options={{ title: 'About Us' }}
+                options={{
+                    title: 'About Us',
+                    headerStyle: {
+                        backgroundColor: '#c10000'
+                    },
+                    headerTintColor: '#fff'
+                }}
             >
             </Stack.Screen>
         </Stack.Navigator >
@@ -217,6 +259,9 @@ function HomeTabScreen() {
             width: 29,
             height: 29,
         },
+        label: {
+            fontSize: 12
+        }
     })
     return (
         <Tab.Navigator
@@ -237,20 +282,20 @@ function HomeTabScreen() {
 
                     return <Image
                         source={iconAddress}
-                        style={{ ...styles.imageIcon, tintColor: focused ? '#c10000' : '#888888' }}
+                        style={{ ...styles.imageIcon, tintColor: focused ? 'white' : '#888888' }}
                     />;
                 },
                 tabBarLabel: ({ focused }) => {
-                    return focused ? <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#c10000' }}>{route.name}</Text> : null
+                    return <Text style={[styles.label, focused ? {color: 'white'} : {color: '#888888'}]}>{route.name}</Text>
                 },
             })}
             tabBarOptions={{
-                activeTintColor: '#c10000',
+                activeTintColor: 'white',
+                activeBackgroundColor: '#c10000',
                 inactiveTintColor: 'white',
-                elevation: 20
             }}
         >
-            <Tab.Screen name="Home" component={HomeStackScreen} options={{ title: 'Home'}} />
+            <Tab.Screen name="Home" component={HomeStackScreen} options={{ title: 'Home' }} />
             <Tab.Screen name="Transfer" component={TransferStackScreen} options={{ title: 'Transfer' }} />
             <Tab.Screen name="Payment" component={PaymentStackScreen} options={{ title: 'Payment' }} />
             <Tab.Screen name="Account" component={AccountStackScreen} options={{ title: 'Account' }} />

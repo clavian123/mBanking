@@ -1,15 +1,15 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 
-import { 
+import {
     syncStorageBegin,
-    syncStorageSuccess, 
-    storageEmpty, 
-    postClientLoginBegin, 
-    postValidateClientLogin, 
-    loginSuccess, 
-    postClientLoginFailure, 
-    logout 
+    syncStorageSuccess,
+    storageEmpty,
+    postClientLoginBegin,
+    postValidateClientLogin,
+    loginSuccess,
+    postClientLoginFailure,
+    logout
 } from './loginAction';
 import { syncLoginToStorage, syncLogoutToStorage } from '../../Auth'
 
@@ -21,7 +21,7 @@ export function handleSyncStorage() {
     return async dispatch => {
         dispatch(syncStorageBegin());
         var accNumber = await AsyncStorage.getItem(CLIENT_ACC_NUMBER);
-        var pin = await AsyncStorage.getItem(CLIENT_PIN);       
+        var pin = await AsyncStorage.getItem(CLIENT_PIN);
         var accName = await AsyncStorage.getItem(CLIENT_ACC_NAME);
         if (accNumber != null && pin != null) {
             dispatch(syncStorageSuccess(accNumber, pin, accName));
@@ -41,7 +41,7 @@ export function handleLogin(accNumber, pin) {
         dispatch(postClientLoginBegin());
         return axios.post(address, clientLogin).then(
             (res) => {
-                if (res.data!="") {
+                if (res.data != "") {
                     dispatch(postValidateClientLogin(true));
                     console.log(res.data)
                     dispatch(loginSuccess(accNumber, pin, res.data));
@@ -53,7 +53,7 @@ export function handleLogin(accNumber, pin) {
             }, (error) => {
                 console.log(error);
                 dispatch(postClientLoginFailure(error));
-            }   
+            }
         )
     }
 };

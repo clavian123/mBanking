@@ -31,7 +31,7 @@ export default class RequestOTP extends Component {
             <TouchableOpacity activeOpacity={1} disabled={true} style={styles.container}>
                 <View style={[styles.modal, { width: this.state.width - 80 }]}>
                     <View style={styles.textView}>
-                        <Text style={[styles.text, { fontSize: 20 }]}>Authentication</Text>
+                        <Text style={[styles.text, { fontSize: 20, fontWeight: 'bold' }]}>Authentication</Text>
                         <Text style={styles.text}>We have sent your OTP Token through notification. Please Input your OTP Token:</Text>
                         <TextInput
                             placeholder="OTP Token"
@@ -43,30 +43,30 @@ export default class RequestOTP extends Component {
                         />
                     </View>
                     <View style={styles.buttonView}>
-                        <TouchableHighlight
+                        <TouchableOpacity
                             onPress={() => this.props.otpNotification()}
                             style={[styles.touchableHighlight, {paddingVertical: 3}]}
                             >
                             <Text style={[styles.text, { color: 'blue' }]}>Resend OTP Token</Text>
-                        </TouchableHighlight>
+                        </TouchableOpacity>
                     </View>
                     <View style={{...styles.buttonView, borderTopWidth: 1}}>
                         <View style={{...styles.buttonView2, borderRightWidth: 1}}>
-                        <TouchableHighlight
+                        <TouchableOpacity
                             onPress={() => this.closeModal()}
                             style={styles.touchableHighlight}
                         >
-                            <Text style={[styles.text, { color: 'black' }]}>Cancel</Text>
-                        </TouchableHighlight>
+                            <Text style={[styles.text, { color: '#c10000' }]}>Cancel</Text>
+                        </TouchableOpacity>
                         </View>
                         <View style={styles.buttonView2}>
-                        <TouchableHighlight
+                        <TouchableOpacity
                             onPress={() => this.props.validateOTP(this.state.token)}
                             style={styles.touchableHighlight}
                             underlayColor={'#f1f1f1'}
                         >
-                            <Text style={[styles.text, { color: 'green' }]}>OK</Text>
-                        </TouchableHighlight>
+                            <Text style={[styles.text, { color: '#c10000', fontWeight: 'bold' }]}>OK</Text>
+                        </TouchableOpacity>
                         </View>
                     </View>
                 </View>
@@ -98,7 +98,6 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
         fontSize: 16,
-        fontWeight: 'bold',
         textAlign: 'justify'
     },
     textInput: {

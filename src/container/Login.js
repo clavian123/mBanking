@@ -124,9 +124,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   textLogin: {
-    fontSize: 16,
-    textAlign: 'center',
-    color: '#ffffff',
+    fontSize: 17,
+    fontWeight: '500',
+    color: 'white',
+    textAlign: 'center'
   },
   textSignUpLabel: {
     fontSize: 16,
@@ -136,11 +137,11 @@ const styles = StyleSheet.create({
     color: 'rgb(0,0,255)',
   },
   buttonLogin: {
-    borderRadius: 10,
-    backgroundColor: '#1c313a',
-    width: 300,
-    paddingVertical: 15,
+    backgroundColor: '#c10000',
     marginVertical: 10,
+    borderRadius: 10,
+    paddingVertical: 16,
+    width: 300,
   }
 });
 

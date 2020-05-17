@@ -46,16 +46,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   button: {
-    backgroundColor: '#1c313a',
+    backgroundColor: '#c10000',
     marginVertical: 10,
     borderRadius: 10,
     paddingVertical: 16,
     width: 300,
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '500',
     color: 'white',
-    textAlign: 'center',
-  },
+    textAlign: 'center'
+  }
 });

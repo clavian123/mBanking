@@ -143,7 +143,7 @@ class TransferToAnotherAccount extends React.Component {
       >
         <View style={styles.subContainer}>
           <Text style={styles.textLabel}>Destination Account:</Text>
-          <TouchableHighlight
+          <TouchableOpacity
             onPress={() => this.handleChooseAccount()}
             style={styles.buttonDestinationAccount}
           >
@@ -153,7 +153,7 @@ class TransferToAnotherAccount extends React.Component {
               style={[styles.textInput, { color: 'black' }]}
               value={name !== undefined ? name.toUpperCase() + ' - ' + number : null}
             />
-          </TouchableHighlight>
+          </TouchableOpacity>
         </View>
         <View style={styles.subContainer}>
           <Text style={styles.textLabel}>Total Amount (IDR):</Text>
@@ -177,7 +177,7 @@ class TransferToAnotherAccount extends React.Component {
           </TextInput>
         </View>
         <View style={styles.subContainer}>
-          <TouchableHighlight
+          <TouchableOpacity
             style={styles.button}
             onPress={() => this.handleConfirmTransfer()}
           >
@@ -186,7 +186,7 @@ class TransferToAnotherAccount extends React.Component {
             >
               Transfer
             </Text>
-          </TouchableHighlight>
+          </TouchableOpacity>
         </View>
         {/* <Modal
           visible={this.state.isRequestPINVisible}

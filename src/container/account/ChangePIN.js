@@ -56,15 +56,16 @@ const styles = StyleSheet.create({
         width: 250,
     },
     buttonText: {
-        fontSize: 16,
+        fontSize: 17,
         fontWeight: '500',
-        color: '#ffffff',
-        textAlign: 'center',
+        color: 'white',
+        textAlign: 'center'
     },
     button: {
-        backgroundColor: '#1c313a',
+        backgroundColor: '#c10000',
+        marginVertical: 10,
         borderRadius: 10,
         paddingVertical: 16,
-        width: 250,
+        width: 300,
     },
 });
