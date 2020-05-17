@@ -38,14 +38,40 @@ class TransferToAnotherAccount extends React.Component {
     const { navigation, route, accNumber } = this.props;
     const { amount, description } = this.state;
     var accNumberDest = route.params?.number;
-    navigation.navigate('ConfirmTransfer',{
-      accNumber: accNumber,
-      amount:amount,
-      note: description,
-      accNumberDest: accNumberDest,
-      accNameDest: route.params.name,
-      type: 'Regular Transfer',
-    })
+    var name = route.params?.name;
+    if(name === undefined){
+      Alert.alert(
+        'Failed',
+        'Destination Account Required. Please choose your destination account',
+          [
+             {
+               text: 'OK',
+               style: 'cancel',
+             }
+           ]
+      )
+    }else if(amount === ''){
+      Alert.alert(
+        'Failed',
+        'Amount Required. Please fill the amount input',
+          [
+             {
+               text: 'OK',
+               style: 'cancel',
+             }
+           ]
+      )
+    }
+    else{
+      navigation.navigate('ConfirmTransfer',{
+        accNumber: accNumber,
+        amount:amount,
+        note: description,
+        accNumberDest: accNumberDest,
+        accNameDest: route.params.name,
+        type: 'Regular Transfer',
+      })
+    }
   }
 
   componentDidMount() {
