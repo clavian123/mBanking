@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     alignContent: "center",
     alignItems: "center",
+    backgroundColor: '#dedede'
   },
   button: {
     backgroundColor: '#c10000',

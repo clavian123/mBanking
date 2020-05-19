@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     alignContent: "center",
     alignItems: "center",
+    backgroundColor: '#dedede'
   },
   buttonText: {
     fontSize: 17,
