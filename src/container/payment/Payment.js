@@ -68,13 +68,14 @@ export default class Payment extends React.Component {
               <View style={styles.viewTransactionList}>
                 {
                   transactions && transactions.length > 0 ? (
-                    transactions.map(transaction =>
-                      <TouchableOpacity style={styles.buttonTransaction}>
-                        <Text style={{ flex: 1 }}>{transaction.description}</Text>
-                        <Text style={{ color: 'grey', fontSize: 12 }}>{transaction.transactionType}</Text>
-                        <Image source={require('../../../assets/icon-next.png')} style={styles.iconNext}/>
-                      </TouchableOpacity>
-                    )
+                    transactions
+                      .map(transaction =>
+                        <TouchableOpacity style={styles.buttonTransaction}>
+                          <Text style={{ flex: 1 }}>{transaction.description}</Text>
+                          <Text style={{ color: 'grey', fontSize: 12 }}>{transaction.transactionType}</Text>
+                          <Image source={require('../../../assets/icon-next.png')} style={styles.iconNext} />
+                        </TouchableOpacity>
+                      )
                   ) : (
                       <Text style={{ color: 'grey' }}>Nothing to show</Text>
                     )
