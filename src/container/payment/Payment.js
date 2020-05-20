@@ -93,10 +93,11 @@ const styles = StyleSheet.create({
   },
   buttonTransaction: {
     alignItems: 'center',
-    flexDirection: 'row',
     borderBottomWidth: 1,
     borderColor: 'lightgrey',
-    padding: 10
+    flexDirection: 'row',
+    paddingLeft: 5,
+    paddingVertical: 10
   },
   container: {
     backgroundColor: 'white',
