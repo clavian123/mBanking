@@ -15,13 +15,9 @@ export default class Payment extends React.Component {
     super(props);
     this.state = {
       transactions: [
-        // { id: 1, description: "089628650630", transactionType: "OVO" }
+        { id: 1, description: "089628650630", transactionType: "OVO" }
       ]
     };
-  }
-
-  handleMenuClicked = (navigateTo) => {
-    this.props.navigation.navigate(navigateTo);
   }
 
   render() {
@@ -30,7 +26,7 @@ export default class Payment extends React.Component {
       <View style={styles.container}>
         <ScrollView>
           <View style={styles.viewScrollView}>
-            <View style={styles.viewPayTopUp}>
+            <View>
               <Text style={{
                 fontSize: 16,
                 fontWeight: 'bold',
@@ -59,7 +55,7 @@ export default class Payment extends React.Component {
               <Text style={{ color: 'grey', fontSize: 12, paddingHorizontal: 15 }}>OR</Text>
               <View style={styles.viewLine} />
             </View>
-            <View style={styles.viewPreviousTransactions}>
+            <View>
               <Text style={{ fontSize: 16, marginBottom: 10 }}>Find from Previous Transactions</Text>
               <View style={styles.viewTextInput}>
                 <TextInput placeholder="Biller name/subscriber number" style={styles.textInput} />
@@ -138,13 +134,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginVertical: 30
   },
-  viewPayTopUp: {},
   viewPayTopUpList: {
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap'
   },
-  viewPreviousTransactions: {},
   viewScrollView: {
     padding: 20
   },
