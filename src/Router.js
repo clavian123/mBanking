@@ -42,7 +42,7 @@ function HomeStackScreen() {
             initialRouteName="Home"
             screenOptions={{
                 headerStyle: {
-                    backgroundColor: 'white',
+                    backgroundColor: '#c10000',
                     // elevation: 10
                 },
                 headerTintColor: 'white'
