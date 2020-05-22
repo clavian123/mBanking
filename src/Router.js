@@ -43,7 +43,7 @@ function HomeStackScreen() {
             screenOptions={{
                 headerStyle: {
                     backgroundColor: '#c10000',
-                    elevation: 10
+                    // elevation: 10
                 },
                 headerTintColor: 'white'
             }}
