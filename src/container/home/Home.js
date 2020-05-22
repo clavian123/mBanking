@@ -110,7 +110,7 @@ class Home extends React.Component {
   render() {
 
     const { balance, accNumber, statements, loading } = this.props
-    console.log("ini pas render " + this.props.accNumber);
+    // console.log("ini pas render " + this.props.accNumber);
 
     if (loading) {
       return <Loading />;

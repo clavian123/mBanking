@@ -293,6 +293,7 @@ function HomeTabScreen() {
                 activeTintColor: 'white',
                 activeBackgroundColor: '#c10000',
                 inactiveTintColor: 'white',
+                keyboardHidesTabBar: true
             }}
         >
             <Tab.Screen name="Home" component={HomeStackScreen} options={{ title: 'Home' }} />
