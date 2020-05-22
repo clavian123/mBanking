@@ -35,10 +35,6 @@ PushNotification.configure({
     requestPermissions: Platform.OS === 'ios'
 });
 
-const otpNotification = () => {
-    
-}
-
 export function checkClientDestination(accNumber, navigate) {
     let req = {
         accNumber: accNumber

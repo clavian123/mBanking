@@ -24,34 +24,40 @@ class StatementList extends React.Component {
             return (
                 <Text>You don't have any statements.</Text>
             );
-        };
+        }else{
+            return (
+                <ScrollView style={styles.list}>
+                    {
+                        statements.map(statement =>
+                            <View style={styles.container} key={statement.idHistory}>
+                                <View style={styles.viewSubLeft}>
+                                    <Text style={styles.textDate}>{moment(statement.date).format('DD/MM/YY')}</Text>
+                                    <Text style={styles.textTitle}>{(statement.title).toUpperCase()}</Text>
+                                    <Text style={styles.textNote}>{statement.note}</Text>
+                                </View>
+                                <View style={styles.viewSubRight}>
+                                    <Text
+                                        style={[styles.textAmount, { color: statement.amount > 0 ? 'green' : 'red' }]}
+                                    >
+                                        Rp {numberWithCommas(statement.amount > 0 ? statement.amount*1 : statement.amount*-1)}</Text>
+                                    <Text style={styles.textType}>{statement.amount > 0 ? 'CR' : 'DB'}</Text>
+                                </View>
+                            </View>
+                        )
+                    }
+                </ScrollView>
+            )
+        }
 
-        return (
-            <ScrollView>
-                {
-                    statements.map(statement =>
-                        <View style={styles.container} key={statement.idHistory}>
-                            <View style={styles.viewSubLeft}>
-                                <Text style={styles.textDate}>{moment(statement.date).format('DD/MM/YY')}</Text>
-                                <Text style={styles.textTitle}>{(statement.title).toUpperCase()}</Text>
-                                <Text style={styles.textNote}>{statement.note}</Text>
-                            </View>
-                            <View style={styles.viewSubRight}>
-                                <Text
-                                    style={[styles.textAmount, { color: statement.amount > 0 ? 'green' : 'red' }]}
-                                >
-                                    Rp {numberWithCommas(statement.amount > 0 ? statement.amount*1 : statement.amount*-1)}</Text>
-                                <Text style={styles.textType}>{statement.amount > 0 ? 'DB' : 'CR'}</Text>
-                            </View>
-                        </View>
-                    )
-                }
-            </ScrollView>
-        )
+        
     }
 }
 
 const styles = StyleSheet.create({
+    // list: {
+    //     height: '100%'
+    // },
+
     container: {
         flexDirection: 'row',
         borderBottomWidth: 1,
