@@ -16,17 +16,17 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      accNumber: '',
-      pin: '',
+      username: '',
+      password: '',
     }
   }
 
   handleLogin = () => {
-    const { accNumber, pin } = this.state;
-    if (accNumber == '' || pin == '') {
-      alert("Please fill your account number and PIN!");
+    const { username, password } = this.state;
+    if (username == '' || password == '') {
+      alert("Please fill your Email and Password!");
     } else {
-      this.props.dispatch(handleLogin(accNumber, pin));
+      this.props.dispatch(handleLogin(username, password));
     }
   }
 
@@ -42,19 +42,19 @@ class Login extends Component {
         </View>
         <View style={styles.viewInput}>
           <TextInput
-            value={this.state.accNumber}
-            onChangeText={(accNumber) => this.setState({ accNumber: accNumber })}
-            placeholder="Account Number"
+            value={this.state.username}
+            onChangeText={(username) => this.setState({ username: username })}
+            placeholder="Username"
             style={styles.textInput}
-            keyboardType="number-pad"
+            keyboardType="email-address"
+            
           ></TextInput>
           <TextInput
-            value={this.state.pin}
-            onChangeText={(pin) => this.setState({ pin: pin })}
-            placeholder="PIN"
+            value={this.state.password}
+            onChangeText={(password) => this.setState({ password: password })}
+            placeholder="Password"
             style={styles.textInput}
             secureTextEntry={true}
-            keyboardType="number-pad"
           >
           </TextInput>
           <TouchableOpacity
@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flex: 1,
     fontWeight: '500',
+    // backgroundColor: '#dddddd',
   },
   viewLogo: {
     alignItems: "center",
@@ -97,6 +98,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: "center",
+    // backgroundColor:'red'
   },
   viewSignUp: {
     flexGrow: 1,
@@ -114,6 +116,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginVertical: 10,
     fontSize: 16,
+    // backgroundColor: "#eeeeee",
+    // elevation: 10,
   },
   imageLogo: {
     width: 130,
@@ -140,8 +144,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#c10000',
     marginVertical: 10,
     borderRadius: 10,
+    // borderBottomLeftRadius: 15,
+    // borderBottomRightRadius: 15,
     paddingVertical: 16,
     width: 300,
+    // elevation: 10,
   }
 });
 

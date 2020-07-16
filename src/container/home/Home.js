@@ -9,13 +9,20 @@ import {
   LayoutAnimation,
   UIManager,
   View,
+  ScrollView,
+  Dimensions,
+  RefreshControl
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon } from 'react-native-elements'
+import { Icon } from 'react-native-elements';
+import { ScrollableTabView, DefaultTabBar, ScrollableTabBar, } from '@valdio/react-native-scrollable-tabview'
 
-import {numberWithCommas} from '../../generalFunction'
-import RequestPIN from '../../component/RequestPIN'
-import { getBalance } from '../../action/home/homeFunction'
+import { numberWithCommas } from '../../generalFunction';
+import { getBalance } from '../../action/home/homeFunction';
+import AccountCard from '../../component/AccountCard';
+import { getStatements } from '../../action/home/homeFunction';
+import Loading from '../../Loading';
+
 
 class Home extends React.Component {
 
@@ -26,7 +33,9 @@ class Home extends React.Component {
     this.state = {
       navigationFocus: '',
       isRequestPINVisible: false,
-      isDetailVisible: false
+      isDetailVisible: false,
+      isStatementVisible: false,
+      statements: [],
     };
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -35,22 +44,13 @@ class Home extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    this.props.dispatch(getBalance(this.props.accNumber));
+    const { customerId } = this.props
+    this.props.dispatch(getBalance(customerId));
+    this.props.dispatch(getStatements(customerId));
   }
 
   componentWillUnmount() {
     this._isMounted = false
-  }
-
-  changeRequestPINVisibility = (bool) => {
-    if (this._isMounted) {
-      this.setState({ isRequestPINVisible: bool });
-    }
-  }
-
-  handleMenuClicked = (navigateTo) => {
-    this.setState({ navigationFocus: navigateTo });
-    this.changeRequestPINVisibility(true);
   }
 
   handleDetailClicked = () => {
@@ -60,79 +60,91 @@ class Home extends React.Component {
     })
   }
 
-  navigateTo = (screen) => {
-    const {navigate} = this.props.navigation;
-    navigate(screen);
+  handleStatementClicked = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    this.setState({
+      isStatementVisible: !this.state.isStatementVisible,
+    })
   }
 
-  validatePIN = (pin) => {
-    if (pin != this.props.pin) {
-      Alert.alert(
-        'Failed',
-        'Your PIN is wrong. Please try again.',
-        [
-          {
-            text: 'OK',
-            style: 'cancel',
-          }
-        ]
-      )
-    } else {
-      this.changeRequestPINVisibility(false);
-      this.navigateTo(this.state.navigationFocus);
-    }
+  countTotalBalance = (balance) => {
+    var balanceNumber = 0;
+    balance.map(balance => balanceNumber += Number(balance.balance))
+    return balanceNumber;
   }
 
   render() {
-    const { balance } = this.props
 
+    const { balance, loading, name } = this.props
+
+    if (loading) {
+      return <Loading />;
+    }
     return (
-      <View style={{...styles.container, backgroundColor: this.state.isRequestPINVisible ? 'rgba(0,0,0,0.8)' : '#dedede'}}>
-        <View style={{...styles.greetingsContainer, height: this.state.isDetailVisible ? 220 : 100}}>
-          <Text style={styles.greetingsText}> Hi, Mr. {this.props.accName}</Text>
-          <View style={{...styles.detailContainer, height: this.state.isDetailVisible ? 120 : 0, opacity: this.state.isDetailVisible ? 1 : 0}}>
-            <View style={styles.detailTextContainer}>
-              <Text>Savings</Text><Text>{balance ? "Rp " + numberWithCommas(balance) : "Not Available"}</Text>
+      <View style={{
+        flex: 1,
+        height: Dimensions.get("window").height,
+        backgroundColor: '#dedede'
+      }}>
+
+        {/* HEADER */}
+        <ScrollView contentContainerStyle={styles.container}>
+          <View style={{
+            ...styles.greetingsContainer,
+            height: this.state.isDetailVisible ? 220 : 100
+          }}>
+            <Text style={styles.greetingsText}> Hi, Mr. {name}</Text>
+            <View style={{
+              ...styles.detailContainer,
+              height: this.state.isDetailVisible ? 120 : 0,
+              opacity: this.state.isDetailVisible ? 1 : 0
+            }}>
+              <View style={styles.detailTextContainer}>
+                <Text>Savings</Text>
+                <Text>{balance ? "Rp " + numberWithCommas( this.countTotalBalance(balance ? balance : [])) : "Not Available"}</Text>
+              </View>
+              <View style={styles.detailTextContainer}>
+                <Text>Current</Text>
+                <Text>Rp 0</Text>
+              </View>
+              <View style={styles.detailTextContainer}>
+                <Text>Time Deposit</Text>
+                <Text>Rp 0</Text>
+              </View>
             </View>
-            <View style={styles.detailTextContainer}>
-              <Text>Current</Text><Text>Rp 0</Text>
-            </View>
-            <View style={styles.detailTextContainer}>
-              <Text>Time Deposit</Text><Text>Rp 0</Text>
-            </View>
+            <TouchableOpacity style={styles.dropButton} onPress={this.handleDetailClicked}>
+              <Icon 
+              name={this.state.isDetailVisible ? "arrow-up" : "arrow-down"} 
+              type="simple-line-icon" 
+              iconStyle={styles.dropIcon}></Icon>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.dropButton} onPress={this.handleDetailClicked}>
-            <Icon name= {this.state.isDetailVisible ? "arrow-up" : "arrow-down"} type="simple-line-icon" iconStyle={styles.dropIcon}></Icon>
-          </TouchableOpacity>
-        </View>
-        {/* <TouchableOpacity
-          style={styles.button}
-          onPress={() => this.handleMenuClicked("BalanceInquiry")}
-        >
-          <Text style={styles.buttonText}>Balance Inquiry</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => this.handleMenuClicked("AccountStatementPickDate")}
-        >
-          <Text style={styles.buttonText}>Account Statement</Text>
-        </TouchableOpacity>
-        <Modal
-          visible={this.state.isRequestPINVisible}
-          transparent={true}
-          onRequestClose={() => this.changeRequestPINVisibility(false)}>
-          <TouchableOpacity
-            style={styles.container}
-            activeOpacity={1}
-            onPressOut={() => { this.changeRequestPINVisibility(false) }}>
-            <TouchableWithoutFeedback>
-              <RequestPIN
-                changeRequestPINVisibility={this.changeRequestPINVisibility}
-                validatePIN={this.validatePIN}
-              />
-            </TouchableWithoutFeedback>
-          </TouchableOpacity>
-        </Modal> */}
+          
+          {/* ACCOUNT AND BALANCE LIST */}
+          <ScrollableTabView
+            style={{...styles.accountTabBar, height: "100%"}}
+            renderTabBar={() => <ScrollableTabBar />}
+            showsHorizontalScrollIndicator={false}
+            tabBarActiveTextColor="black"
+            tabBarInactiveTextColor="#888888"
+            tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
+          >
+            {
+              balance ?
+                balance.map(balance =>
+                    <AccountCard 
+                    tabLabel={balance.accountNumber} 
+                    accNumber={balance.accountNumber} 
+                    balance={balance.balance} 
+                    key={balance.accountNumber} 
+                    callback={this.handleStatementClicked} />
+                )
+                :
+                <AccountCard tabLabel="Account 1" accNumber= "0000000" ></AccountCard>
+            }
+            
+          </ScrollableTabView>
+        </ScrollView>
       </View>
     );
   }
@@ -141,13 +153,9 @@ class Home extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: "100%",
-    // justifyContent: "center",
     alignSelf: "center",
     alignContent: "center",
     alignItems: "center",
-    flex: 1,
-    // backgroundColor:'#dedede'
   },
   buttonText: {
     fontSize: 17,
@@ -164,24 +172,24 @@ const styles = StyleSheet.create({
     width: 300,
   },
 
-  dropButton:{
+  dropButton: {
     width: 300,
     height: 30,
     justifyContent: 'center',
     marginVertical: 0,
+    alignSelf: 'center'
   },
 
   greetingsContainer: {
-    flex : 0,
-    width: 350,
-    height : 100,
+    flex: 0,
+    width: 360,
+    height: 100,
     backgroundColor: 'white',
-    // alignContent: 'center',
     alignItems: 'center',
-    justifyContent:'space-evenly',
+    justifyContent: 'space-evenly',
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
-    elevation: 3
+    elevation: 5
   },
 
   greetingsText: {
@@ -197,34 +205,72 @@ const styles = StyleSheet.create({
   detailContainer: {
     alignItems: 'stretch',
     width: 300,
-    // backgroundColor: '#c10000',
     marginBottom: 0
 
   },
 
-  detailTextContainer:{
+  detailTextContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: 300,
-    // height: 30,
     borderBottomWidth: 1,
     borderColor: '#dedede',
-    // marginVertical: 0,
     margin: 0,
     paddingVertical: 10
   },
-  // detailText: {
-  //   width: 300,
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-around'
-  // }
+
+  accountTabBar: {
+    width: 360,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    elevation: 5,
+    borderRadius: 15,
+    paddingBottom: 15,
+    marginTop: 10,
+    marginBottom: 10, 
+    overflow: 'visible'
+  },
+
+  tabBarUnderlineStyle: {
+    backgroundColor: '#c10000',
+    margin: 0,
+    padding: 0
+  },
+
+  statementHeader: {
+    width: '100%',
+    fontWeight: 'bold',
+    fontSize: 15,
+    textAlign: 'center'
+  },
+
+  statementContainer: {
+    width: 360,
+    backgroundColor: 'white',
+    elevation: 5,
+    marginBottom: 10,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    paddingTop: 10,
+    justifyContent: 'center'
+  },
+
+  statementListHeader: {
+    height: '10%',
+    width: '100%',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    fontWeight: 'bold',
+    fontSize: 15
+  }
 });
 
 const mapStateToProps = state => ({
-  pin: state.login.pin,
-  accName: state.login.accName,
   balance: state.home.balance,
-  accNumber: state.login.accNumber
+  statements: state.home.statements,
+  loading: state.home.loading,
+  name: state.login.name,
+  customerId: state.login.customerId,
 })
 
 export default connect(mapStateToProps)(Home);

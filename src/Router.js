@@ -18,11 +18,10 @@ import AccountStatementPickDateScreen from './container/home/AccountStatementPic
 import AccountStatementDetail from './container/home/AccountStatementDetail';
 
 import TransferScreen from './container/transfer/Transfer';
-import ConfirmTransferScreen from './container/transfer/ConfirmTransfer';
-import RegisterDestinationAccountScreen from './container/transfer/RegisterDestinationAccount';
-import ConfirmRegisterDestinationScreen from './container/transfer/ConfirmRegisterDestination';
-import TransferToAnotherAccountScreen from './container/transfer/TransferToAnotherAccount';
-import ChooseDestinationAccountScreen from './container/transfer/ChooseDestinationAccount';
+import SelectPayeeScreen from './container/transfer/SelectPayee';
+import SelectBankScreen from './container/transfer/SelectBank';
+import SetAmountScreen from './container/transfer/SetAmount';
+import SelectSourceScreen from './container/transfer/SelectSourceAccount';
 
 import PaymentScreen from './container/payment/Payment';
 import CreditCardScreen from './container/payment/CreditCard';
@@ -42,7 +41,7 @@ function HomeStackScreen() {
             initialRouteName="Home"
             screenOptions={{
                 headerStyle: {
-                    backgroundColor: 'white',
+                    backgroundColor: '#c10000',
                     // elevation: 10
                 },
                 headerTintColor: 'white'
@@ -94,59 +93,52 @@ function TransferStackScreen() {
             >
             </Stack.Screen>
             <Stack.Screen
-                name="RegisterDestinationAccount"
-                component={RegisterDestinationAccountScreen}
+                name="SelectPayee"
+                component={SelectPayeeScreen}
                 options={{
-                    title: 'Register Account',
+                    title: 'Select Payee',
                     headerStyle: {
-                        backgroundColor: '#c10000'
-                    },
-                    headerTintColor: '#fff',
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="ConfirmRegisterDestination"
-                component={ConfirmRegisterDestinationScreen}
-                options={{
-                    title: 'Confirmation',
-                    headerStyle: {
-                        backgroundColor: '#c10000'
-                    },
-                    headerTintColor: '#fff',
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="TransferToAnotherAccount"
-                component={TransferToAnotherAccountScreen}
-                options={{
-                    title: 'Transfer',
-                    headerStyle: {
-                        backgroundColor: '#c10000'
-                    },
-                    headerTintColor: '#fff',
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="ChooseDestinationAccount"
-                component={ChooseDestinationAccountScreen}
-                options={{ headerShown: false }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="ConfirmTransfer"
-                component={ConfirmTransferScreen}
-                options={{
-                    title: 'Confirm Transfer',
-                    headerStyle: {
-                        backgroundColor: '#c10000'
+                        backgroundColor: '#C10000'
                     },
                     headerTintColor: '#fff'
                 }}
             >
             </Stack.Screen>
+            <Stack.Screen
+                name="SelectBank"
+                component={SelectBankScreen}
+                options={{
+                    title: 'Select Bank',
+                    headerStyle: {
+                        backgroundColor: '#C10000'
+                    },
+                    headerTintColor: '#fff'
+                }}
+            >
+            </Stack.Screen>
+            <Stack.Screen
+                name="SetAmount"
+                component={SetAmountScreen}
+                options={{
+                    title: 'Transfer',
+                    headerStyle: {
+                        backgroundColor: '#C10000'
+                    },
+                    headerTintColor: '#fff'
+                }}
+            >
+            </Stack.Screen>
+            <Stack.Screen
+                name="SelectSource"
+                component={SelectSourceScreen}
+                options={{
+                    title: 'Transfer',
+                    headerStyle: {
+                        backgroundColor: '#C10000'
+                    },
+                    headerTintColor: '#fff'
+                }}
+            ></Stack.Screen>
         </Stack.Navigator>
     );
 }
@@ -293,6 +285,7 @@ function HomeTabScreen() {
                 activeTintColor: 'white',
                 activeBackgroundColor: '#c10000',
                 inactiveTintColor: 'white',
+                keyboardHidesTabBar: true
             }}
         >
             <Tab.Screen name="Home" component={HomeStackScreen} options={{ title: 'Home' }} />
