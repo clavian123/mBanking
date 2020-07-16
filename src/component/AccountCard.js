@@ -1,11 +1,8 @@
 import React from 'react';
 import {
-    Alert,
-    Modal,
     StyleSheet,
     Text,
     TouchableOpacity,
-    TouchableWithoutFeedback,
     LayoutAnimation,
     UIManager,
     View,
@@ -14,6 +11,7 @@ import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements'
 
 import { numberWithCommas } from '../generalFunction'
+import StatementList from '../component/StatementList';
 
 class AccountCard extends React.Component {
 
@@ -22,13 +20,15 @@ class AccountCard extends React.Component {
         super(props);
         this.state = {
             navigationFocus: '',
-            isBalanceVisible: true
+            isBalanceVisible: true,
+            isStatementVisible: false,
+            statements: [],
         };
     }
 
     componentDidMount() {
         this._isMounted = true;
-        // this.props.dispatch(getBalance(this.props.accNumber));
+        this.getStatements()
     }
 
     handleBalanceVisible = () => {
@@ -37,8 +37,28 @@ class AccountCard extends React.Component {
         })
     }
 
+    handleStatementClicked = () => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        this.state.statements.reverse().slice(0, 5)
+        this.setState({
+            isStatementVisible: !this.state.isStatementVisible,
+        })
+        this.props.callback
+    }
+
+    getStatements = () => {
+        var statements = this.props.statements ? this.props.statements.filter((item) => item.accountNumber == this.props.accNumber) : this.state.statements
+        if (statements.length != 0) {
+            statements[0].statements.forEach(item => {
+                this.setState(previous => ({
+                    statements: [...previous.statements, item]
+                }))
+            })            
+        }
+    }
+
     render() {
-        const { balance } = this.props
+        var statements = this.state.statements
 
         return (
             <View style={styles.container}>
@@ -47,13 +67,26 @@ class AccountCard extends React.Component {
                         <Text style={styles.headerText}>Tabunganku</Text>
                         <Icon name={this.state.isBalanceVisible ? "eye" : "eye-slash"} type="font-awesome" iconStyle={styles.headerIcon} onPress={this.handleBalanceVisible} underlayColor="#d63447"></Icon>
                     </View>
-                    <Text style={styles.balanceText}>IDR {this.state.isBalanceVisible ? balance ? numberWithCommas(balance) : "--" : "--"}</Text>
+                    <Text style={styles.balanceText}>IDR {this.state.isBalanceVisible ? this.props.balance ? numberWithCommas(this.props.balance) : "--" : "--"}</Text>
                     <View style={styles.accNumberContainer}>
                         <Text style={styles.accNumberTitle}>Account Number: </Text>
                         <Text style={styles.accNumberValue}>{this.props.accNumber}</Text>
                     </View>
                     <Icon name="arrow-right" type="simple-line-icon" iconStyle={styles.statementIcon}></Icon>
                 </View>
+                <Text style={styles.statementHeader}> {this.state.isStatementVisible ? "Here are your last transactions" : "Tap to see last transactions"}</Text>
+
+                {/* STATEMENT LIST */}
+                <View style={{
+                    ...styles.statementContainer,
+                    height: this.state.isStatementVisible ? statements.length != 0 ? null : 0 : 0,
+                }}>
+                    <StatementList statements={statements} accNumber={this.props.accNumber} key={statements.posting_date}></StatementList>
+                </View>
+
+                <TouchableOpacity style={styles.dropButton} onPress={this.handleStatementClicked}>
+                    <Icon name={this.state.isStatementVisible ? "arrow-up" : "arrow-down"} type="simple-line-icon" iconStyle={styles.dropIcon}></Icon>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -61,27 +94,24 @@ class AccountCard extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 0,
         width: "100%",
         height: "100%",
-        justifyContent: "center",
-        alignSelf: "center",
-        alignContent: "center",
         alignItems: "center",
         backgroundColor: 'white',
-        // borderWidth: 1
+        borderBottomLeftRadius: 15,
+        borderBottomRightRadius: 15,
     },
     card: {
         backgroundColor: '#d63447',
         width: '80%',
-        height: '90%',
+        height: 180,
         borderRadius: 15,
-        elevation: 5
-
+        elevation: 5,
+        marginTop: 20
     },
     cardHeader: {
         flexDirection: 'row',
-        // backgroundColor: 'white',
         width: '90%',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -95,13 +125,11 @@ const styles = StyleSheet.create({
 
     headerIcon: {
         color: 'white',
-        
     },
 
     balanceText: {
         width: '90%',
         alignSelf: 'center',
-        // backgroundColor: 'white',
         fontSize: 25,
         marginVertical: 10,
         color: 'white'
@@ -124,20 +152,57 @@ const styles = StyleSheet.create({
     },
 
     statementIcon: {
-        flexDirection:'row',
-        // backgroundColor: 'white',
+        flexDirection: 'row',
         alignSelf: 'flex-end',
         fontSize: 18,
         marginHorizontal: 10,
         color: 'white'
-    }
+    },
+
+    statementHeader: {
+        width: '100%',
+        fontWeight: 'bold',
+        fontSize: 15,
+        textAlign: 'center',
+        marginVertical: 10
+    },
+
+    statementContainer: {
+        width: 360,
+        justifyContent: 'flex-start',
+        backgroundColor: 'white',
+    },
+
+    statementListHeader: {
+        height: '10%',
+        width: '100%',
+        textAlign: 'center',
+        textAlignVertical: 'center',
+        fontWeight: 'bold',
+        fontSize: 15
+    },
+
+    dropIcon: {
+        fontSize: 20,
+        color: '#c10000'
+    },
+
+    dropButton: {
+        width: 300,
+        height: 30,
+        justifyContent: 'center',
+        marginVertical: 0,
+        alignSelf: 'center',
+        backgroundColor: 'white',
+        marginBottom: 10
+    },
+
+    
 })
 
 const mapStateToProps = state => ({
-    pin: state.login.pin,
-    accName: state.login.accName,
-    balance: state.home.balance,
-    // accNumber: state.login.accNumber
+    statements: state.home.statements,
+    customerId: state.login.customerId,
 })
 
 export default connect(mapStateToProps)(AccountCard);
