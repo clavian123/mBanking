@@ -70,7 +70,7 @@ class Login extends Component {
           <Text style={styles.textSignUpLabel}>Don't have an account yet? </Text>
           <TouchableOpacity
             onPress={
-              () => this.props.navigation.navigate('Register')
+              () => this.props.navigation.navigate('InputPAN')
             }
           >
             <Text style={styles.textSignUp}>Sign Up</Text>

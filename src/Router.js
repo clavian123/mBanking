@@ -10,7 +10,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import LoginScreen from './container/Login';
-import RegisterScreen from './container/Register';
+
+import InputPAN from './container/register/InputPAN';
 
 import HomeScreen from './container/home/Home';
 import BalanceInquiryScreen from './container/home/BalanceInquiry';
@@ -34,6 +35,28 @@ import AboutUsScreen from './container/account/AboutUs';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+
+function RegisterStackScreen() {
+    return(
+        <Stack.Navigator
+            initialRouteName="InputPAN"
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: '#c10000',
+                    // elevation: 10
+                },
+                headerTintColor: 'white'
+            }}
+        >
+            <Stack.Screen
+                name="InputPAN"
+                component={InputPAN}
+                options={{headerShown:false}}
+            >
+            </Stack.Screen>
+        </Stack.Navigator>
+    );
+}
 
 function HomeStackScreen() {
     return (
@@ -312,7 +335,7 @@ class RootNavigator extends React.Component {
                     ) : (
                             <>
                                 <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
-                                <Stack.Screen name="Register" component={RegisterScreen} />
+                                <Stack.Screen options={{ title: " ", headerTintColor: "#c10000" }} name="InputPAN" component={RegisterStackScreen} />
                             </>
                         )}
                 </Stack.Navigator>
