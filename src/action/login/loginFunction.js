@@ -15,40 +15,42 @@ import { syncLoginToStorage, syncLogoutToStorage } from '../../Auth'
 
 const CLIENT_ACC_NUMBER = 'CLIENT_ACC_NUMBER'
 const CLIENT_PIN = 'CLIENT_PIN'
-const CLIENT_ACC_NAME = 'CLIENT_ACC_NAME'
+const NAME = 'NAME'
+const CUSTOMER_ID = 'CUSTOMER_ID'
 
 export function handleSyncStorage() {
     return async dispatch => {
         dispatch(syncStorageBegin());
-        var accNumber = await AsyncStorage.getItem(CLIENT_ACC_NUMBER);
-        var pin = await AsyncStorage.getItem(CLIENT_PIN);
-        var accName = await AsyncStorage.getItem(CLIENT_ACC_NAME);
-        if (accNumber != null && pin != null) {
-            dispatch(syncStorageSuccess(accNumber, pin, accName));
+        // var accNumber = await AsyncStorage.getItem(CLIENT_ACC_NUMBER);
+        // var pin = await AsyncStorage.getItem(CLIENT_PIN);
+        var name = await AsyncStorage.getItem(NAME);
+        var customerId = await AsyncStorage.getItem(CUSTOMER_ID);
+        if (name != null && customerId != null) {
+            dispatch(syncStorageSuccess(name, customerId));
         } else {
             dispatch(storageEmpty());
         }
     }
 };
 
-export function handleLogin(accNumber, pin) {
-    let clientLogin = {
-        accNumber: accNumber,
-        pin: pin
+export function handleLogin(username, password) {
+    let userLogin = {
+        username: username,
+        password: password,
     };
-    let address = "http://localhost:8080/validateLogin";
+    let address = "http://localhost:8080/login";
     return dispatch => {
         dispatch(postClientLoginBegin());
-        return axios.post(address, clientLogin).then(
+        return axios.post(address, userLogin).then(
             (res) => {
                 if (res.data != "") {
-                    dispatch(postValidateClientLogin(true));
                     console.log(res.data)
-                    dispatch(loginSuccess(accNumber, pin, res.data));
-                    syncLoginToStorage(accNumber, pin, res.data);
+                    dispatch(loginSuccess(res.data.name, res.data.customer.id));
+                    syncLoginToStorage(res.data.name, res.data.customer.id);
+                    dispatch(postValidateClientLogin(true));
                 } else {
-                    alert('Your account number or PIN is wrong!');
-                    dispatch(postClientLoginFailure('Your account number or PIN is wrong!'));
+                    alert('Your Username or Password is wrong!');
+                    dispatch(postClientLoginFailure('Your Username or Password is wrong!'));
                 }
             }, (error) => {
                 console.log(error);

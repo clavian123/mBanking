@@ -15,7 +15,8 @@ initialState = {
     pin: '',
     loading: false,
     error: null,
-    accName: '',
+    name: '',
+    customerId: '',
 };
 
 const login = (state = initialState, action) => {
@@ -27,6 +28,8 @@ const login = (state = initialState, action) => {
                 pin: '',
                 loading: true,
                 accName: '',
+                name: '',
+                customerId: ''
             };
 
         case SYNC_STORAGE_SUCCESS:
@@ -34,9 +37,11 @@ const login = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 isLogin: true,
-                accNumber: action.accNumber,
-                pin: action.pin,
-                accName: action.accName
+                // accNumber: action.accNumber,
+                // pin: action.pin,
+                // accName: action.accName
+                name: action.name,
+                customerId: action.customerId
             };
 
         case STORAGE_EMPTY: 
@@ -65,7 +70,8 @@ const login = (state = initialState, action) => {
                 ...state,
                 accNumber: action.accNumber,
                 pin: action.pin,
-                accName: action.accName
+                name: action.name,
+                customerId: action.customerId,
             };
 
         case POST_CLIENT_LOGIN_FAILURE:

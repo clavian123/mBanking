@@ -19,6 +19,7 @@ class StatementList extends React.Component {
         var moment = require('moment');
 
         const { statements } = this.props;
+        
 
         if (statements == []){
             return (
@@ -29,17 +30,17 @@ class StatementList extends React.Component {
                 <ScrollView style={styles.list}>
                     {
                         statements.map(statement =>
-                            <View style={styles.container} key={statement.idHistory}>
+                            <View style={styles.container} key={statement.id}>
                                 <View style={styles.viewSubLeft}>
-                                    <Text style={styles.textDate}>{moment(statement.date).format('DD/MM/YY')}</Text>
-                                    <Text style={styles.textTitle}>{(statement.title).toUpperCase()}</Text>
+                                    <Text style={styles.textDate}>{moment(statement.created_date).format('DD/MM/YY')}</Text>
+                                    <Text style={styles.textTitle}>{(statement.detail).toUpperCase()}</Text>
                                     <Text style={styles.textNote}>{statement.note}</Text>
                                 </View>
                                 <View style={styles.viewSubRight}>
                                     <Text
                                         style={[styles.textAmount, { color: statement.amount > 0 ? 'green' : 'red' }]}
                                     >
-                                        Rp {numberWithCommas(statement.amount > 0 ? statement.amount*1 : statement.amount*-1)}</Text>
+                                      {statement.amount > 0 ? null : "-"}  Rp {numberWithCommas(statement.amount > 0 ? statement.amount*1 : statement.amount*-1)}</Text>
                                     <Text style={styles.textType}>{statement.amount > 0 ? 'CR' : 'DB'}</Text>
                                 </View>
                             </View>
