@@ -16,7 +16,7 @@ import { syncLoginToStorage, syncLogoutToStorage } from '../../Auth'
 const CLIENT_ACC_NUMBER = 'CLIENT_ACC_NUMBER'
 const CLIENT_PIN = 'CLIENT_PIN'
 const NAME = 'NAME'
-const CUSTOMER_ID = 'CUSTOMER_ID'
+const CUSTOMER_CIF_CODE = 'CUSTOMER_CIF_CODE'
 
 export function handleSyncStorage() {
     return async dispatch => {
@@ -24,9 +24,9 @@ export function handleSyncStorage() {
         // var accNumber = await AsyncStorage.getItem(CLIENT_ACC_NUMBER);
         // var pin = await AsyncStorage.getItem(CLIENT_PIN);
         var name = await AsyncStorage.getItem(NAME);
-        var customerId = await AsyncStorage.getItem(CUSTOMER_ID);
-        if (name != null && customerId != null) {
-            dispatch(syncStorageSuccess(name, customerId));
+        var cif_code = await AsyncStorage.getItem(CUSTOMER_CIF_CODE);
+        if (name != null && cif_code != null) {
+            dispatch(syncStorageSuccess(name, cif_code));
         } else {
             dispatch(storageEmpty());
         }
@@ -44,9 +44,9 @@ export function handleLogin(username, password) {
         return axios.post(address, userLogin).then(
             (res) => {
                 if (res.data != "") {
-                    console.log(res.data)
-                    dispatch(loginSuccess(res.data.name, res.data.customer.id));
-                    syncLoginToStorage(res.data.name, res.data.customer.id);
+                    console.log(res.data.customer.cifCode)
+                    dispatch(loginSuccess(res.data.name, res.data.customer.cifCode));
+                    syncLoginToStorage(res.data.name, res.data.customer.cifCode);
                     dispatch(postValidateClientLogin(true));
                 } else {
                     alert('Your Username or Password is wrong!');

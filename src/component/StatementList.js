@@ -12,6 +12,9 @@ class StatementList extends React.Component {
 
     constructor(props) {
         super(props);
+        // this.state = {
+        //     statements: [],
+        // }
     }
 
     render() {
@@ -21,9 +24,9 @@ class StatementList extends React.Component {
         const { statements } = this.props;
         
 
-        if (statements == []){
+        if (statements.length == 0){
             return (
-                <Text>You don't have any statements.</Text>
+                <Text style={styles.emptyStatementText}>You don't have any statements.</Text>
             );
         }else{
             return (
@@ -42,6 +45,7 @@ class StatementList extends React.Component {
                                     >
                                       {statement.amount > 0 ? null : "-"}  Rp {numberWithCommas(statement.amount > 0 ? statement.amount*1 : statement.amount*-1)}</Text>
                                     <Text style={styles.textType}>{statement.amount > 0 ? 'CR' : 'DB'}</Text>
+                                    <Text style={styles.textDate}>{statement.transaction_type}</Text>
                                 </View>
                             </View>
                         )
@@ -92,6 +96,12 @@ const styles = StyleSheet.create({
         textAlign: 'right',
         color: 'blue',
         fontSize: 15,
+    },
+    emptyStatementText: {
+        backgroundColor: 'white',
+        textAlign: 'center',
+        width: '70%',
+        alignSelf: 'center'
     }
 })
 

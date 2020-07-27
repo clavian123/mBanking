@@ -29,7 +29,7 @@ const login = (state = initialState, action) => {
                 loading: true,
                 accName: '',
                 name: '',
-                customerId: ''
+                cif_code: ''
             };
 
         case SYNC_STORAGE_SUCCESS:
@@ -41,7 +41,7 @@ const login = (state = initialState, action) => {
                 // pin: action.pin,
                 // accName: action.accName
                 name: action.name,
-                customerId: action.customerId
+                cif_code: action.cif_code
             };
 
         case STORAGE_EMPTY: 
@@ -71,7 +71,7 @@ const login = (state = initialState, action) => {
                 accNumber: action.accNumber,
                 pin: action.pin,
                 name: action.name,
-                customerId: action.customerId,
+                cif_code: action.cif_code,
             };
 
         case POST_CLIENT_LOGIN_FAILURE:

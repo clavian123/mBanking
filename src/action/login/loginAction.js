@@ -32,10 +32,10 @@ export const postValidateClientLogin = (isLogin) => ({
     isLogin,
 })
 
-export const loginSuccess = (name, customerId) => ({
+export const loginSuccess = (name, cif_code) => ({
     type: LOGIN_SUCCESS,
     name,
-    customerId,
+    cif_code,
 })
 
 export const postClientLoginFailure = (error) => ({

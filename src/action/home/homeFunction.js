@@ -9,9 +9,9 @@ import {
     getAccountStatementFailure
 } from './homeAction';
 
-export function getBalance(customerId) {
+export function getBalance(cif_code) {
     let req = {
-        customer: customerId
+        cif_code: cif_code
     };
     let address = "http://localhost:8080/linkUnlinkAccount";
     return dispatch => {
@@ -27,9 +27,9 @@ export function getBalance(customerId) {
     }
 };
 
-export function getStatements(customerId) {
+export function getStatements(cif_code) {
     let req = {
-        customer: customerId,
+        cif_code: cif_code,
     };
     let address = "http://localhost:8080/getAllAccountStatementByCustomer";
     return dispatch => {

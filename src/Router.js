@@ -16,6 +16,7 @@ import HomeScreen from './container/home/Home';
 import BalanceInquiryScreen from './container/home/BalanceInquiry';
 import AccountStatementPickDateScreen from './container/home/AccountStatementPickDate';
 import AccountStatementDetail from './container/home/AccountStatementDetail';
+import AccountStatementList from './container/home/AccountStatementList';
 
 import TransferScreen from './container/transfer/Transfer';
 import SelectPayeeScreen from './container/transfer/SelectPayee';
@@ -42,7 +43,7 @@ function HomeStackScreen() {
             screenOptions={{
                 headerStyle: {
                     backgroundColor: '#c10000',
-                    // elevation: 10
+                    elevation: 0
                 },
                 headerTintColor: 'white'
             }}
@@ -69,6 +70,12 @@ function HomeStackScreen() {
                 name="AccountStatementDetail"
                 component={AccountStatementDetail}
                 options={{ headerShown: false }}
+            >
+            </Stack.Screen>
+            <Stack.Screen
+                name="AccountStatementList"
+                component={AccountStatementList}
+                options={{ headerShown: true }}
             >
             </Stack.Screen>
         </Stack.Navigator>
