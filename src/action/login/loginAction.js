@@ -3,6 +3,7 @@ import {
     SYNC_STORAGE_SUCCESS, 
     STORAGE_EMPTY, 
     LOGIN_SUCCESS, 
+
     LOGOUT, 
     POST_CLIENT_LOGIN_BEGIN, 
     POST_VALIDATE_CLIENT_LOGIN, 
@@ -13,10 +14,11 @@ export const syncStorageBegin = () => ({
     type: SYNC_STORAGE_BEGIN,
 })
 
-export const syncStorageSuccess = (name, customerId) => ({
+export const syncStorageSuccess = (name, customerId, easyPin) => ({
     type: SYNC_STORAGE_SUCCESS,
     name,
     customerId,
+    easyPin
 })
 
 export const storageEmpty = () => ({
@@ -32,10 +34,11 @@ export const postValidateClientLogin = (isLogin) => ({
     isLogin,
 })
 
-export const loginSuccess = (name, customerId) => ({
+export const loginSuccess = (name, customerId, easyPin) => ({
     type: LOGIN_SUCCESS,
     name,
     customerId,
+    easyPin
 })
 
 export const postClientLoginFailure = (error) => ({

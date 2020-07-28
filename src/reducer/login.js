@@ -11,8 +11,7 @@ import {
 
 initialState = {
     isLogin: false,
-    accNumber: '',
-    pin: '',
+    easyPin: '',
     loading: false,
     error: null,
     name: '',
@@ -24,8 +23,7 @@ const login = (state = initialState, action) => {
         case SYNC_STORAGE_BEGIN:
             return {
                 ...state,
-                accNumber: '',
-                pin: '',
+                easyPin: '',
                 loading: true,
                 accName: '',
                 name: '',
@@ -37,11 +35,9 @@ const login = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 isLogin: true,
-                // accNumber: action.accNumber,
-                // pin: action.pin,
-                // accName: action.accName
                 name: action.name,
-                customerId: action.customerId
+                customerId: action.customerId,
+                easyPin: action.easyPin
             };
 
         case STORAGE_EMPTY: 
@@ -68,17 +64,15 @@ const login = (state = initialState, action) => {
         case LOGIN_SUCCESS:
             return {
                 ...state,
-                accNumber: action.accNumber,
-                pin: action.pin,
+                loading: false,
                 name: action.name,
                 customerId: action.customerId,
             };
-
+        
         case POST_CLIENT_LOGIN_FAILURE:
             return {
                 ...state,
                 loading: false,
-                isLogin: false,
                 error: action.error
             };
 
