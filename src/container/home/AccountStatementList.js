@@ -6,9 +6,11 @@ import {
     ScrollView,
     Animated,
     Dimensions,
+    RefreshControl,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { numberWithCommas } from '../../generalFunction'
+import { getStatements } from '../../action/home/homeFunction';
 import StatementList from '../../component/StatementList';
 import AccountCard from '../../component/AccountCard';
 import Loading from '../../Loading';
@@ -23,15 +25,16 @@ class AccountStatementList extends React.Component {
         this.state = {
             scrollY: new Animated.Value(0),
             statements: [],
+            refreshing: false
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this._isMounted = true;
-        this.getStatements();
+        this.formatStatements();
     }
 
-    getStatements = () => {
+    formatStatements = () => {
         const { params } = this.props.route
         var statements = this.props.statements ? this.props.statements.filter((item) => item.accountNumber == params.accNumber) : this.state.statements
         if (statements.length != 0) {
@@ -43,8 +46,20 @@ class AccountStatementList extends React.Component {
         }
     }
 
+    onRefresh = () => {
+        this.setState({
+            refreshing: true,
+        })
+        const { cif_code, loading } = this.props
+        this.props.dispatch(getStatements(cif_code));        
+        if (!loading) {
+            this.setState({ refreshing: false })
+        }
+    }
+
     render() {
         // console.log(this.props.route.params);
+        const { loading } = this.props
         const { params } = this.props.route
         const windowHeight = Dimensions.get('window').height;
 
@@ -55,22 +70,26 @@ class AccountStatementList extends React.Component {
         })
 
         const headerOpacity = this.state.scrollY.interpolate({
-            inputRange: [0, headerMaxHeight-headerMinHeight],
+            inputRange: [0, headerMaxHeight - headerMinHeight],
             outputRange: [1, 0],
             extrapolate: 'clamp'
         })
 
         const headerZIndex = this.state.scrollY.interpolate({
-            inputRange: [0, headerMaxHeight-headerMinHeight],
+            inputRange: [0, headerMaxHeight - headerMinHeight],
             outputRange: [0, 1],
             extrapolate: 'clamp'
         })
 
         const headerTitleOpacity = this.state.scrollY.interpolate({
-            inputRange: [0, headerMaxHeight-headerMinHeight],
+            inputRange: [0, headerMaxHeight - headerMinHeight],
             outputRange: [0, 1],
             extrapolate: 'clamp'
         })
+
+        if(loading){
+            return <Loading></Loading>
+        }
 
         return (
             <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -80,21 +99,27 @@ class AccountStatementList extends React.Component {
                     zIndex: headerZIndex,
                     alignItems: 'center',
                 }}>
-                    <Animated.View style={{...styles.headerTextContainer, opacity: headerTitleOpacity}}>
+                    <Animated.View style={{ ...styles.headerTextContainer, opacity: headerTitleOpacity }}>
                         <Text style={styles.headerTextAccountType}>Tabunganku</Text>
                         <Text style={styles.headerTextBalance}>IDR {numberWithCommas(params.balance)}</Text>
                         <View style={styles.headerTextAccountNumberContainer}>
                             <Text style={styles.headerTextAccountNumberTitle}>Account Number: </Text>
                             <Text style={styles.headerTextAccountNumberValue}>{params.accNumber}</Text>
                         </View>
-                        
+
                     </Animated.View>
                 </Animated.View>
                 <ScrollView
                     scrollEventThrottle={16}
                     overScrollMode={'never'}
-                    onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }])}>
-                    
+                    onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }])}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.onRefresh}
+                        />
+                    }>
+
                     <Animated.View style={{
                         ...styles.accountCardContainer,
                         height: headerHeight,
@@ -103,9 +128,12 @@ class AccountStatementList extends React.Component {
                     }}>
                         <AccountCard accNumber={params.accNumber} balance={params.balance}></AccountCard>
                     </Animated.View>
-                    
-                    <StatementList statements={this.state.statements.reverse()} />
-                    {/* <View style={{ height: 1000 , backgroundColor: 'blue'}}></View> */}
+                    <View style={{ width: '90%', alignSelf: 'center', marginTop: 10 }}>
+                        <StatementList 
+                        statements={this.state.statements} 
+                        navigation={this.props.navigation}/>
+                    </View>
+
                 </ScrollView>
             </View>
 
@@ -122,10 +150,10 @@ const styles = StyleSheet.create({
         right: 0,
     },
 
-    headerTextContainer:{
+    headerTextContainer: {
         position: 'absolute',
         top: 10,
-        bottom: 20, 
+        bottom: 20,
         flex: 1,
         width: '80%',
         alignItems: 'center'
@@ -141,7 +169,6 @@ const styles = StyleSheet.create({
         width: '90%',
         color: 'white',
         fontSize: 25,
-        // backgroundColor:'black',
         marginVertical: 10
     },
 
@@ -163,7 +190,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
     // accNumber: state.login.accNumber,
     statements: state.home.statements,
-    loading: state.home.loading
+    loading: state.home.loading,
+    cif_code: state.login.cif_code
 });
 
 export default connect(mapStateToProps)(AccountStatementList);

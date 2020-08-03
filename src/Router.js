@@ -69,13 +69,13 @@ function HomeStackScreen() {
             <Stack.Screen
                 name="AccountStatementDetail"
                 component={AccountStatementDetail}
-                options={{ headerShown: false }}
+                options={{ title: 'Transaction Detail' }}
             >
             </Stack.Screen>
             <Stack.Screen
                 name="AccountStatementList"
                 component={AccountStatementList}
-                options={{ headerShown: true }}
+                options={{ title: 'Last Transactions' }}
             >
             </Stack.Screen>
         </Stack.Navigator>

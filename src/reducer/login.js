@@ -17,6 +17,7 @@ initialState = {
     error: null,
     name: '',
     customerId: '',
+    cif_code: ''
 };
 
 const login = (state = initialState, action) => {

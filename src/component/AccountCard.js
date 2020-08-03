@@ -125,7 +125,12 @@ class AccountCard extends React.Component {
                                 ...styles.statementContainer,
                                 height: this.state.isStatementVisible ? statements.length != 0 ? null : null : 0,
                             }}>
-                                <StatementList statements={statements} accNumber={this.props.accNumber} key={statements.posting_date}></StatementList>
+                                <StatementList
+                                    statements={statements}
+                                    accNumber={this.props.accNumber}
+                                    key={statements.posting_date}
+                                    home={this.props.home ? true : false}>
+                                </StatementList>
                             </View>
 
                             <TouchableOpacity style={styles.dropButton} onPress={this.handleStatementClicked}>

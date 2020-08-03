@@ -6,24 +6,49 @@ import {
     View
 } from 'react-native';
 
+import Loading from '../Loading';
+
 import { numberWithCommas } from '../generalFunction';
+import { Icon } from 'react-native-elements'
+import { TouchableOpacity } from 'react-native';
 
 class StatementList extends React.Component {
 
     constructor(props) {
         super(props);
-        // this.state = {
-        //     statements: [],
-        // }
+        this.state = {
+            refreshing: false
+        }
+    }
+
+    componentDidMount(){
+        this.setState({
+            refreshing: this.props.refreshing
+        })
+    }
+
+    handleStatementDetailClicked(id){
+        
+        this.props.navigation.navigate('AccountStatementDetail',{
+            statement: this.props.statements.filter((item) => item.id == id)
+        });
+        
     }
 
     render() {
 
         var moment = require('moment');
 
-        const { statements } = this.props;
-        
+        var  statements  = this.props.statements.reverse();
 
+        if(this.state.refreshing){
+            return (
+                <Loading></Loading>
+            )
+        }
+        else{
+
+        } 
         if (statements.length == 0){
             return (
                 <Text style={styles.emptyStatementText}>You don't have any statements.</Text>
@@ -32,8 +57,14 @@ class StatementList extends React.Component {
             return (
                 <ScrollView style={styles.list}>
                     {
-                        statements.map(statement =>
-                            <View style={styles.container} key={statement.id}>
+                         statements.map(statement =>
+                            
+                            <TouchableOpacity 
+                                style={styles.container}
+                                key={statement.id}
+                                onPress={this.props.home ? null : () => this.handleStatementDetailClicked(statement.id)}
+                                disabled={this.props.home ? true : false}>
+
                                 <View style={styles.viewSubLeft}>
                                     <Text style={styles.textDate}>{moment(statement.created_date).format('DD/MM/YY')}</Text>
                                     <Text style={styles.textTitle}>{(statement.detail).toUpperCase()}</Text>
@@ -46,8 +77,20 @@ class StatementList extends React.Component {
                                       {statement.amount > 0 ? null : "-"}  Rp {numberWithCommas(statement.amount > 0 ? statement.amount*1 : statement.amount*-1)}</Text>
                                     <Text style={styles.textType}>{statement.amount > 0 ? 'CR' : 'DB'}</Text>
                                     <Text style={styles.textDate}>{statement.transaction_type}</Text>
+                                    
                                 </View>
-                            </View>
+                                {
+                                    this.props.home ?
+                                        null :
+                                        <Icon
+                                            name="arrow-right"
+                                            type="simple-line-icon"
+                                            iconStyle={styles.statementIcon}
+                                            underlayColor="#d63447">
+                                        </Icon>
+                                }
+                                
+                            </TouchableOpacity>
                         )
                     }
                 </ScrollView>
@@ -68,6 +111,8 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderColor: 'darkgray',
         borderStyle: 'solid',
+        alignItems: 'center',
+        // backgroundColor: 'red',
     },
     viewSubLeft: {
         flex: 1,
@@ -102,7 +147,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         width: '70%',
         alignSelf: 'center'
-    }
+    },
+    statementIcon: {
+        fontSize: 13,
+        color: '#d63447',
+        marginRight: 10
+    },
 })
 
 export default StatementList;

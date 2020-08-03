@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 
 import StatementList from '../../component/StatementList';
 import { getStatements } from '../../action/home/homeFunction';
+import { numberWithCommas } from '../../generalFunction';
 import Loading from '../../Loading';
 
 class AccountStatementDetail extends React.Component {
@@ -25,57 +26,91 @@ class AccountStatementDetail extends React.Component {
     }
 
     componentDidMount = () => {
-        const { startDate, endDate } = this.props.route.params;
-        const { accNumber } = this.props;
-        var moment = require('moment');
-        this.props.dispatch(getStatements(accNumber,startDate, endDate));
+        console.log(this.props.route.params.statement[0]);
     }
 
     render() {
-
-        const { search } = this.state;
-        const { loading, statements } = this.props;
+        var moment = require('moment');
+        const { loading } = this.props;
+        var statement = this.props.route.params.statement[0];
 
         if (loading) {
             return <Loading />;
         }
-
-
-        if (statements && statements.length) {
-            return (
-                <View>
-                    <SearchBar
-                        onChangeText={this.updateSearch}
-                        value={search}
-                        platform="android"
-                        placeholder="Search statement"
-                    />
-                    <StatementList statements={statements} />
+        else{
+            return(
+                <View style={styles.container}>
+                    <View style={styles.headerContainer}>
+                        <Text style={styles.headerText}> {statement.transaction_type} </Text>
+                    </View>
+                    <View style={styles.detailContainer}>
+                        <Text style={styles.title}>Transaction ID</Text>
+                        <Text style={styles.value}> {statement.transaction_reference_number} </Text>
+                    </View>
+                    <View style={styles.detailContainer}>
+                        <Text style={styles.title}>Time</Text>
+                        <Text style={styles.value}> {moment(statement.posting_date).format('DD MMMM YYYY - HH:mm')} </Text>
+                    </View>
+                    <View style={styles.detailContainer}>
+                        <Text style={styles.title}>Amount</Text>
+                        <Text style={styles.value}>{statement.amount < 0 ? "-" : null} {statement.currency} {numberWithCommas(statement.amount < 0 ? statement.amount*-1 : statement.amount*1)} </Text>
+                    </View>
+                    <View style={styles.detailContainer}>
+                        <Text style={styles.title}>From</Text>
+                        <Text style={styles.value}> {statement.account.accountNumber} - {statement.account.account_name} </Text>
+                    </View>
+                    <View style={styles.detailContainer}>
+                        <Text style={styles.title}>Detail</Text>
+                        <Text style={styles.value}> {statement.detail} </Text>
+                    </View>
                 </View>
             )
-        } else {
-            return (
-                <View style={styles.container}>
-                    <Text>You don't have any statements.</Text>
-                </View>
-            );
         }
     }
 }
 
 const styles = StyleSheet.create({
     container: {
-        width: "100%",
-        height: "100%",
-        justifyContent: "center",
+        width: "90%",
         alignSelf: "center",
         alignContent: "center",
         alignItems: "center",
+        backgroundColor: 'white',
+        marginTop: 10,
+        elevation: 5,
+        borderRadius: 15
+    },
+    headerContainer: {
+        height: '15%',
+        width: '100%',
+        justifyContent: 'center',
+        padding: 20,
+        alignSelf: 'center',
+        backgroundColor: '#c10000',
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15
+    },
+    headerText:{
+        fontWeight: 'bold',
+        fontSize: 20,
+        color: 'white',
+    },
+    detailContainer:{
+        width: '100%',
+        padding: 10,
+        paddingLeft: 20,
+    },
+    title:{
+        fontSize: 16
+    },
+    value:{
+        fontSize: 18,
+        fontWeight: 'bold'
     }
+
 })
 
 const mapStateToProps = state => ({
-    accNumber: state.login.accNumber,
     statements: state.home.statements,
     loading: state.home.loading
 });

@@ -25,7 +25,10 @@ export function handleSyncStorage() {
         // var pin = await AsyncStorage.getItem(CLIENT_PIN);
         var name = await AsyncStorage.getItem(NAME);
         var cif_code = await AsyncStorage.getItem(CUSTOMER_CIF_CODE);
+        console.log(name);
+        
         if (name != null && cif_code != null) {
+            console.log(name, cif_code);
             dispatch(syncStorageSuccess(name, cif_code));
         } else {
             dispatch(storageEmpty());
@@ -54,6 +57,7 @@ export function handleLogin(username, password) {
                 }
             }, (error) => {
                 console.log(error);
+                alert('Your Username or Password is wrong!');
                 dispatch(postClientLoginFailure(error));
             }
         )

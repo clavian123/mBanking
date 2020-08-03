@@ -13,10 +13,10 @@ export const syncStorageBegin = () => ({
     type: SYNC_STORAGE_BEGIN,
 })
 
-export const syncStorageSuccess = (name, customerId) => ({
+export const syncStorageSuccess = (name, cif_code) => ({
     type: SYNC_STORAGE_SUCCESS,
     name,
-    customerId,
+    cif_code,
 })
 
 export const storageEmpty = () => ({
