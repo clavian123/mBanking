@@ -5,7 +5,8 @@ import {
     StyleSheet,
     TouchableOpacity, 
     Image,
-    Alert
+    Alert,
+    ToastAndroid
 }from 'react-native';
 
 import { connect } from 'react-redux';
@@ -86,24 +87,28 @@ class CreateUser extends Component{
     handleContinue = () =>{
         if(this.state.wrongUsername == ""){
             if(this.state.wrongPassword == ""){
-                const { customer } = this.props;
+                const { customerDummyId } = this.props;
                 const { navigation } = this.props;
-                this.props.dispatch(createNewUser(this.state.username, this.state.password, customer, "7")).then(() => {
+                this.props.dispatch(createNewUser(this.state.username, this.state.password, customerDummyId, "7")).then(() => {
                     Alert.alert(
                         "Your user is created",
-                        "One more step to go"
+                        "One more step to go",
+                        [
+                            {
+                                text: "OK",
+                                onPress: () => {
+                                    navigation.navigate('CreateEasyPin');
+                                }
+                            }
+                        ]
                     );
                 })
-                navigation.navigate(
-                    'CreateEasyPin', {
-                        username: this.state.username,
-                        password: this.state.password
-                    });
+               
             }else{
-                alert(this.state.wrongPassword)
+                ToastAndroid.show(this.state.wrongPassword, ToastAndroid.SHORT);
             }
         }else{
-            alert(this.state.wrongUsername)
+            ToastAndroid.show(this.state.wrongUsername, ToastAndroid.SHORT);
         }
     }
 
@@ -242,8 +247,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state =>({
-    customer: state.register.customer,
-    cifcode: state.register.cifcode,
+    customerDummyId: state.register.customerDummyId,
+    cif_code: state.register.cif_code,
     usernameExist: state.register.usernameExist
 });
 

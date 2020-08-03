@@ -25,6 +25,7 @@ import HomeScreen from './container/home/Home';
 import BalanceInquiryScreen from './container/home/BalanceInquiry';
 import AccountStatementPickDateScreen from './container/home/AccountStatementPickDate';
 import AccountStatementDetail from './container/home/AccountStatementDetail';
+import AccountStatementList from './container/home/AccountStatementList';
 
 import TransferScreen from './container/transfer/Transfer';
 import SelectPayeeScreen from './container/transfer/SelectPayee';
@@ -163,11 +164,17 @@ function HomeStackScreen() {
             screenOptions={{
                 headerStyle: {
                     backgroundColor: '#c10000',
-                    // elevation: 10
+                    elevation: 0
                 },
                 headerTintColor: 'white'
             }}
         >
+            {/* <Stack.Screen
+                name="EasyPinLogin"
+                component={EasyPinLoginScreen}
+                options={{ headerShown: false }}
+            >   
+            </Stack.Screen> */}
             <Stack.Screen
                 name="Home"
                 component={HomeScreen}
@@ -190,6 +197,12 @@ function HomeStackScreen() {
                 name="AccountStatementDetail"
                 component={AccountStatementDetail}
                 options={{ headerShown: false }}
+            >
+            </Stack.Screen>
+            <Stack.Screen
+                name="AccountStatementList"
+                component={AccountStatementList}
+                options={{ headerShown: true }}
             >
             </Stack.Screen>
         </Stack.Navigator>
@@ -425,20 +438,22 @@ class RootNavigator extends React.Component {
     }
 
     render() {
-        const { isLogin } = this.props;
+        const { isLogin, isEasyPinLogin } = this.props;
         return (
             <NavigationContainer>
                 <Stack.Navigator>
                     {isLogin ? (
-                        <Stack.Screen options={{ headerShown: false }} name="HomeTab" component={HomeTabScreen} />
-                    ) : (
-                            <>
-                                <Stack.Screen options={{ headerShown: false }} name="Login" component={RegisterStackScreen} />
-                                {/* <Stack.Screen options={{ headerShown: false }} name="CreateEasyPin" component={CreateEasyPinScreen} />
-                                <Stack.Screen options={{ headerShown: false }} name="ConfirmEasyPin" component={ConfirmEasyPinScreen} /> */}
-                                {/* <Stack.Screen options={{ title: " ", headerTintColor: "#c10000" }} name="InputPAN" component={RegisterStackScreen} /> */}
-                            </>
-                        )}
+                        <>
+                            <Stack.Screen options={{ headerShown: false }} name="EasyPinLogin" component={EasyPinLoginScreen} />
+                            <Stack.Screen options={{ headerShown: false }} name="HomeTab" component={HomeTabScreen} /> 
+                        </>
+                    ) 
+                    : 
+                    (
+                        <>
+                            <Stack.Screen options={{ headerShown: false }} name="Login" component={RegisterStackScreen} />
+                        </>
+                    )}
                 </Stack.Navigator>
             </NavigationContainer>
         );
@@ -446,7 +461,8 @@ class RootNavigator extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    isLogin: state.login.isLogin
+    isLogin: state.login.isLogin,
+    isEasyPinLogin: state.login.isEasyPinLogin
 })
 
 export default connect(mapStateToProps)(RootNavigator);

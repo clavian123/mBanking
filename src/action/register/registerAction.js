@@ -25,18 +25,28 @@ import{
     GET_USER_FAILURE,
     RESET_USER_PASSWORD_BEGIN,
     RESET_USER_PASSWORD_SUCCESS,
-    RESET_USER_PASSWORD_FAILURE
+    RESET_USER_PASSWORD_FAILURE,
+    LOGIN_BEGIN,
+    LOGIN_SUCCESS,
+    LOGIN_FAILURE,
+    GET_LOGIN_OTP_BEGIN,
+    GET_LOGIN_OTP_SUCCESS,
+    GET_LOGIN_OTP_FAILURE,
+    VALIDATE_LOGIN_TOKEN_BEGIN,
+    VALIDATE_LOGIN_TOKEN_SUCCESS,
+    VALIDATE_LOGIN_TOKEN_FAILURE,
+    SKIP_EASYPIN_LOGIN
 }from '../index';
 
 export const checkPanBegin = () => ({
     type: CHECK_PAN_BEGIN,
 });
 
-export const checkPanSuccess = (customer, email, cifcode) => ({
+export const checkPanSuccess = (customerDummyId, email, cif_code) => ({
     type: CHECK_PAN_SUCCESS,
-    customer,
+    customerDummyId,
     email,
-    cifcode
+    cif_code
 });
 
 export const checkPanFailure = (error) => ({
@@ -61,9 +71,9 @@ export const validateRegisterTokenBegin = () => ({
     type: VALIDATE_REGISTER_TOKEN_BEGIN
 });
 
-export const validateRegisterTokenSuccess = (validateToken) => ({
+export const validateRegisterTokenSuccess = (validateRegisterToken) => ({
     type: VALIDATE_REGISTER_TOKEN_SUCCESS,
-    validateToken
+    validateRegisterToken
 });
 
 export const validateRegisterTokenFailure = (error) => ({
@@ -89,9 +99,9 @@ export const checkCustomerBegin = () => ({
     type: CHECK_CUSTOMER_BEGIN
 });
 
-export const checkCustomerSuccess = (customerApps) => ({
+export const checkCustomerSuccess = (customerId) => ({
     type: CHECK_CUSTOMER_SUCCESS,
-    customerApps
+    customerId
 });
 
 export const checkCustomerFailure = (error) => ({
@@ -117,9 +127,10 @@ export const createNewUserBegin = () => ({
     type: CREATE_NEW_USER_BEGIN
 });
 
-export const createNewUserSuccess = (customerApps) => ({
+export const createNewUserSuccess = (customerId, name) => ({
     type: CREATE_NEW_USER_SUCCESS,
-    customerApps
+    customerId,
+    name
 });
 
 export const createNewUserFailure = (error) => ({
@@ -145,11 +156,63 @@ export const resetUserPasswordBegin = () => ({
     type: RESET_USER_PASSWORD_BEGIN
 });
 
-export const resetUserPasswordSuccess = () => ({
-    type: RESET_USER_PASSWORD_SUCCESS
+export const resetUserPasswordSuccess = (name, cif_code) => ({
+    type: RESET_USER_PASSWORD_SUCCESS,
+    name,
+    cif_code
 });
 
 export const resetUserPasswordFailure = (error) => ({
     type: RESET_USER_PASSWORD_FAILURE,
     error
+});
+
+export const loginBegin = () => ({
+    type: LOGIN_BEGIN
+});
+
+export const loginSuccess = (customerId, cif_code, name, email, validateLogin) => ({
+    type: LOGIN_SUCCESS,
+    customerId,
+    cif_code,
+    name,
+    email,
+    validateLogin,
+});
+
+export const loginFailure = (error) => ({
+    type: LOGIN_FAILURE,
+    error
+});
+
+export const getLoginOtpBegin = () => ({
+    type: GET_LOGIN_OTP_BEGIN
+});
+
+export const getLoginOtpSuccess = () => ({
+    type: GET_LOGIN_OTP_SUCCESS
+});
+
+export const getLoginOtpFailure = (error) => ({
+    type: GET_LOGIN_OTP_FAILURE,
+    error
+});
+
+export const validateLoginTokenBegin = () => ({
+    type: VALIDATE_LOGIN_TOKEN_BEGIN
+});
+
+export const validateLoginTokenSuccess = (validateLoginToken) => ({
+    type: VALIDATE_LOGIN_TOKEN_SUCCESS,
+    validateLoginToken
+});
+
+export const validateLoginTokenFailure = (error) => ({
+    type: VALIDATE_LOGIN_TOKEN_FAILURE,
+    error
+});
+
+export const skipEasypinLogin = (skip) => ({
+    type: SKIP_EASYPIN_LOGIN,
+    skip
 });

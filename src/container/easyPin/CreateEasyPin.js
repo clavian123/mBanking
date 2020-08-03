@@ -5,7 +5,8 @@ import{
     TouchableOpacity,
     StyleSheet,
     Image,
-    TextInput
+    TextInput,
+    ToastAndroid
 }from 'react-native';
 
 class CreateEasyPin extends Component{
@@ -19,16 +20,14 @@ class CreateEasyPin extends Component{
 
     handleContinue = () => {
         const easyPin = this.state.easyPin;
-        const { navigation, route } = this.props;
+        const { navigation } = this.props;
         if(easyPin.length < 6){
-            alert('EasyPIN length must be 6 characters')
+            ToastAndroid.show("EasyPIN length must be 6 characters", ToastAndroid.SHORT);
         }else if(isNaN(easyPin)){
-            alert('EasyPIN must contain just numbers')
+            ToastAndroid.show("EasyPIN must contain just numbers", ToastAndroid.SHORT);
         }else{
             navigation.navigate('ConfirmEasyPin', {
-                easyPin: easyPin,
-                username: route.params.username,
-                password: route.params.password
+                easyPin: easyPin
             })
         }
     }

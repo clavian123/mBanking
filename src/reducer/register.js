@@ -25,20 +25,34 @@ import{
     GET_USER_FAILURE,
     RESET_USER_PASSWORD_BEGIN,
     RESET_USER_PASSWORD_SUCCESS,
-    RESET_USER_PASSWORD_FAILURE
+    RESET_USER_PASSWORD_FAILURE,
+    LOGIN_BEGIN,
+    LOGIN_SUCCESS,
+    LOGIN_FAILURE,
+    GET_LOGIN_OTP_BEGIN,
+    GET_LOGIN_OTP_SUCCESS,
+    GET_LOGIN_OTP_FAILURE,
+    VALIDATE_LOGIN_TOKEN_BEGIN,
+    VALIDATE_LOGIN_TOKEN_SUCCESS,
+    VALIDATE_LOGIN_TOKEN_FAILURE,
+    SKIP_EASYPIN_LOGIN
 }from '../action/index';
 
 initialState = {
-    customer: "",
+    customerDummyId: "",
     email: "",
-    cifcode: "",
-    customerApps: "",
-    validateToken: false,
+    cif_code: "",
+    customerId: "",
+    validateLogin: false,
+    validateRegisterToken: false,
+    validateLoginToken: false,
     username: "",
+    name: "",
     checkPin: false,
     loading: false,
     usernameExist: false,
-    error: null
+    error: null,
+    skip: false
 };
 
 const register = (state = initialState, action) => {
@@ -53,7 +67,7 @@ const register = (state = initialState, action) => {
         case CHECK_PAN_FAILURE:
             return{
                 ...state,
-                customer: "",
+                customerDummyId: "",
                 email: "",
                 cif_code: "",
                 loading: false,
@@ -63,10 +77,10 @@ const register = (state = initialState, action) => {
         case CHECK_PAN_SUCCESS:
             return{
                 ...state,
-                customer: action.customer,
+                customerDummyId: action.customerDummyId,
                 loading: false,
                 email: action.email,
-                cifcode: action.cifcode
+                cif_code: action.cif_code
             }
         
         case GET_REGISTER_TOKEN_BEGIN:
@@ -100,14 +114,14 @@ const register = (state = initialState, action) => {
             return{
                 ...state,
                 loading: false,
-                validateToken: action.validateToken
+                validateRegisterToken: action.validateRegisterToken
             }
 
         case VALIDATE_REGISTER_TOKEN_FAILURE:
             return{
                 ...state,
                 loading: false,
-                validateToken: false,
+                validateRegisterToken: false,
                 error: action.error
             }
 
@@ -141,7 +155,7 @@ const register = (state = initialState, action) => {
             return{
                 ...state,
                 loading: false,
-                customerApps: action.customerApps
+                customerId: action.customerId
             }
 
         case CHECK_CUSTOMER_FAILURE:
@@ -179,7 +193,8 @@ const register = (state = initialState, action) => {
             return{
                 ...state,
                 loading: false,
-                customerApps: action.customerApps
+                customerId: action.customerId,
+                name: action.name
             }
 
         case CREATE_NEW_USER_FAILURE:
@@ -218,7 +233,8 @@ const register = (state = initialState, action) => {
         case RESET_USER_PASSWORD_SUCCESS:
             return{
                 ...state,
-                loading: false
+                loading: false,
+                name: action.name
             }
 
         case RESET_USER_PASSWORD_FAILURE:
@@ -226,6 +242,75 @@ const register = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 error: action.error
+            }
+
+        case LOGIN_BEGIN:
+            return{
+                ...state,
+                loading: true
+            }
+
+        case LOGIN_SUCCESS:
+            return{
+                ...state,
+                loading: false,
+                customerId: action.customerId,
+                cif_code: action.cif_code,
+                name: action.name,
+                email: action.email,
+                validateLogin: action.validateLogin
+            }
+        
+        case LOGIN_FAILURE:
+            return{
+                ...state,
+                loading: false,
+                error: action.error
+            }
+
+        case GET_LOGIN_OTP_BEGIN:
+            return{
+                ...state,
+                loading: true
+            }
+
+        case GET_LOGIN_OTP_SUCCESS:
+            return{
+                ...state,
+                loading: false
+            }
+
+        case GET_LOGIN_OTP_FAILURE:
+            return{
+                ...state,
+                loading: false,
+                error: action.error
+            }
+
+        case VALIDATE_LOGIN_TOKEN_BEGIN:
+            return{
+                ...state,
+                loading: true
+            }
+
+        case VALIDATE_LOGIN_TOKEN_SUCCESS:
+            return{
+                ...state,
+                loading: false,
+                validateLoginToken: action.validateLoginToken
+            }
+
+        case VALIDATE_LOGIN_TOKEN_FAILURE:
+            return{
+                ...state,
+                loading: false,
+                error: action.error
+            }
+
+        case SKIP_EASYPIN_LOGIN:
+            return{
+                ...state,
+                skip: action.skip
             }
 
         default: 

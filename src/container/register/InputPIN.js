@@ -4,7 +4,7 @@ import{
     Text,
     TouchableOpacity,
     StyleSheet,
-    Keyboard
+    ToastAndroid
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -21,22 +21,22 @@ class InputPIN extends Component{
     }
 
     handleContinue = () => {
-        const { customer, cifcode } = this.props;
+        const { customerDummyId, cif_code } = this.props;
         
-        this.props.dispatch(validatePin(customer, this.state.pin)).then(() => {
+        this.props.dispatch(validatePin(customerDummyId, this.state.pin)).then(() => {
             const { checkPin } = this.props;
             if(checkPin == true){
-                this.props.dispatch(checkCustomer(cifcode)).then(() => {
-                    const{ customerApps } = this.props;
+                this.props.dispatch(checkCustomer(cif_code)).then(() => {
+                    const{ customerId } = this.props;
                     const{ navigation } = this.props;
-                    if(customerApps == null){
+                    if(customerId == null){
                         navigation.navigate('CreateUser')
                     }else{
                         navigation.navigate('ResetPassword')
                     }
                 });
             }else{
-                alert("Please enter a valid PIN");
+                ToastAndroid.show("Please enter a valid PIN", ToastAndroid.SHORT);
             }
         })
         
@@ -125,10 +125,10 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    customer: state.register.customer,
-    cifcode: state.register.cifcode,
+    customerDummyId: state.register.customerDummyId,
+    cif_code: state.register.cif_code,
     checkPin: state.register.checkPin,
-    customerApps: state.register.customerApps
+    customerId: state.register.customerId
 });
   
 export default connect(mapStateToProps)(InputPIN);

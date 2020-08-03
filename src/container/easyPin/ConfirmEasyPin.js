@@ -5,10 +5,12 @@ import{
     TouchableOpacity,
     StyleSheet,
     Image,
-    TextInput
+    TextInput,
+    ToastAndroid
 }from 'react-native';
 
 import { connect } from 'react-redux';
+import { skipEasypinLogin } from '../../action/register/registerAction'
 import { handleLogin } from '../../action/login/loginFunction'
 
 class ConfirmEasyPin extends Component{
@@ -22,12 +24,13 @@ class ConfirmEasyPin extends Component{
 
     handleContinue = () => {
         const confirmEasyPin = this.state.confirmEasyPin;
-        const { route, customerId, name } = this.props;
-        const { easyPin, username, password } = route.params;
+        const { route, cif_code, name } = this.props;
+        const { easyPin } = route.params;
         if(confirmEasyPin != easyPin){
-            alert("Please enter a valid EasyPin");
+            ToastAndroid.show("Please enter a valid EasyPIN", ToastAndroid.SHORT);
         }else{
-            this.props.dispatch(handleLogin(username, password, easyPin));
+            this.props.dispatch(handleLogin(name, cif_code, confirmEasyPin));
+            this.props.dispatch(skipEasypinLogin(true));
         }
     }
 
@@ -124,8 +127,8 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    customerId: state.login.customerId,
-    name: state.login.name
+    cif_code: state.register.cif_code,
+    name: state.register.name,
 });
 
 export default connect(mapStateToProps)(ConfirmEasyPin);

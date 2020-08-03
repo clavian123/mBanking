@@ -9,11 +9,11 @@ import {
     getAccountStatementFailure
 } from './homeAction';
 
-export function getBalance(customerId) {
+export function getBalance(cif_code) {
     let req = {
-        customer: customerId
+        cif_code: cif_code
     };
-    let address = "http://192.168.0.103:8080/linkUnlinkAccount";
+    let address = "http://192.168.100.174:8080/linkUnlinkAccount";
     return dispatch => {
         dispatch(getBalanceBegin());
         return axios.post(address, req).then(
@@ -27,11 +27,11 @@ export function getBalance(customerId) {
     }
 };
 
-export function getStatements(customerId) {
+export function getStatements(cif_code) {
     let req = {
-        customer: customerId,
+        cif_code: cif_code,
     };
-    let address = "http://192.168.0.103:8080/getAllAccountStatementByCustomer";
+    let address = "http://192.168.100.174:8080/getAllAccountStatementByCustomer";
     return dispatch => {
         dispatch(getAccountStatementBegin());
         return axios.post(address, req).then(

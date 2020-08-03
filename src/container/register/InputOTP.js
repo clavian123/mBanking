@@ -9,7 +9,7 @@ import{
 
 import { connect } from 'react-redux';
 import { TextInput } from 'react-native-gesture-handler';
-import { getRegisterToken, validateRegisterToken } from '../../action/register/registerFunction'
+import { getLoginToken, validateLoginToken, getRegisterToken, validateRegisterToken } from '../../action/register/registerFunction'
 
 class InputOTP extends React.Component{
     
@@ -21,21 +21,37 @@ class InputOTP extends React.Component{
     }
 
     handleResend = () => {
-        const { customer } = this.props
-        this.props.dispatch(getRegisterToken(customer));
+        const { cif_code, customerDummyId, route } = this.props;
+        if(route.params.type === "LOGIN"){
+            this.props.dispatch(getLoginToken(cif_code));
+        }else{
+            this.props.dispatch(getRegisterToken(customerDummyId));
+        }
     }
 
     handleContinue = () => {
-        const { customer } = this.props
-        this.props.dispatch(validateRegisterToken(customer, this.state.token)).then(() => {
-            const { validateToken } = this.props;
-            if(validateToken == false){
-                alert("Please enter a valid token");
-            }else{
-                const { navigation } = this.props;
-                navigation.navigate('InputPIN');
-            }
-        })
+        const { cif_code, customerDummyId, route } = this.props;
+        if(route.params.type === "LOGIN"){
+            this.props.dispatch(validateLoginToken(cif_code, this.state.token)).then(() => {
+                const { validateLoginToken } = this.props;
+                if(validateLoginToken == false){
+                    ToastAndroid.show("Please enter a valid OTP token", ToastAndroid.SHORT);
+                }else{
+                    const { navigation } = this.props;
+                    navigation.navigate('CreateEasyPin');
+                }
+            });
+        }else{
+            this.props.dispatch(validateRegisterToken(customerDummyId, this.state.token)).then(() => {
+                const { validateRegisterToken } = this.props;
+                if(validateRegisterToken == false){
+                    ToastAndroid.show("Please enter a valid OTP token", ToastAndroid.SHORT);
+                }else{
+                    const { navigation } = this.props;
+                    navigation.navigate('InputPIN');
+                }
+            })
+        }
     }
 
     render(){
@@ -62,10 +78,11 @@ class InputOTP extends React.Component{
                     style={styles.input} 
                     keyboardType="number-pad"
                     onChangeText={(text) => this.setState({token: text})}
+                    maxLength={6}
                 />
                 <View style={styles.resendContainer}>
                     <Text style={styles.resendText}>
-                        Don't receive SMS token?
+                        Don't receive E-mail token?
                     </Text>
                     <TouchableOpacity onPress={this.handleResend}>
                         <Text style={styles.resendText2}>Resend e-mail</Text>
@@ -182,8 +199,10 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     email: state.register.email,
-    customer: state.register.customer,
-    validateToken: state.register.validateToken
+    customerDummyId: state.register.customerDummyId,
+    cif_code: state.register.cif_code,
+    validateRegisterToken: state.register.validateRegisterToken,
+    validateLoginToken: state.register.validateLoginToken
 });
   
 export default connect(mapStateToProps)(InputOTP);

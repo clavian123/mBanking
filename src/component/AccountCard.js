@@ -11,7 +11,9 @@ import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements'
 
 import { numberWithCommas } from '../generalFunction'
+import { getStatements } from '../action/home/homeFunction';
 import StatementList from '../component/StatementList';
+import Loading from '../Loading';
 
 class AccountCard extends React.Component {
 
@@ -43,7 +45,16 @@ class AccountCard extends React.Component {
         this.setState({
             isStatementVisible: !this.state.isStatementVisible,
         })
-        this.props.callback
+    }
+
+    handleStatementListClicked = () => {
+        // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        console.log(this.props.balance);
+
+        this.props.navigation.navigate('AccountStatementList', {
+            accNumber: this.props.accNumber,
+            balance: this.props.balance,
+        })
     }
 
     getStatements = () => {
@@ -53,40 +64,79 @@ class AccountCard extends React.Component {
                 this.setState(previous => ({
                     statements: [...previous.statements, item]
                 }))
-            })            
+            })
         }
     }
 
     render() {
         var statements = this.state.statements
+        const { loading } = this.props
+
+        if (loading) {
+            return <Loading />
+        }
 
         return (
             <View style={styles.container}>
                 <View style={styles.card}>
                     <View style={styles.cardHeader}>
                         <Text style={styles.headerText}>Tabunganku</Text>
-                        <Icon name={this.state.isBalanceVisible ? "eye" : "eye-slash"} type="font-awesome" iconStyle={styles.headerIcon} onPress={this.handleBalanceVisible} underlayColor="#d63447"></Icon>
+                        {
+                            this.props.home ?
+                                <Icon
+                                    name={this.state.isBalanceVisible ? "eye" : "eye-slash"}
+                                    type="font-awesome"
+                                    iconStyle={styles.headerIcon}
+                                    onPress={this.handleBalanceVisible}
+                                    underlayColor="#d63447">
+                                </Icon>
+                                :
+                                null
+                        }
+
                     </View>
                     <Text style={styles.balanceText}>IDR {this.state.isBalanceVisible ? this.props.balance ? numberWithCommas(this.props.balance) : "--" : "--"}</Text>
                     <View style={styles.accNumberContainer}>
                         <Text style={styles.accNumberTitle}>Account Number: </Text>
                         <Text style={styles.accNumberValue}>{this.props.accNumber}</Text>
                     </View>
-                    <Icon name="arrow-right" type="simple-line-icon" iconStyle={styles.statementIcon}></Icon>
+                    {
+                        this.props.home ?
+                            <Icon
+                                name="arrow-right"
+                                type="simple-line-icon"
+                                iconStyle={styles.statementIcon}
+                                underlayColor="#d63447"
+                                onPress={this.handleStatementListClicked} >
+                            </Icon>
+                            :
+                            null
+                    }
                 </View>
-                <Text style={styles.statementHeader}> {this.state.isStatementVisible ? "Here are your last transactions" : "Tap to see last transactions"}</Text>
 
                 {/* STATEMENT LIST */}
-                <View style={{
-                    ...styles.statementContainer,
-                    height: this.state.isStatementVisible ? statements.length != 0 ? null : 0 : 0,
-                }}>
-                    <StatementList statements={statements} accNumber={this.props.accNumber} key={statements.posting_date}></StatementList>
-                </View>
 
-                <TouchableOpacity style={styles.dropButton} onPress={this.handleStatementClicked}>
-                    <Icon name={this.state.isStatementVisible ? "arrow-up" : "arrow-down"} type="simple-line-icon" iconStyle={styles.dropIcon}></Icon>
-                </TouchableOpacity>
+                {
+                    this.props.home ?
+                        <>
+                            <Text style={styles.statementHeader}> {this.state.isStatementVisible ? "Here are your last transactions" : "Tap to see last transactions"}</Text>
+
+                            <View style={{
+                                ...styles.statementContainer,
+                                height: this.state.isStatementVisible ? statements.length != 0 ? null : null : 0,
+                            }}>
+                                <StatementList statements={statements} accNumber={this.props.accNumber} key={statements.posting_date}></StatementList>
+                            </View>
+
+                            <TouchableOpacity style={styles.dropButton} onPress={this.handleStatementClicked}>
+                                <Icon name={this.state.isStatementVisible ? "arrow-up" : "arrow-down"} type="simple-line-icon" iconStyle={styles.dropIcon}></Icon>
+                            </TouchableOpacity>
+                        </>
+                        :
+                        null
+                }
+
+
             </View>
         )
     }
@@ -95,10 +145,7 @@ class AccountCard extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 0,
-        width: "100%",
-        height: "100%",
         alignItems: "center",
-        backgroundColor: 'white',
         borderBottomLeftRadius: 15,
         borderBottomRightRadius: 15,
     },
@@ -108,7 +155,7 @@ const styles = StyleSheet.create({
         height: 180,
         borderRadius: 15,
         elevation: 5,
-        marginTop: 20
+        marginTop: 20,
     },
     cardHeader: {
         flexDirection: 'row',
@@ -152,11 +199,13 @@ const styles = StyleSheet.create({
     },
 
     statementIcon: {
-        flexDirection: 'row',
+        // flexDirection: 'row',
         alignSelf: 'flex-end',
         fontSize: 18,
         marginHorizontal: 10,
-        color: 'white'
+        color: 'white',
+        // backgroundColor: '#d63447'
+        // underlayColor: '#d63447'
     },
 
     statementHeader: {
@@ -168,7 +217,8 @@ const styles = StyleSheet.create({
     },
 
     statementContainer: {
-        width: 360,
+        width: '90%',
+        // flex: 1,
         justifyContent: 'flex-start',
         backgroundColor: 'white',
     },
@@ -197,12 +247,13 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
 
-    
+
 })
 
 const mapStateToProps = state => ({
     statements: state.home.statements,
     customerId: state.login.customerId,
+    loading: state.home.loading,
 })
 
 export default connect(mapStateToProps)(AccountCard);

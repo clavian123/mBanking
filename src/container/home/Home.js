@@ -36,6 +36,7 @@ class Home extends React.Component {
       isDetailVisible: false,
       isStatementVisible: false,
       statements: [],
+      refreshing: false,
     };
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -44,9 +45,9 @@ class Home extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    const { customerId } = this.props
-    this.props.dispatch(getBalance(customerId));
-    this.props.dispatch(getStatements(customerId));
+    const { cif_code } = this.props;
+    this.props.dispatch(getBalance(cif_code));
+    this.props.dispatch(getStatements(cif_code));
   }
 
   componentWillUnmount() {
@@ -60,17 +61,37 @@ class Home extends React.Component {
     })
   }
 
-  handleStatementClicked = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    this.setState({
-      isStatementVisible: !this.state.isStatementVisible,
-    })
-  }
+  // handleStatementClicked = () => {
+  //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  //   this.setState({
+  //     isStatementVisible: !this.state.isStatementVisible,
+  //   })
+  // }
 
   countTotalBalance = (balance) => {
     var balanceNumber = 0;
     balance.map(balance => balanceNumber += Number(balance.balance))
     return balanceNumber;
+  }
+
+  wait = (timeout) => {
+    return new Promise(resolve => {
+      setTimeout(resolve, timeout);
+    });
+  }
+
+  onRefresh = () => {
+    this.setState({
+      refreshing: true,
+    })
+    const { cif_code, loading } = this.props
+    // const {loading} = this.props
+    // const {customerId} = this.state
+    this.props.dispatch(getBalance(cif_code));
+    this.props.dispatch(getStatements(cif_code));
+    if(!loading){
+      this.setState({refreshing: false})
+    }
   }
 
   render() {
@@ -88,7 +109,15 @@ class Home extends React.Component {
       }}>
 
         {/* HEADER */}
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.onRefresh}
+            />
+          }
+        >
           <View style={{
             ...styles.greetingsContainer,
             height: this.state.isDetailVisible ? 220 : 100
@@ -128,6 +157,7 @@ class Home extends React.Component {
             tabBarActiveTextColor="black"
             tabBarInactiveTextColor="#888888"
             tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
+            prerenderingSiblingsNumber ={1}
           >
             {
               balance ?
@@ -137,7 +167,9 @@ class Home extends React.Component {
                     accNumber={balance.accountNumber} 
                     balance={balance.balance} 
                     key={balance.accountNumber} 
-                    callback={this.handleStatementClicked} />
+                    navigation={this.props.navigation}
+                    home={true}
+                     />
                 )
                 :
                 <AccountCard tabLabel="Account 1" accNumber= "0000000" ></AccountCard>
@@ -270,7 +302,8 @@ const mapStateToProps = state => ({
   statements: state.home.statements,
   loading: state.home.loading,
   name: state.login.name,
-  customerId: state.login.customerId,
+  cif_code: state.login.cif_code,
+  isLogin: state.login.isLogin
 })
 
 export default connect(mapStateToProps)(Home);

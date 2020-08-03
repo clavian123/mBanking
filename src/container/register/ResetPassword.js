@@ -5,13 +5,13 @@ import {
     Text,
     Image,
     TouchableOpacity,
-    Alert
+    Alert,
+    ToastAndroid
 } from 'react-native';
 
 import { connect } from 'react-redux';
 import { getUser, resetUserPassword } from '../../action/register/registerFunction';
 import FloatingInputLabel from '../../component/FloatingInputLabel';
-import { login } from '../../action/login/loginFunction'
 
 class ResetPassword extends Component {
 
@@ -32,8 +32,8 @@ class ResetPassword extends Component {
     }
 
     componentDidMount() {
-        const { customerApps } = this.props;
-        this.props.dispatch(getUser(customerApps));
+        const { customerId } = this.props;
+        this.props.dispatch(getUser(customerId));
     }
 
     handlePasswordText = () => {
@@ -105,21 +105,17 @@ class ResetPassword extends Component {
                             {
                                 text: 'OK',
                                 onPress: () => { 
-                                    navigation.navigate(
-                                        'CreateEasyPin', {
-                                            username: username,
-                                            password: this.state.password
-                                        })
+                                    navigation.navigate('CreateEasyPin');
                                 }
                             }
                         ]
                     );
                 })
             }else{
-                alert(this.state.wrongConfirmPassword)
+                ToastAndroid.show(this.state.wrongConfirmPassword, ToastAndroid.SHORT)
             }
         }else{
-            alert(this.state.wrongPassword)
+            ToastAndroid.show(this.state.wrongPassword, ToastAndroid.SHORT)
         }
     }
 
@@ -249,8 +245,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    customerApps: state.register.customerApps,
-    username: state.register.username
+    customerId: state.register.customerId,
+    username: state.register.username,
 });
 
 export default connect(mapStateToProps)(ResetPassword);

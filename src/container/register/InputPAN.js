@@ -26,8 +26,8 @@ class InputPAN extends React.Component {
 
   checkPan = () => {
     this.props.dispatch(checkPan(this.state.pan)).then(()=>{
-      const { customer } = this.props;
-      if(customer != null){
+      const { customerDummyId } = this.props;
+      if(customerDummyId != null){
         this.setState({isWrong : false})
         this.setState({buttonColor : '#C10000'})
         this.setState({borderColor : "#888888"})
@@ -41,12 +41,14 @@ class InputPAN extends React.Component {
   }
 
   handleContinue = () => {
-    const { customer } = this.props;
-    if(customer != null){
+    const { customerDummyId } = this.props;
+    if(customerDummyId != null){
       this.setState({isWrong : false});
       const { navigation } = this.props;
-      this.props.dispatch(getRegisterToken(customer));
-      navigation.navigate('InputOTP');
+      this.props.dispatch(getRegisterToken(customerDummyId));
+      navigation.navigate('InputOTP', {
+        type: "REGISTER"
+      });
     }else{
       this.setState({isWrong : true})
       this.setState({borderColor : "#888888"})
@@ -164,7 +166,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  customer: state.register.customer
+  customerDummyId: state.register.customerDummyId
 });
 
 export default connect(mapStateToProps)(InputPAN);
