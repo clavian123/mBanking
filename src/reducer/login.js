@@ -2,17 +2,16 @@ import {
     SYNC_STORAGE_BEGIN,
     SYNC_STORAGE_SUCCESS,
     STORAGE_EMPTY,
-    POST_CLIENT_LOGIN_BEGIN,
-    POST_VALIDATE_CLIENT_LOGIN,
     LOGIN_SUCCESS,
-    POST_CLIENT_LOGIN_FAILURE,
+    POST_VALIDATE_CLIENT_LOGIN,
+    EASY_PIN_LOGIN,
     LOGOUT
 } from '../action/index';
 
 initialState = {
     isLogin: false,
-    accNumber: '',
-    pin: '',
+    easyPin: '',
+    isEasyPinLogin: false,
     loading: false,
     error: null,
     name: '',
@@ -25,10 +24,8 @@ const login = (state = initialState, action) => {
         case SYNC_STORAGE_BEGIN:
             return {
                 ...state,
-                accNumber: '',
-                pin: '',
+                easyPin: '',
                 loading: true,
-                accName: '',
                 name: '',
                 cif_code: ''
             };
@@ -38,11 +35,10 @@ const login = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 isLogin: true,
-                // accNumber: action.accNumber,
-                // pin: action.pin,
-                // accName: action.accName
+                isEasyPinLogin: true,
                 name: action.name,
-                cif_code: action.cif_code
+                cif_code: action.cif_code,
+                easyPin: action.easyPin
             };
 
         case STORAGE_EMPTY: 
@@ -52,12 +48,12 @@ const login = (state = initialState, action) => {
                 loading: false
             }
 
-        case POST_CLIENT_LOGIN_BEGIN:
-            return {
-                ...state,
-                loading: true,
-                error: null
-            };
+        // case POST_CLIENT_LOGIN_BEGIN:
+        //     return {
+        //         ...state,
+        //         loading: true,
+        //         error: null
+        //     };
 
         case POST_VALIDATE_CLIENT_LOGIN:
             return {
@@ -69,26 +65,32 @@ const login = (state = initialState, action) => {
         case LOGIN_SUCCESS:
             return {
                 ...state,
-                accNumber: action.accNumber,
-                pin: action.pin,
+                loading: false,
                 name: action.name,
                 cif_code: action.cif_code,
+                easyPin: action.easyPin
             };
+        
+        // case POST_CLIENT_LOGIN_FAILURE:
+        //     return {
+        //         ...state,
+        //         loading: false,
+        //         error: action.error
+        //     };
 
-        case POST_CLIENT_LOGIN_FAILURE:
-            return {
+        case EASY_PIN_LOGIN:
+            return{
                 ...state,
-                loading: false,
-                isLogin: false,
-                error: action.error
-            };
-
+                isEasyPinLogin: action.isEasyPinLogin
+            }
+        
         case LOGOUT:
             return {
                 ...state,
                 isLogin: false,
-                accNumber: '',
-                pin: ''
+                name: '',
+                easyPin: '',
+                cif_code: ''
             };
 
         default:

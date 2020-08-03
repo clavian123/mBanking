@@ -1,22 +1,22 @@
 import { 
     SYNC_STORAGE_BEGIN,
     SYNC_STORAGE_SUCCESS, 
-    STORAGE_EMPTY, 
-    LOGIN_SUCCESS, 
+    STORAGE_EMPTY,  
+    LOGIN_SUCCESS,
     LOGOUT, 
-    POST_CLIENT_LOGIN_BEGIN, 
     POST_VALIDATE_CLIENT_LOGIN, 
-    POST_CLIENT_LOGIN_FAILURE 
+    EASY_PIN_LOGIN
 } from '../index';
 
 export const syncStorageBegin = () => ({
     type: SYNC_STORAGE_BEGIN,
 })
 
-export const syncStorageSuccess = (name, cif_code) => ({
+export const syncStorageSuccess = (name, cif_code, easyPin) => ({
     type: SYNC_STORAGE_SUCCESS,
     name,
     cif_code,
+    easyPin
 })
 
 export const storageEmpty = () => ({
@@ -30,19 +30,26 @@ export const postClientLoginBegin = () => ({
 export const postValidateClientLogin = (isLogin) => ({
     type: POST_VALIDATE_CLIENT_LOGIN,
     isLogin,
-})
+});
 
-export const loginSuccess = (name, cif_code) => ({
+export const easyPinLogin = (isEasyPinLogin) => ({
+    type: EASY_PIN_LOGIN,
+    isEasyPinLogin
+});
+
+
+export const loginSuccess = (name, cif_code, easyPin) => ({
     type: LOGIN_SUCCESS,
     name,
     cif_code,
-})
+    easyPin
+});
 
 export const postClientLoginFailure = (error) => ({
     type: POST_CLIENT_LOGIN_FAILURE,
     error,
-})
+});
 
 export const logout = () => ({
     type: LOGOUT
-})
+});

@@ -45,10 +45,7 @@ class Home extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    // const { customerId } = this.state
-    // console.log(this.props);
-    
-    const { cif_code } = this.props
+    const { cif_code } = this.props;
     this.props.dispatch(getBalance(cif_code));
     // this.props.dispatch(getStatements(cif_code));
   }
@@ -306,6 +303,7 @@ const mapStateToProps = state => ({
   loading: state.home.loading,
   name: state.login.name,
   cif_code: state.login.cif_code,
+  isLogin: state.login.isLogin
 })
 
 export default connect(mapStateToProps)(Home);

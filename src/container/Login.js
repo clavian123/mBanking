@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-import { handleLogin } from '../action/login/loginFunction';
+import { login, getLoginToken } from '../action/register/registerFunction';
 
 class Login extends Component {
 
@@ -22,11 +22,24 @@ class Login extends Component {
   }
 
   handleLogin = () => {
+    const { navigation } = this.props;
     const { username, password } = this.state;
     if (username == '' || password == '') {
       alert("Please fill your Email and Password!");
     } else {
-      this.props.dispatch(handleLogin(username, password));
+      this.props.dispatch(login(username, password)).then(() => {
+        const { validateLogin, cif_code } = this.props;
+        if(validateLogin == true){
+          console.log(cif_code)
+          this.props.dispatch(getLoginToken(cif_code)).then(() => {
+            navigation.navigate("InputOTP", {
+              type: "LOGIN"
+            });
+          });
+        }else{
+          
+        }
+      });
     }
   }
 
@@ -47,7 +60,7 @@ class Login extends Component {
             placeholder="Username"
             style={styles.textInput}
             keyboardType="email-address"
-            
+            autoCapitalize="none"
           ></TextInput>
           <TextInput
             value={this.state.password}
@@ -55,6 +68,7 @@ class Login extends Component {
             placeholder="Password"
             style={styles.textInput}
             secureTextEntry={true}
+            autoCapitalize="none"
           >
           </TextInput>
           <TouchableOpacity
@@ -70,7 +84,7 @@ class Login extends Component {
           <Text style={styles.textSignUpLabel}>Don't have an account yet? </Text>
           <TouchableOpacity
             onPress={
-              () => this.props.navigation.navigate('Register')
+              () => this.props.navigation.navigate('InputPAN')
             }
           >
             <Text style={styles.textSignUp}>Sign Up</Text>
@@ -152,4 +166,9 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect()(Login)
+const mapStateToProps = state => ({
+  validateLogin: state.register.validateLogin,
+  cif_code: state.register.cif_code
+});
+
+export default connect(mapStateToProps)(Login)

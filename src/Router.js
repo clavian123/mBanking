@@ -10,7 +10,16 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import LoginScreen from './container/Login';
-import RegisterScreen from './container/Register';
+
+import InputPANScreen from './container/register/InputPAN';
+import InputOTPScreen from './container/register/InputOTP';
+import InputPINScreen from './container/register/InputPIN';
+import CreateUserScreen from './container/register/CreateUser';
+import ResetPasswordScreen from './container/register/ResetPassword';
+
+import CreateEasyPinScreen from './container/easyPin/CreateEasyPin';
+import ConfirmEasyPinScreen from './container/easyPin/ConfirmEasyPin';
+import EasyPinLoginScreen from './container/easyPin/EasyPinLogin';
 
 import HomeScreen from './container/home/Home';
 import BalanceInquiryScreen from './container/home/BalanceInquiry';
@@ -36,6 +45,118 @@ import AboutUsScreen from './container/account/AboutUs';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
+function RegisterStackScreen() {
+    return(
+        <Stack.Navigator
+            initialRouteName="Login"
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: 'white',
+                },
+                headerTintColor: '#C10000'
+            }}
+        >
+            <Stack.Screen
+                name="Login"
+                component={LoginScreen}
+                options={{headerShown:false}}
+            >               
+            </Stack.Screen>
+            <Stack.Screen
+                name="InputPAN"
+                component={InputPANScreen}
+                options={{
+                    title: "",
+                    headerStyle: {
+                        backgroundColor: 'white',
+                        shadowColor: 'transparent',
+                        elevation: 0,
+                        borderBottomWidth: 0  
+                    },
+                    headerTintColor: '#C10000'
+                }}
+            >
+            </Stack.Screen>
+            <Stack.Screen
+                name="InputOTP"
+                component={InputOTPScreen}
+                options={{
+                    title: "",
+                    headerStyle: {
+                        backgroundColor: "#21C275",
+                        shadowColor: 'transparent',
+                        elevation: 0,
+                        borderBottomWidth: 0    
+                    },
+                    headerTintColor: 'white'
+                }}
+            >
+            </Stack.Screen>
+            <Stack.Screen
+                name="InputPIN"
+                component={InputPINScreen}
+                options={{
+                    title: "",
+                    headerStyle: {
+                        backgroundColor: "white",
+                        shadowColor: 'transparent',
+                        elevation: 0,
+                        borderBottomWidth: 0    
+                    },
+                    headerTintColor: '#C10000'
+                }}
+            >
+            </Stack.Screen>
+            <Stack.Screen
+                name="CreateUser"
+                component={CreateUserScreen}
+                options={{
+                    title: "",
+                    headerStyle: {
+                        backgroundColor: "white",
+                        shadowColor: 'transparent',
+                        elevation: 0,
+                        borderBottomWidth: 0  
+                    },
+                    headerTintColor: '#C10000'
+                }}
+            >
+            </Stack.Screen>
+            <Stack.Screen
+                name="ResetPassword"
+                component={ResetPasswordScreen}
+                options={{
+                    title: "",
+                    headerStyle: {
+                        backgroundColor: "white",
+                        shadowColor: 'transparent',
+                        elevation: 0,
+                        borderBottomWidth: 0  
+                    },
+                    headerTintColor: '#C10000'
+                }}
+            >
+            </Stack.Screen>
+            <Stack.Screen
+                name="CreateEasyPin"
+                component={CreateEasyPinScreen}
+                options={{
+                    headerShown: false,
+                }}
+            >
+            </Stack.Screen>
+            <Stack.Screen
+                name="ConfirmEasyPin"
+                component={ConfirmEasyPinScreen}
+                options={{
+                    headerShown: false,
+                }}
+            >
+            </Stack.Screen>
+        </Stack.Navigator>
+    );
+}
+
 function HomeStackScreen() {
     return (
         <Stack.Navigator
@@ -48,6 +169,12 @@ function HomeStackScreen() {
                 headerTintColor: 'white'
             }}
         >
+            {/* <Stack.Screen
+                name="EasyPinLogin"
+                component={EasyPinLoginScreen}
+                options={{ headerShown: false }}
+            >   
+            </Stack.Screen> */}
             <Stack.Screen
                 name="Home"
                 component={HomeScreen}
@@ -145,7 +272,8 @@ function TransferStackScreen() {
                     },
                     headerTintColor: '#fff'
                 }}
-            ></Stack.Screen>
+            >
+            </Stack.Screen>
         </Stack.Navigator>
     );
 }
@@ -310,18 +438,22 @@ class RootNavigator extends React.Component {
     }
 
     render() {
-        const { isLogin } = this.props;
+        const { isLogin, isEasyPinLogin } = this.props;
         return (
             <NavigationContainer>
                 <Stack.Navigator>
                     {isLogin ? (
-                        <Stack.Screen options={{ headerShown: false }} name="HomeTab" component={HomeTabScreen} />
-                    ) : (
-                            <>
-                                <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
-                                <Stack.Screen name="Register" component={RegisterScreen} />
-                            </>
-                        )}
+                        <>
+                            <Stack.Screen options={{ headerShown: false }} name="EasyPinLogin" component={EasyPinLoginScreen} />
+                            <Stack.Screen options={{ headerShown: false }} name="HomeTab" component={HomeTabScreen} /> 
+                        </>
+                    ) 
+                    : 
+                    (
+                        <>
+                            <Stack.Screen options={{ headerShown: false }} name="Login" component={RegisterStackScreen} />
+                        </>
+                    )}
                 </Stack.Navigator>
             </NavigationContainer>
         );
@@ -329,7 +461,8 @@ class RootNavigator extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    isLogin: state.login.isLogin
+    isLogin: state.login.isLogin,
+    isEasyPinLogin: state.login.isEasyPinLogin
 })
 
 export default connect(mapStateToProps)(RootNavigator);
