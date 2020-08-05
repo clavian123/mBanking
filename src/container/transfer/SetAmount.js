@@ -11,6 +11,13 @@ import{
 
 class SetAmount extends React.Component{
 
+    constructor(props){
+        super(props);
+        this.state = {
+            amount: ''
+        }
+    }
+
     handleSelectAccount = () => {
         const{ navigation } = this.props;
         navigation.navigate('SelectSource');
@@ -28,7 +35,11 @@ class SetAmount extends React.Component{
 
                 <View style={styles.amountInputContainer}>
                     <Text style={styles.rpInputText}>Rp</Text>
-                    <TextInput keyboardType={"numeric"} style={styles.amountInput} placeholder = "0" />
+                    <TextInput 
+                        keyboardType={"numeric"} 
+                        style={styles.amountInput} 
+                        placeholder = "0"
+                    />
                     <Image style={styles.pencilIcon} source={require('../../../assets/icon-pencil.png')} />
                 </View>
 

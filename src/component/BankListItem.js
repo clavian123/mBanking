@@ -22,7 +22,6 @@ class BankListItem extends React.Component{
         if(this.props.id == 3){
             this.props.dispatch(checkAccountNumber(this.props.name, this.props.accNumber)).then(() => {
                 const{ destAcc } = this.props;
-                console.log(destAcc);
                 if(destAcc.accNumber == null){
                     this.props.dispatch(emptyAccountNumber());
                     ToastAndroid.show('Fail: Add Transfer List Fail', ToastAndroid.SHORT)
