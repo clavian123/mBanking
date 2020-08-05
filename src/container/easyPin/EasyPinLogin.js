@@ -49,7 +49,7 @@ class EasyPinLogin extends Component{
                 <Text style={styles.descriptionText}>Enter your 6 digit secure code</Text>
                 <TextInput 
                     style={styles.input} 
-                    tintColor={'white'} 
+                    selectionColor={'white'}
                     keyboardType='number-pad' 
                     maxLength={6} 
                     secureTextEntry={true} 

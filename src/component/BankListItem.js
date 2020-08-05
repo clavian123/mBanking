@@ -3,24 +3,54 @@ import {
     View,
     Text, 
     StyleSheet,
-    Image
+    Image,
+    TouchableOpacity,
+    ToastAndroid
 }from 'react-native';
+import { emptyAccountNumber } from '../action/transfer/transferAction'
+import { checkAccountNumber } from '../action/transfer/transferFunction';
+import { connect } from 'react-redux';
 
-export default class BankListItem extends React.Component{
+class BankListItem extends React.Component{
 
     constructor(props) {
         super(props);
     }
 
+    handlePress = () => {
+        const{ navigation } = this.props;
+        if(this.props.id == 3){
+            this.props.dispatch(checkAccountNumber(this.props.name, this.props.accNumber)).then(() => {
+                const{ destAcc } = this.props;
+                console.log(destAcc);
+                if(destAcc.accNumber == null){
+                    this.props.dispatch(emptyAccountNumber());
+                    ToastAndroid.show('Fail: Add Transfer List Fail', ToastAndroid.SHORT)
+                    navigation.navigate('SelectPayee', {buttonColor: '#FA8072'});
+                }else{
+                    navigation.navigate('SelectPayee', {buttonColor: '#C10000'});
+                }
+            })
+        }else{
+            this.props.dispatch(emptyAccountNumber());
+            const{ destAcc } = this.props;
+            console.log(destAcc)
+            navigation.navigate('SelectPayee', {buttonColor: '#FA8072'});
+            ToastAndroid.show('Fail: Add Transfer List Fail', ToastAndroid.SHORT);
+        }
+    }
+
     render(){
         return(
-            <View style={styles.container}>
-                <View style={styles.textContainer}>
-                    <Text style={styles.bankName} numberOfLines={2}>{this.props.name}</Text>
-                    <Text style={styles.bankCode}>{this.props.code}</Text>
+            <TouchableOpacity onPress={this.handlePress}>
+                <View style={styles.container}>
+                    <View style={styles.textContainer}>
+                        <Text style={styles.bankName} numberOfLines={2}>{this.props.name}</Text>
+                        <Text style={styles.bankCode}>{this.props.code}</Text>
+                    </View>
+                    <Image style={styles.nextIcon} source={require('../../assets/icon-next.png')} />
                 </View>
-                <Image style={styles.nextIcon} source={require('../../assets/icon-next.png')} />
-            </View>
+            </TouchableOpacity>
         )
     }
 
@@ -55,3 +85,9 @@ const styles = StyleSheet.create({
         marginVertical: 25
     }
 })
+
+const mapStateToProps = state => ({
+    destAcc: state.transfer.destAcc
+});
+
+export default connect(mapStateToProps)(BankListItem)

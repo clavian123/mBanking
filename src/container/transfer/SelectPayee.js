@@ -4,14 +4,20 @@ import{
     StyleSheet,
     Image,
     Text,
-    TouchableOpacity
+    TouchableOpacity,
+    ToastAndroid
 }from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
+import { connect } from 'react-redux';
+import { emptyAccountNumber } from '../../action/transfer/transferAction';
 
 class SelectPayee extends React.Component{
 
     constructor(props) {
         super(props);
+        this.state = {
+            buttonColor: '#FA8072'
+        }
     }
 
     handleAccNumber = () => {
@@ -20,16 +26,34 @@ class SelectPayee extends React.Component{
     }
 
     handleBankCode = () => {
-        const{ navigation } = this.props;
-        navigation.navigate('SelectBank');
+        const{ navigation, route } = this.props;
+        navigation.navigate('SelectBank', {
+            accNumber: route.params.accNumber
+        });
     }
 
     handleNext = () => {
-        const{ navigation } = this.props;
-        navigation.navigate('SetAmount');
+        const{ navigation, destAcc } = this.props;
+        if(destAcc.accNumber == ""){
+            ToastAndroid.show("Enter a valid destination account", ToastAndroid.SHORT)
+        }else{
+            navigation.navigate('SetAmount');
+        }
     }
 
+    handleButtonColor = () => {
+        const{ destAcc } = this.props;
+        if(destAcc.fullName == ""){
+            this.setState({buttonColor: '#FA8072'})
+        }else{
+            this.setState({buttonColor: '#C10000'})
+        }
+    } 
+
     render(){
+
+        const { destAcc, route } = this.props;
+
         return(
             <View style={styles.container}>
                 <View style={styles.selectLabel}>
@@ -46,7 +70,11 @@ class SelectPayee extends React.Component{
                     style={styles.inputContainer} > 
                     <View>
                         <Text style={{color: "#888888", fontSize: 15}}>Account Number</Text>
-                        <TextInput editable={false} style={styles.accNumberInput} value={this.props.route.params.destAccNumber}/>
+                        <TextInput 
+                            editable={false} 
+                            style={styles.accNumberInput} 
+                            value={this.props.route.params.accNumber} 
+                        />
                     </View>
                 </TouchableOpacity>
 
@@ -54,7 +82,7 @@ class SelectPayee extends React.Component{
                     onPress={this.handleBankCode}
                 >
                     <View style={styles.bankInputContainer}>
-                        <TextInput style={styles.bankCodeInput} editable={false} value={"Bank Name or Code"} />
+                        <TextInput style={styles.bankCodeInput} editable={false} value={destAcc.bankName} />
                         <Image style={styles.nextIcon} source={require('../../../assets/icon-next.png')} />
                     </View>
                 </TouchableOpacity>
@@ -62,6 +90,8 @@ class SelectPayee extends React.Component{
                 <TextInput 
                     style={styles.accNameInput}
                     placeholder="Account Name"
+                    value={destAcc.fullName}
+                    onChange={this.handleButtonColor}
                 />
 
                 <View style={styles.nextContainer}>
@@ -71,7 +101,7 @@ class SelectPayee extends React.Component{
                         </View>
                         <Text style={styles.attentionText}>Make sure payee name is correct</Text>
                     </View>
-                    <TouchableOpacity onPress={this.handleNext} style={styles.nextButton}>
+                    <TouchableOpacity onPress={this.handleNext} style={{...styles.nextButton, backgroundColor: route.params.buttonColor}}>
                         <Text style={styles.nextText}>NEXT</Text>
                     </TouchableOpacity>
                 </View>
@@ -189,7 +219,7 @@ const styles = StyleSheet.create({
     nextButton: {
         height: 50,
         width: '100%',
-        backgroundColor: 'red',
+        // backgroundColor: 'red',
         borderRadius: 30,
         marginVertical: 10
     },
@@ -201,4 +231,8 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SelectPayee;
+const mapStateToProps = state => ({
+    destAcc: state.transfer.destAcc
+});
+
+export default connect(mapStateToProps)(SelectPayee);

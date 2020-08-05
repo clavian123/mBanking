@@ -9,28 +9,36 @@ import {
 import { TextInput, FlatList } from 'react-native-gesture-handler';
 
 import { connect } from 'react-redux';
-import { getListClientDestination } from '../../action/transfer/transferFunction';
 import AccountListItem from '../../component/AccountListItem';
+import { emptyAccountNumber } from '../../action/transfer/transferAction';
 
 class Transfer extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      accNumber: ''
+      accNumber: '',
+      buttonColor: '#FA8072'
     };
   }
 
-  componentDidMount = () => {
-    const { accNumber } = this.props;
-    this.props.dispatch(getListClientDestination(accNumber));
+  handleChangeColor = () => {
+    if(this.state.accNumber.length >= 6){
+      this.setState({ buttonColor: "#C10000" });
+    }else{
+      this.setState({ buttonColor: "#FA8072" })
+    }
   }
 
   handleNextButton = () => {
     const{ navigation } = this.props;
-    navigation.navigate('SelectPayee', {
-      destAccNumber: this.state.accNumber
-    });
+    if(this.state.buttonColor == '#C10000'){
+      this.props.dispatch(emptyAccountNumber());
+      navigation.navigate('SelectPayee', {
+        accNumber: this.state.accNumber,
+        buttonColor: '#FA8072'
+      });
+    }
   }
 
   render() {
@@ -54,10 +62,10 @@ class Transfer extends React.Component {
             style={styles.textInputStyle}
             placeholder="Account number"
             keyboardType="numeric"
-            onChangeText={(text) => this.setState({ accNumber: text })}
+            onChangeText={(text) => this.setState({ accNumber: text }, this.handleChangeColor)}
           />
           <TouchableHighlight 
-            style={{...styles.nextButton, backgroundColor: this.state.accNumber ? 'red' : '#FA8072'}}
+            style={{...styles.nextButton, backgroundColor: this.state.buttonColor }}
             onPress={this.handleNextButton}
           >
             <Image
@@ -182,9 +190,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  accNumber: state.login.accNumber,
-  pin: state.login.pin,
-  listDest: state.transfer.listDest
+  easyPin: state.login.easyPin
 });
 
 export default connect(mapStateToProps)(Transfer);

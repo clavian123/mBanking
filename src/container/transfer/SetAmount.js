@@ -55,7 +55,7 @@ class SetAmount extends React.Component{
 
                 <Text style={styles.additionalText}>Additional information (optional)</Text>
 
-                <TextInput autoFocus={true} placeholder="Description" style={styles.descriptionInput}/>
+                <TextInput placeholder="Description" style={styles.descriptionInput}/>
 
                 <TouchableOpacity onPress={this.handleNext} style={styles.nextButton}>
                         <Text style={styles.nextText}>NEXT</Text>

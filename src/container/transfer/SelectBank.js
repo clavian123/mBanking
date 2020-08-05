@@ -8,36 +8,24 @@ import{
 }from 'react-native'
 import { TextInput, FlatList } from 'react-native-gesture-handler';
 import BankListItem from '../../component/BankListItem';
+import { connect } from 'react-redux';
+import { getBankList} from '../../action/transfer/transferFunction'
 
 class SelectBank extends React.Component{
 
     constructor(props) {
         super(props);
         this.state = {
-          bankList: [
-              {
-                  name: 'PT. BANK SINARMAS, TBK.',
-                  code: '153'
-              },
-              {
-                name: 'PT. BANK SINARMAS, TBK. UUS',
-                code: '153'
-              },
-              {
-                name: 'PT. BANK RAKYAT INDONESIA, TBK.',
-                code: '002'
-              },
-              {
-                name: 'PT. BANK MANDIRI, TBK.',
-                code: '008'
-              },
-              {
-                name: 'PT. BANK NEGARA INDONESIA TBK.',
-                code: '009'
-              }
-          ]
+          bankList: []
         };
-      }
+    }
+
+    componentDidMount(){
+        this.props.dispatch(getBankList()).then(() => {
+            const { bankList } = this.props;
+            this.setState({ bankList: bankList });
+        })
+    }
 
     render(){
         return(
@@ -59,7 +47,7 @@ class SelectBank extends React.Component{
                 <FlatList
                     data={this.state.bankList}
                     renderItem={({item}) => (
-                        <BankListItem name={item.name} code={item.code}/>
+                        <BankListItem navigation={this.props.navigation} accNumber={this.props.route.params.accNumber} id={item.id} name={item.bank_name} code={item.network_code}/>
                     )}
                 />
             </View>
@@ -109,4 +97,9 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SelectBank;
+const mapStateToProps = state => ({
+    bankList: state.transfer.bankList,
+    destAcc: state.transfer.destAcc
+});
+
+export default connect(mapStateToProps)(SelectBank);
