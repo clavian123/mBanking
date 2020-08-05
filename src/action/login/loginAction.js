@@ -5,7 +5,8 @@ import {
     LOGIN_SUCCESS,
     LOGOUT, 
     POST_VALIDATE_CLIENT_LOGIN, 
-    EASY_PIN_LOGIN
+    EASY_PIN_LOGIN,
+    POST_CLIENT_LOGIN_BEGIN
 } from '../index';
 
 export const syncStorageBegin = () => ({

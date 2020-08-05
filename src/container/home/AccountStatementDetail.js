@@ -44,24 +44,29 @@ class AccountStatementDetail extends React.Component {
                         <Text style={styles.headerText}> {statement.transaction_type} </Text>
                     </View>
                     <View style={styles.detailContainer}>
-                        <Text style={styles.title}>Transaction ID</Text>
+                        <Text style={styles.title}> Transaction ID</Text>
                         <Text style={styles.value}> {statement.transaction_reference_number} </Text>
                     </View>
                     <View style={styles.detailContainer}>
-                        <Text style={styles.title}>Time</Text>
+                        <Text style={styles.title}> Time</Text>
                         <Text style={styles.value}> {moment(statement.posting_date).format('DD MMMM YYYY - HH:mm')} </Text>
                     </View>
                     <View style={styles.detailContainer}>
-                        <Text style={styles.title}>Amount</Text>
-                        <Text style={styles.value}>{statement.amount < 0 ? "-" : null} {statement.currency} {numberWithCommas(statement.amount < 0 ? statement.amount*-1 : statement.amount*1)} </Text>
+                        <Text style={styles.title}> Amount</Text>
+                        <Text style={styles.value}>{statement.amount < 0 ? " -" : null} {statement.currency} {numberWithCommas(statement.amount < 0 ? statement.amount*-1 : statement.amount*1)} </Text>
                     </View>
                     <View style={styles.detailContainer}>
-                        <Text style={styles.title}>From</Text>
-                        <Text style={styles.value}> {statement.account.accountNumber} - {statement.account.account_name} </Text>
+                        <Text style={styles.title}> From </Text>
+                        <Text style={styles.value}> {(statement.amount < 0 ? statement.account.accountNumber + " - " + statement.account.account_name : statement.detail).toUpperCase()} </Text>
+                        
                     </View>
                     <View style={styles.detailContainer}>
-                        <Text style={styles.title}>Detail</Text>
-                        <Text style={styles.value}> {statement.detail} </Text>
+                        <Text style={styles.title}> To</Text>
+                        <Text style={styles.value}> {(statement.amount < 0 ? statement.detail : statement.account.accountNumber + " - " + statement.account.account_name).toUpperCase()} </Text>
+                    </View>
+                    <View style={styles.detailContainer}>
+                        <Text style={styles.title}> Description</Text>
+                        <Text style={styles.value}> {statement.customer_note ? statement.customer_note : "-"} </Text>
                     </View>
                 </View>
             )
@@ -71,38 +76,34 @@ class AccountStatementDetail extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        width: "90%",
-        alignSelf: "center",
-        alignContent: "center",
-        alignItems: "center",
         backgroundColor: 'white',
-        marginTop: 10,
-        elevation: 5,
-        borderRadius: 15
+        flex: 1,
     },
+
     headerContainer: {
         height: '15%',
-        width: '100%',
+        width: '90%',
         justifyContent: 'center',
-        padding: 20,
         alignSelf: 'center',
-        backgroundColor: '#c10000',
-        borderTopLeftRadius: 15,
-        borderTopRightRadius: 15
+        borderBottomColor: 'grey',
+        borderBottomWidth: 1
     },
+
     headerText:{
         fontWeight: 'bold',
         fontSize: 20,
-        color: 'white',
     },
+
     detailContainer:{
         width: '100%',
         padding: 10,
         paddingLeft: 20,
     },
+
     title:{
         fontSize: 16
     },
+
     value:{
         fontSize: 18,
         fontWeight: 'bold'

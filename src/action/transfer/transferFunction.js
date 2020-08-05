@@ -42,7 +42,7 @@ PushNotification.configure({
 });
 
 export function getBankList() {
-    let address = "http://192.168.100.174:8080/targetBank";
+    let address = "http://localhost:8080/targetBank";
     return dispatch => {
         dispatch(getBankListBegin());
         return axios.post(address).then(
@@ -60,7 +60,7 @@ export function checkAccountNumber(bankName, accNumber) {
     let req = {
         accNumber: accNumber
     }
-    let address = "http://192.168.100.174:8080/findAccountDummyByAccountNumber";
+    let address = "http://localhost:8080/findAccountDummyByAccountNumber";
     return dispatch => {
         dispatch(checkAccountNumberBegin());
         return axios.post(address, req).then(

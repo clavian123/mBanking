@@ -67,7 +67,7 @@ class StatementList extends React.Component {
 
                                 <View style={styles.viewSubLeft}>
                                     <Text style={styles.textDate}>{moment(statement.created_date).format('DD/MM/YY')}</Text>
-                                    <Text style={styles.textTitle}>{(statement.detail).toUpperCase()}</Text>
+                                    <Text style={styles.textTitle}>{statement.amount > 0 ? "FROM " + (statement.detail.replace(/\D/g, "")) : "TO " + (statement.detail.replace(/\D/g, ""))}</Text>
                                     <Text style={styles.textNote}>{statement.note}</Text>
                                 </View>
                                 <View style={styles.viewSubRight}>

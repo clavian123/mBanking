@@ -33,24 +33,9 @@ export function handleSyncStorage() {
 
 export function handleLogin(name, cif_code, easyPin) {
     return dispatch => {
-        dispatch(postClientLoginBegin());
-        return axios.post(address, userLogin).then(
-            (res) => {
-                if (res.data != "") {
-                    // console.log(res.data.customer.cifCode)
-                    dispatch(loginSuccess(name, cif_code, easyPin));
-                    syncLoginToStorage(name, cif_code, easyPin);
-                    dispatch(postValidateClientLogin(true));
-                } else {
-                    alert('Your Username or Password is wrong!');
-                    dispatch(postClientLoginFailure('Your Username or Password is wrong!'));
-                }
-            }, (error) => {
-                console.log(error);
-                alert('Your Username or Password is wrong!');
-                dispatch(postClientLoginFailure(error));
-            }
-        )
+        dispatch(loginSuccess(name, cif_code, easyPin));
+        syncLoginToStorage(name, cif_code, easyPin);
+        dispatch(postValidateClientLogin(true));
     }
 };
 

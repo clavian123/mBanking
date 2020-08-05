@@ -43,7 +43,7 @@ export function checkPan(pan){
     let req = ({
         pan: pan
     });
-    let address = "http://192.168.100.174:8080/getCustomerDummyByPAN";
+    let address = "http://localhost:8080/getCustomerDummyByPAN";
     return dispatch => {
         dispatch(checkPanBegin());
         return axios.post(address, req).then(
@@ -64,7 +64,7 @@ export function getRegisterToken(customer){
         customer: customer
     });
 
-    let address = "http://192.168.100.174:8080/saveRegisterOtp";
+    let address = "http://localhost:8080/saveRegisterOtp";
     return dispatch => {
         dispatch(getRegisterTokenBegin());
         return axios.post(address, req).then(
@@ -86,7 +86,7 @@ export function validateRegisterToken(customer, token){
         token: token
     });
 
-    let address = "http://192.168.100.174:8080/validateRegisterOtp";
+    let address = "http://localhost:8080/validateRegisterOtp";
     return dispatch => {
         dispatch(validateRegisterTokenBegin());
         return axios.post(address, req). then(
@@ -106,7 +106,7 @@ export function validatePin(customer, pin){
         pin: pin
     });
 
-    let address = "http://192.168.100.174:8080/validatePIN";
+    let address = "http://localhost:8080/validatePIN";
     return dispatch => {
         dispatch(validatePinBegin());
         return axios.post(address, req).then(
@@ -125,7 +125,7 @@ export function checkCustomer(cifcode){
         cif_code: cifcode
     });
 
-    let address = "http://192.168.100.174:8080/getCustomerByCifCode";
+    let address = "http://localhost:8080/getCustomerByCifCode";
 
     return dispatch => {
         dispatch(checkCustomerBegin());
@@ -145,7 +145,7 @@ export function checkUsername(username){
         username: username
     }
 
-    let address = "http://192.168.100.174:8080/checkUsername";
+    let address = "http://localhost:8080/checkUsername";
 
     return dispatch => {
         dispatch(checkUsernameBegin());
@@ -168,7 +168,7 @@ export function createNewUser(username, password, customer, status){
         status: status
     }
 
-    let address = "http://192.168.100.174:8080/saveNewUser";
+    let address = "http://localhost:8080/saveNewUser";
 
     return dispatch => {
         dispatch(createNewUserBegin());
@@ -188,7 +188,7 @@ export function getUser(customer){
         customer: customer
     }
 
-    let address = "http://192.168.100.174:8080/getUserByCustomer";
+    let address = "http://localhost:8080/getUserByCustomer";
 
     return dispatch => {
         dispatch(getUserBegin());
@@ -209,7 +209,7 @@ export function resetUserPassword(username, password){
         password: password
     }
 
-    let address = "http://192.168.100.174:8080/resetUserPassword";
+    let address = "http://localhost:8080/resetUserPassword";
 
     return dispatch => {
         dispatch(resetUserPasswordBegin());
@@ -229,7 +229,7 @@ export function login(username, password){
         username: username,
         password: password
     }
-    let address = "http://192.168.100.174:8080/login";
+    let address = "http://localhost:8080/login";
 
     return dispatch => {
         dispatch(loginBegin());
@@ -253,7 +253,7 @@ export function getLoginToken(cif_code){
     let req = {
         cif_code: cif_code
     }
-    let address = "http://192.168.100.174:8080/saveLoginOtp";
+    let address = "http://localhost:8080/saveLoginOtp";
 
     return dispatch => {
         dispatch(getLoginOtpBegin());
@@ -273,7 +273,7 @@ export function validateLoginToken(cif_code, token){
         cif_code: cif_code,
         token: token
     }
-    let address = "http://192.168.100.174:8080/validateLoginOtp";
+    let address = "http://localhost:8080/validateLoginOtp";
 
     return dispatch => {
         dispatch(validateLoginTokenBegin());
