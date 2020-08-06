@@ -6,15 +6,21 @@ import{
     StyleSheet,
     Image,
     CheckBox,
-    TouchableOpacity
+    TouchableOpacity,
+    ScrollView,
+    ToastAndroid,
 }from 'react-native';
+
+import {numberWithCommas} from '../../generalFunction';
+import {connect} from 'react-redux';
 
 class SetAmount extends React.Component{
 
     constructor(props){
-        super(props);
-        this.state = {
-            amount: ''
+        super(props)
+        this.state={
+            amount: '',
+            description: ''
         }
     }
 
@@ -23,9 +29,23 @@ class SetAmount extends React.Component{
         navigation.navigate('SelectSource');
     }
 
+    handleNext = () => {
+        const { destAcc, navigation } = this.props;
+        console.log(destAcc)
+        if(destAcc.bankCode == '153'){
+            navigation.navigate('Confirmation');
+        }else{
+            navigation.navigate('SendMoneyMethod');
+        }
+    }
+
     render(){
+
+        const { params } = this.props.route
+        console.log(params);
+    
         return(
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
                 <View style={styles.setAmountLabelContainer}>
                     <View style={styles.rpIconContainer}>
                         <Text style={styles.rpIconText}>Rp</Text>
@@ -36,17 +56,17 @@ class SetAmount extends React.Component{
                 <View style={styles.amountInputContainer}>
                     <Text style={styles.rpInputText}>Rp</Text>
                     <TextInput 
-                        keyboardType={"numeric"} 
-                        style={styles.amountInput} 
-                        placeholder = "0"
-                    />
+                        keyboardType={"numeric"}
+                        style={styles.amountInput}
+                        placeholder="0" 
+                        onChangeText={(amount) => this.setState({amount:amount})}/>
                     <Image style={styles.pencilIcon} source={require('../../../assets/icon-pencil.png')} />
                 </View>
 
-                <View style={styles.scheduleTransferContainer}>
+                {/* <View style={styles.scheduleTransferContainer}>
                     <CheckBox />
                     <Text style={styles.scheduleTranferText}>Schedule transfer</Text>
-                </View>
+                </View> */}
 
                 <View style={styles.line}/>
 
@@ -62,16 +82,30 @@ class SetAmount extends React.Component{
                     <Image style={styles.moreIcon} source={require('../../../assets/icon-more.png')}/>
                 </TouchableOpacity>
 
+                {
+                    params ? 
+                    <View style={{...styles.sourceAccountDetailContainer, height: params ? null : 0}}>
+                        <Text style={styles.sourceAccountDetailTitle}>{params.sourceAccNumber}</Text>
+                        <Text>{params.sourceAccName.toUpperCase()}</Text>
+                        <Text>{params.sourceAccType}</Text>
+                        <Text style={{fontWeight: 'bold'}}>Balance: Rp {numberWithCommas(params.sourceAccBalance)}</Text>
+                    </View>
+                    : null
+                }
+
                 <View style={styles.line}/>
 
                 <Text style={styles.additionalText}>Additional information (optional)</Text>
 
-                <TextInput placeholder="Description" style={styles.descriptionInput}/>
+                <TextInput
+                    placeholder="Description"
+                    style={styles.descriptionInput}
+                    onChangeText={(description) => this.setState({description:description})}/>
 
                 <TouchableOpacity onPress={this.handleNext} style={styles.nextButton}>
                         <Text style={styles.nextText}>NEXT</Text>
                 </TouchableOpacity>
-            </View>
+            </ScrollView>
         )
     }
 }
@@ -204,13 +238,27 @@ const styles = StyleSheet.create({
         backgroundColor: 'red',
         borderRadius: 30,
         marginHorizontal: 20,
+        marginBottom: 10
     },
     nextText: {
         textAlign: 'center',
         paddingVertical: 15,
         fontSize: 16,
         color: 'white'
-    }
-})
+    },
+    sourceAccountDetailContainer:{
+        width: '90%',
+        alignSelf: 'center'
+    },
+    sourceAccountDetailTitle:{
+        fontWeight: 'bold',
+        fontSize: 17
+    },
 
-export default SetAmount;
+});
+
+const mapStateToProps = state => ({
+    destAcc: state.transfer.destAcc
+});
+
+export default connect(mapStateToProps)(SetAmount);

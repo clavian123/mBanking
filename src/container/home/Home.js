@@ -46,8 +46,8 @@ class Home extends React.Component {
   componentDidMount() {
     this._isMounted = true;
     const { cif_code } = this.props;
-    this.props.dispatch(getBalance(cif_code));
-    // this.props.dispatch(getStatements(cif_code));
+    this.props.getBalanceAndStatement(cif_code)
+    
   }
 
   componentWillUnmount() {
@@ -60,13 +60,6 @@ class Home extends React.Component {
       isDetailVisible: !this.state.isDetailVisible
     })
   }
-
-  // handleStatementClicked = () => {
-  //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-  //   this.setState({
-  //     isStatementVisible: !this.state.isStatementVisible,
-  //   })
-  // }
 
   countTotalBalance = (balance) => {
     var balanceNumber = 0;
@@ -85,10 +78,7 @@ class Home extends React.Component {
       refreshing: true,
     })
     const { cif_code, loading } = this.props
-    // const {loading} = this.props
-    // const {customerId} = this.state
-    this.props.dispatch(getBalance(cif_code));
-    this.props.dispatch(getStatements(cif_code));
+    this.props.getBalanceAndStatement(cif_code)
     if(!loading){
       this.setState({refreshing: false})
     }
@@ -306,4 +296,11 @@ const mapStateToProps = state => ({
   isLogin: state.login.isLogin
 })
 
-export default connect(mapStateToProps)(Home);
+const mapDispatchToProps = dispatch => ({
+  getBalanceAndStatement: cif_code => {
+    dispatch(getStatements(cif_code));
+    dispatch(getBalance(cif_code))
+  }
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

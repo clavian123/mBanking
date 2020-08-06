@@ -3,8 +3,11 @@ import{
     View,
     Text,
     Image,
-    StyleSheet
+    StyleSheet,
+    TouchableOpacity,
 }from 'react-native';
+
+import { numberWithCommas } from '../generalFunction';
 
 export default class SourceAccountListItem extends React.Component{
 
@@ -12,18 +15,28 @@ export default class SourceAccountListItem extends React.Component{
         super(props);
     }
 
+    handleAccountClicked(){
+        const { navigation } = this.props;
+        navigation.navigate("SetAmount", {
+           sourceAccNumber: this.props.number,
+           sourceAccName: this.props.name,
+           sourceAccType: this.props.type,
+           sourceAccBalance: this.props.balance
+        })
+    }
+
     render(){
         return(
-            <View style={styles.container}>
+            <TouchableOpacity style={styles.container} onPress={() => this.handleAccountClicked()}>
                 <Image style={styles.cardIcon} source={require('../../assets/icon-card.png')}/>
                 <View>
                     <Text sytle={styles.numberText}>{this.props.number}</Text>
                     <Text style={styles.typeText}>{this.props.type}</Text>
                     <Text style={styles.nameText}>{this.props.name}</Text>
-                    <Text style={styles.balanceText}>Available balance Rp {this.props.balance}</Text>
+                    <Text style={styles.balanceText}>Available balance Rp {numberWithCommas(this.props.balance)}</Text>
                 </View> 
                 <Image style={styles.nextIcon} source={require('../../assets/icon-next.png')}/>
-            </View>
+            </TouchableOpacity>
         )
     }
 }
@@ -34,7 +47,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         backgroundColor: 'white',
         width: '100%',
-        paddingVertical: 10
+        paddingVertical: 10,
     },
     cardIcon: {
         width: 50,

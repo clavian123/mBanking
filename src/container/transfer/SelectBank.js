@@ -5,7 +5,8 @@ import{
     StyleSheet,
     Image,
     Text
-}from 'react-native'
+} from 'react-native';
+
 import { TextInput, FlatList } from 'react-native-gesture-handler';
 import BankListItem from '../../component/BankListItem';
 import { connect } from 'react-redux';
