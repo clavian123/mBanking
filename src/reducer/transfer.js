@@ -21,7 +21,10 @@ import {
     CHECK_ACCOUNT_NUMBER_BEGIN,
     CHECK_ACCOUNT_NUMBER_SUCCESS,
     CHECK_ACCOUNT_NUMBER_FAILURE,
-    EMPTY_TARGET_ACCOUNT
+    EMPTY_TARGET_ACCOUNT,
+    SET_SOURCE_ACCOUNT_BEGIN,
+    SET_SOURCE_ACCOUNT_SUCCESS,
+    SET_SOURCE_ACCOUNT_FAILURE,
 } from '../action/index';
 
 initialState = {
@@ -29,6 +32,11 @@ initialState = {
         bankName: 'Bank Name or Code',
         accNumber: '',
         fullName: '',
+    },
+    sourceAcc:{
+        accNumber:'',
+        fullName: '',
+        balance: ''
     },
     token: '',
     listDest: [],
@@ -92,6 +100,30 @@ const transfer = (state = initialState, action) => {
                     accNumber: '',
                     fullName: ''
                 }
+            }
+
+        case SET_SOURCE_ACCOUNT_BEGIN:
+            return{
+                ...state,
+                loading: true,
+            }
+
+        case SET_SOURCE_ACCOUNT_SUCCESS:
+            return{
+                ...state,
+                sourceAcc: {
+                    accNumber: action.accNumber,
+                    fullName: action.fullName,
+                    balance: action.balance,
+                },
+                loading: false,
+            }
+
+        case SET_SOURCE_ACCOUNT_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.error
             }
         
         // case CHECK_CLIENT_DESTINATION_BEGIN:

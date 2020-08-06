@@ -8,6 +8,7 @@ import{
 }from 'react-native';
 
 import { numberWithCommas } from '../generalFunction';
+import { setSourceAccount } from '../action/transfer/transferFunction';
 
 export default class SourceAccountListItem extends React.Component{
 
@@ -17,12 +18,14 @@ export default class SourceAccountListItem extends React.Component{
 
     handleAccountClicked(){
         const { navigation } = this.props
+        this.props.dispatch(setSourceAccount(this.props.number, this.props.name, this.props.balance))        
         navigation.navigate("SetAmount", {
            sourceAccNumber: this.props.number,
            sourceAccName: this.props.name,
            sourceAccType: this.props.type,
            sourceAccBalance: this.props.balance
         })
+        
     }
 
     render(){

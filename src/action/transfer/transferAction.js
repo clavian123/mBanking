@@ -21,7 +21,10 @@ import {
     CHECK_ACCOUNT_NUMBER_BEGIN,
     CHECK_ACCOUNT_NUMBER_SUCCESS,
     CHECK_ACCOUNT_NUMBER_FAILURE,
-    EMPTY_TARGET_ACCOUNT
+    EMPTY_TARGET_ACCOUNT,
+    SET_SOURCE_ACCOUNT_BEGIN,
+    SET_SOURCE_ACCOUNT_SUCCESS,
+    SET_SOURCE_ACCOUNT_FAILURE,
 } from '../index';
 
 export const getBankListBegin = () => ({
@@ -57,6 +60,17 @@ export const checkAccountNumberFailure = (error) => ({
 export const emptyAccountNumber = () => ({
     type: EMPTY_TARGET_ACCOUNT
 });
+
+export const setSourceAccountSuccess = (accNumber, fullName, balance) => ({
+    type: SET_SOURCE_ACCOUNT_SUCCESS,
+    accNumber,
+    fullName,
+    balance
+})
+
+export const setSourceAccountFailure = () => ({
+    type: SET_SOURCE_ACCOUNT_FAILURE
+})
 
 // export const checkClientDestinationBegin = () => ({
 //     type: CHECK_CLIENT_DESTINATION_BEGIN

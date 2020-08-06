@@ -22,7 +22,8 @@ import {
     getBankListFailure,
     checkAccountNumberBegin,
     checkAccountNumberSuccess,
-    checkAccountNumberFailure
+    checkAccountNumberFailure,
+    setSourceAccountSuccess,
 } from './transferAction';
 
 import store from '../../store/index';
@@ -77,6 +78,12 @@ export function checkAccountNumber(bankName, accNumber) {
         )
     }
 }
+
+export function setSourceAccount(accNumber, fullName, balance) {
+    return dispatch => {
+        dispatch(setSourceAccountSuccess(accNumber, fullName, balance));
+    }
+};
 
 // export function checkClientDestination(accNumber) {
 //     let req = accNumber;

@@ -11,6 +11,7 @@ import{
 }from 'react-native';
 
 import {numberWithCommas} from '../../generalFunction'
+import { connect } from 'react-redux';
 
 class SetAmount extends React.Component{
 
@@ -27,11 +28,13 @@ class SetAmount extends React.Component{
         navigation.navigate('SelectSource');
     }
 
+    handleNext = () => {
+        console.log(this.state.amount, this.state.description, this.props.sourceAcc);
+    }
+
     render(){
 
         const { params } = this.props.route
-        console.log(params);
-        
 
         return(
             <ScrollView style={styles.container}>
@@ -248,4 +251,9 @@ const styles = StyleSheet.create({
 
 })
 
-export default SetAmount;
+const mapStateToProps = state => ({
+    sourceAcc: state.transfer.sourceAcc,
+    transfer: state.transfer
+})
+
+export default connect(mapStateToProps)(SetAmount);

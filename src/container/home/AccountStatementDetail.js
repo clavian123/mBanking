@@ -25,10 +25,6 @@ class AccountStatementDetail extends React.Component {
         this.setState({ search });
     }
 
-    componentDidMount = () => {
-        console.log(this.props.route.params.statement[0]);
-    }
-
     render() {
         var moment = require('moment');
         const { loading } = this.props;
