@@ -12,26 +12,6 @@ class SelectSourceAccount extends React.Component{
 
     constructor(props) {
         super(props);
-        // this.state = {
-        //   account: [
-        //       {
-        //           number: '123898890111',
-        //           type: 'Emoney Account',
-        //           name: 'Jun Chandra',
-        //           balance: '-'
-        //       },
-        //       {
-        //           number: '000231233',
-        //           type: 'Tabunganku',
-        //           name: 'Jun Chandra',
-        //           balance: '-'
-        //       }
-        //   ]
-        // };
-    }
-
-    handleAccountClicked(){
-        
     }
 
     render(){

@@ -4,10 +4,10 @@ import{
     Text,
     Image,
     StyleSheet,
-    TouchableOpacity
+    TouchableOpacity,
 }from 'react-native';
 
-import { numberWithCommas } from '../generalFunction';
+import { numberWithDot } from '../generalFunction';
 import { setSourceAccount } from '../action/transfer/transferFunction';
 
 export default class SourceAccountListItem extends React.Component{
@@ -24,7 +24,7 @@ export default class SourceAccountListItem extends React.Component{
            sourceAccName: this.props.name,
            sourceAccType: this.props.type,
            sourceAccBalance: this.props.balance
-        })
+        });
         
     }
 
@@ -36,7 +36,7 @@ export default class SourceAccountListItem extends React.Component{
                     <Text sytle={styles.numberText}>{this.props.number}</Text>
                     <Text style={styles.typeText}>{this.props.type}</Text>
                     <Text style={styles.nameText}>{this.props.name}</Text>
-                    <Text style={styles.balanceText}>Available balance Rp {numberWithCommas(this.props.balance)}</Text>
+                    <Text style={styles.balanceText}>Available balance Rp {numberWithDot(this.props.balance)}</Text>
                 </View> 
                 <Image style={styles.nextIcon} source={require('../../assets/icon-next.png')}/>
             </TouchableOpacity>

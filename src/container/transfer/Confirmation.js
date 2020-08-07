@@ -13,6 +13,7 @@ import { Icon } from 'react-native-elements'
 import { connect } from 'react-redux';
 
 import { numberWithCommas } from '../../generalFunction'
+import { numberWithDot } from '../../generalFunction';
 import moment from 'moment';
 
 
@@ -24,10 +25,15 @@ class Confirmation extends React.Component {
         }
     }
 
+    handleEditAmountClicked(){
+        const {navigation} = this.props
+        navigation.goBack()
+    }
+
     render() {
 
         var date = moment().utcOffset('+07:00').format('dddd, DD MMM YYYY')
-
+        const {sourceAcc, destAcc, amount, note} = this.props
         return (
             <ScrollView style={styles.container}>
 
@@ -35,8 +41,8 @@ class Confirmation extends React.Component {
 
                 <View style={styles.amountContainer}>
                     <Text style={styles.currency}>Rp</Text>
-                    <TextInput style={styles.amount} value={"asdasd"}></TextInput>
-                    <TouchableOpacity style={styles.editAmountButton}>
+                    <TextInput style={styles.amount} value={"Rp " + numberWithDot(amount.toString())}></TextInput>
+                    <TouchableOpacity style={styles.editAmountButton} onPress={()=>this.handleEditAmountClicked()}>
                         <Icon
                             name="md-add-circle"
                             type="ionicon"
@@ -52,8 +58,8 @@ class Confirmation extends React.Component {
                         type="entypo"
                         iconStyle={styles.walletIcon}></Icon>
                     <View>
-                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>1234567890</Text>
-                        <Text>CLAVIAN CANDRIAN</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{sourceAcc.accNumber}</Text>
+                        <Text>{sourceAcc.fullName}</Text>
                         <Text>Tabunganku</Text>
                     </View>
                 </View>
@@ -69,9 +75,9 @@ class Confirmation extends React.Component {
                         type="ionicon"
                         iconStyle={styles.personIcon}></Icon>
                     <View>
-                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>NOMOR REKENING TUJUAN</Text>
-                        <Text>NAMA REKENING TUJUAN</Text>
-                        <Text>NAMA BANK TUJUAN</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{destAcc.accNumber}</Text>
+                        <Text>{destAcc.fullName.toUpperCase()}</Text>
+                        <Text>{destAcc.bankName}</Text>
                     </View>
                 </View>
 
@@ -79,7 +85,7 @@ class Confirmation extends React.Component {
 
                 <View style={styles.noteContainer}>
                     <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Notes</Text>
-                    <Text>asjkndkajn</Text>
+                    <Text>{note}</Text>
                 </View>
 
                 <View style={styles.alertContainer}>
@@ -216,6 +222,9 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     sourceAcc: state.transfer.sourceAcc,
+    destAcc: state.transfer.destAcc,
+    amount: state.transfer.amount,
+    note: state.transfer.note,
 })
 
 export default connect(mapStateToProps)(Confirmation)

@@ -19,25 +19,16 @@ class BankListItem extends React.Component{
 
     handlePress = () => {
         const{ navigation } = this.props;
-        if(this.props.id == 3){
-            this.props.dispatch(checkAccountNumber(this.props.name, this.props.accNumber)).then(() => {
-                const{ destAcc } = this.props;
-                console.log(destAcc);
-                if(destAcc.accNumber == null){
-                    this.props.dispatch(emptyAccountNumber());
-                    ToastAndroid.show('Fail: Add Transfer List Fail', ToastAndroid.SHORT)
-                    navigation.navigate('SelectPayee', {buttonColor: '#FA8072'});
-                }else{
-                    navigation.navigate('SelectPayee', {buttonColor: '#C10000'});
-                }
-            })
-        }else{
-            this.props.dispatch(emptyAccountNumber());
+        this.props.dispatch(checkAccountNumber(this.props.code, this.props.name, this.props.accNumber)).then(() => {
             const{ destAcc } = this.props;
-            console.log(destAcc)
-            navigation.navigate('SelectPayee', {buttonColor: '#FA8072'});
-            ToastAndroid.show('Fail: Add Transfer List Fail', ToastAndroid.SHORT);
-        }
+            if(destAcc.accNumber == null){
+                this.props.dispatch(emptyAccountNumber());
+                ToastAndroid.show('Fail: Add Transfer List Fail', ToastAndroid.SHORT)
+                navigation.navigate('SelectPayee', {buttonColor: '#FA8072'});
+            }else{
+                navigation.navigate('SelectPayee', {buttonColor: '#C10000'});
+            }
+        })
     }
 
     render(){

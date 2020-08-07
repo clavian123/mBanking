@@ -29,7 +29,6 @@ class EasyPinLogin extends Component{
 
     handleContinue = () => {
         const { easyPin, navigation } = this.props;
-        console.log(easyPin, this.state.pin)
         if(this.state.pin != easyPin){
             ToastAndroid.show("Please enter a valid EasyPIN", ToastAndroid.SHORT);
         }else{
@@ -49,7 +48,7 @@ class EasyPinLogin extends Component{
                 <Text style={styles.descriptionText}>Enter your 6 digit secure code</Text>
                 <TextInput 
                     style={styles.input} 
-                    selectionColor={'white'}
+                    selectionColor="#FFFFFF"
                     keyboardType='number-pad' 
                     maxLength={6} 
                     secureTextEntry={true} 

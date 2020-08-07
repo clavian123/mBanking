@@ -10,7 +10,7 @@ import {
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements'
 
-import { numberWithCommas } from '../generalFunction'
+import { numberWithDot } from '../generalFunction'
 import { getStatements } from '../action/home/homeFunction';
 import StatementList from '../component/StatementList';
 import Loading from '../Loading';
@@ -95,7 +95,7 @@ class AccountCard extends React.Component {
                         }
 
                     </View>
-                    <Text style={styles.balanceText}>IDR {this.state.isBalanceVisible ? this.props.balance ? numberWithCommas(this.props.balance) : "--" : "--"}</Text>
+                    <Text style={styles.balanceText}>IDR {this.state.isBalanceVisible ? this.props.balance ? numberWithDot(this.props.balance) : "--" : "--"}</Text>
                     <View style={styles.accNumberContainer}>
                         <Text style={styles.accNumberTitle}>Account Number: </Text>
                         <Text style={styles.accNumberValue}>{this.props.accNumber}</Text>

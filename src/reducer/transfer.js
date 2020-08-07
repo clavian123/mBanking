@@ -1,20 +1,4 @@
 import {
-    // CHECK_CLIENT_DESTINATION_BEGIN,
-    // CHECK_CLIENT_DESTINATION_SUCCESS,
-    // CHECK_CLIENT_DESTINATION_EMPTY,
-    // CHECK_CLIENT_DESTINATION_FAILURE,
-    // SAVE_CLIENT_DESTINATION_BEGIN,
-    // SAVE_CLIENT_DESTINATION_SUCCESS,
-    // SAVE_CLIENT_DESTINATION_FAILURE,
-    // GET_LIST_CLIENT_DESTINATION_BEGIN,
-    // GET_LIST_CLIENT_DESTINATION_SUCCESS,
-    // GET_LIST_CLIENT_DESTINATION_FAILURE,
-    // GET_CLIENT_TOKEN_BEGIN,
-    // GET_CLIENT_TOKEN_SUCCESS,
-    // GET_CLIENT_TOKEN_FAILURE,
-    // TRANSFER_PROCESS_BEGIN,
-    // TRANSFER_PROCESS_SUCCESS,
-    // TRANSFER_PROCESS_FAILURE,
     GET_BANK_LIST_BEGIN,
     GET_BANK_LIST_SUCCESS,
     GET_BANK_LIST_FAILURE,
@@ -22,13 +6,19 @@ import {
     CHECK_ACCOUNT_NUMBER_SUCCESS,
     CHECK_ACCOUNT_NUMBER_FAILURE,
     EMPTY_TARGET_ACCOUNT,
-    SET_SOURCE_ACCOUNT_BEGIN,
+    SET_TRANSFER_AMOUNT,
+    SET_TRANSFER_NOTE,
     SET_SOURCE_ACCOUNT_SUCCESS,
-    SET_SOURCE_ACCOUNT_FAILURE,
+    GET_METHOD_LIST_BEGIN,
+    GET_METHOD_LIST_SUCCESS,
+    GET_METHOD_LIST_FAILURE,
+    SET_SEND_METHOD,
+    CLEAR_SEND_METHOD
 } from '../action/index';
 
 initialState = {
     destAcc: {
+        bankCode: '',
         bankName: 'Bank Name or Code',
         accNumber: '',
         fullName: '',
@@ -38,6 +28,10 @@ initialState = {
         fullName: '',
         balance: ''
     },
+    amount: '',
+    note: '',
+    methodList: '',
+    sendMethod: '',
     token: '',
     listDest: [],
     bankList: [],
@@ -78,6 +72,7 @@ const transfer = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 destAcc: {
+                    bankCode: action.bankCode,
                     bankName: action.bankName,
                     accNumber: action.accNumber,
                     fullName: action.fullName
@@ -102,10 +97,18 @@ const transfer = (state = initialState, action) => {
                 }
             }
 
-        case SET_SOURCE_ACCOUNT_BEGIN:
+        case SET_TRANSFER_AMOUNT:
             return{
                 ...state,
-                loading: true,
+                loading: false,
+                amount: action.amount
+            }
+
+        case SET_TRANSFER_NOTE:
+            return {
+                ...state,
+                loading: false,
+                note: action.note
             }
 
         case SET_SOURCE_ACCOUNT_SUCCESS:
@@ -119,138 +122,38 @@ const transfer = (state = initialState, action) => {
                 loading: false,
             }
 
-        case SET_SOURCE_ACCOUNT_FAILURE:
-            return {
+        case GET_METHOD_LIST_BEGIN:
+            return{
+                ...state,
+                loading: true
+            }
+
+        case GET_METHOD_LIST_SUCCESS:
+            return{
+                ...state,
+                loading: false,
+                methodList: action.methodList
+            }
+
+        case GET_METHOD_LIST_FAILURE:
+            return{
                 ...state,
                 loading: false,
                 error: action.error
             }
-        
-        // case CHECK_CLIENT_DESTINATION_BEGIN:
-        //     return {
-        //         ...state,
-        //         newDest: {
-        //             accNumber: '',
-        //             fullName: ''
-        //         },
-        //         loading: true
-        //     };
 
-        // case CHECK_CLIENT_DESTINATION_SUCCESS:
-        //     return {
-        //         ...state,
-        //         loading: false,
-        //         newDest: {
-        //             accNumber: action.accNumber,
-        //             fullName: action.fullName
-        //         }
-        //     };
+        case SET_SEND_METHOD: 
+            return{
+                ...state,
+                sendMethod: action.sendMethod
+            }
 
-        // case CHECK_CLIENT_DESTINATION_EMPTY:
-        //     return {
-        //         ...state,
-        //         loading: false,
-        //         newDest: {
-        //             accNumber: '',
-        //             fullName: ''
-        //         },
-        //     };
+        case CLEAR_SEND_METHOD:
+            return{
+                ...state,
+                sendMethod: ''
+            }
 
-        // case CHECK_CLIENT_DESTINATION_FAILURE:
-        //     return {
-        //         ...state,
-        //         loading: false,
-        //         newDest: {
-        //             accNumber: '',
-        //             fullName: ''
-        //         },
-        //         error: action.error
-        //     };
-
-        // case SAVE_CLIENT_DESTINATION_BEGIN:
-        //     return {
-        //         ...state,
-        //         loading: true,
-        //     };
-
-        // case SAVE_CLIENT_DESTINATION_SUCCESS:
-        //     return {
-        //         ...state,
-        //         loading: false,
-        //         error: null
-        //     };
-
-        // case SAVE_CLIENT_DESTINATION_FAILURE:
-        //     return {
-        //         ...state,
-        //         loading: false,
-        //         error: action.error
-        //     };
-
-        // case GET_LIST_CLIENT_DESTINATION_BEGIN:
-        //     return {
-        //         ...state,
-        //         loading: true
-        //     };
-
-        // case GET_LIST_CLIENT_DESTINATION_SUCCESS:
-        //     return {
-        //         ...state,
-        //         loading: false,
-        //         error: null,
-        //         listDest: action.listDest
-        //     };
-
-        // case GET_LIST_CLIENT_DESTINATION_FAILURE:
-        //     return {
-        //         ...state,
-        //         loading: false,
-        //         error: action.error,
-        //         listDest: []
-        //     };
-        
-        // case GET_CLIENT_TOKEN_BEGIN:
-        //     return {
-        //         ...state,
-        //         loading: true
-        //     }
-        
-        // case GET_CLIENT_TOKEN_SUCCESS:
-        //     return {
-        //         ...state,
-        //         loading: false,
-        //         token: action.token,
-        //         error: null
-        //     }
-
-        // case GET_CLIENT_TOKEN_FAILURE:
-        //     return {
-        //         ...state,
-        //         loading: false,
-        //         token: '',
-        //         error: action.error
-        //     }
-
-        // case TRANSFER_PROCESS_BEGIN:
-        //     return {
-        //         ...state,
-        //         loading: true
-        //     };
-
-        // case TRANSFER_PROCESS_SUCCESS:
-        //     return {
-        //         ...state,
-        //         loading: false,
-        //         error: null,
-        //     };
-
-        // case TRANSFER_PROCESS_FAILURE:
-        //     return {
-        //         ...state,
-        //         loading: false,
-        //         error: action.error
-        //     };
-        
         default:
             return state;
     }
