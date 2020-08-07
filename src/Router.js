@@ -32,6 +32,7 @@ import SelectPayeeScreen from './container/transfer/SelectPayee';
 import SelectBankScreen from './container/transfer/SelectBank';
 import SetAmountScreen from './container/transfer/SetAmount';
 import SelectSourceScreen from './container/transfer/SelectSourceAccount';
+import Confirmation from './container/transfer/Confirmation'
 
 import PaymentScreen from './container/payment/Payment';
 import CreditCardScreen from './container/payment/CreditCard';
@@ -267,6 +268,18 @@ function TransferStackScreen() {
                 component={SelectSourceScreen}
                 options={{
                     title: 'Transfer',
+                    headerStyle: {
+                        backgroundColor: '#C10000'
+                    },
+                    headerTintColor: '#fff'
+                }}
+            >
+            </Stack.Screen>
+            <Stack.Screen
+                name="Confirmation"
+                component={Confirmation}
+                options={{
+                    title: 'Confirmation',
                     headerStyle: {
                         backgroundColor: '#C10000'
                     },
