@@ -33,14 +33,6 @@ class SendMoneyMethod extends Component{
         })
     }
 
-    radioListButton = () => {
-        this.state.methodList.map((data) => {
-            return(
-                <Radio iconName={"lens"} label={data.merchant_mode} value={data.id} />
-            )
-        })
-    }
-
     handleNext = () => {
         const { navigation, sendMethod } = this.props;
         if(sendMethod == ''){
