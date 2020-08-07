@@ -5,14 +5,14 @@ import{
     Text,
     StyleSheet,
     Image,
-    CheckBox,
     TouchableOpacity,
     ScrollView,
     ToastAndroid,
 }from 'react-native';
 
-import {numberWithCommas} from '../../generalFunction';
-import {connect} from 'react-redux';
+import { numberWithDot } from '../../generalFunction';
+import { connect } from 'react-redux';
+import { setTransferAmount, setTransferNote, clearSendMethod } from '../../action/transfer/transferAction';
 
 class SetAmount extends React.Component{
 
@@ -30,20 +30,32 @@ class SetAmount extends React.Component{
     }
 
     handleNext = () => {
-        const { destAcc, navigation } = this.props;
-        console.log(destAcc)
-        if(destAcc.bankCode == '153'){
-            navigation.navigate('Confirmation');
+        this.props.dispatch(clearSendMethod());
+        const { navigation, destAcc, sourceAcc, route, note } = this.props;
+        const amount = this.state.amount;
+        if(isNaN(amount)){
+            ToastAndroid.show("Amount must be numeric", ToastAndroid.SHORT);
+        }else if(amount < 1000){
+            ToastAndroid.show("Amount must more than 1000", ToastAndroid.SHORT);
+        }else if(route.params == null){
+            ToastAndroid.show("Please select your source account", ToastAndroid.SHORT);
+        }else if(parseInt(amount) > parseInt(sourceAcc.balance)){
+            ToastAndroid.show("Your balance is not enough", ToastAndroid.SHORT);
         }else{
-            navigation.navigate('SendMoneyMethod');
+            this.props.dispatch(setTransferAmount(parseFloat(this.state.amount)));
+            this.props.dispatch(setTransferNote(this.state.description));
+            if(destAcc.bankCode == '153'){    
+                navigation.navigate('Confirmation');
+            }else{
+                navigation.navigate('SendMoneyMethod');
+            }
         }
     }
 
     render(){
 
         const { params } = this.props.route
-        console.log(params);
-    
+
         return(
             <ScrollView style={styles.container}>
                 <View style={styles.setAmountLabelContainer}>
@@ -62,11 +74,6 @@ class SetAmount extends React.Component{
                         onChangeText={(amount) => this.setState({amount:amount})}/>
                     <Image style={styles.pencilIcon} source={require('../../../assets/icon-pencil.png')} />
                 </View>
-
-                {/* <View style={styles.scheduleTransferContainer}>
-                    <CheckBox />
-                    <Text style={styles.scheduleTranferText}>Schedule transfer</Text>
-                </View> */}
 
                 <View style={styles.line}/>
 
@@ -88,7 +95,7 @@ class SetAmount extends React.Component{
                         <Text style={styles.sourceAccountDetailTitle}>{params.sourceAccNumber}</Text>
                         <Text>{params.sourceAccName.toUpperCase()}</Text>
                         <Text>{params.sourceAccType}</Text>
-                        <Text style={{fontWeight: 'bold'}}>Balance: Rp {numberWithCommas(params.sourceAccBalance)}</Text>
+                        <Text style={{fontWeight: 'bold'}}>Balance: Rp {numberWithDot(params.sourceAccBalance)}</Text>
                     </View>
                     : null
                 }
@@ -98,9 +105,10 @@ class SetAmount extends React.Component{
                 <Text style={styles.additionalText}>Additional information (optional)</Text>
 
                 <TextInput
-                    placeholder="Description"
+                    placeholder="Description (Max. 16 characters)"
                     style={styles.descriptionInput}
-                    onChangeText={(description) => this.setState({description:description})}/>
+                    maxLength={16}
+                    onChangeText={(description) => this.setState({description: description})}/>
 
                 <TouchableOpacity onPress={this.handleNext} style={styles.nextButton}>
                         <Text style={styles.nextText}>NEXT</Text>
@@ -233,7 +241,6 @@ const styles = StyleSheet.create({
         fontSize: 16
     },
     nextButton: {
-        height: 50,
         width: '90%',
         backgroundColor: 'red',
         borderRadius: 30,
@@ -258,7 +265,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
+    sourceAcc: state.transfer.sourceAcc,
     destAcc: state.transfer.destAcc
-});
+})
 
 export default connect(mapStateToProps)(SetAmount);

@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import { ScrollableTabView, DefaultTabBar, ScrollableTabBar, } from '@valdio/react-native-scrollable-tabview'
 
-import { numberWithCommas } from '../../generalFunction';
+import { numberWithDot } from '../../generalFunction';
 import { getBalance } from '../../action/home/homeFunction';
 import AccountCard from '../../component/AccountCard';
 import { getStatements } from '../../action/home/homeFunction';
@@ -120,7 +120,7 @@ class Home extends React.Component {
             }}>
               <View style={styles.detailTextContainer}>
                 <Text>Savings</Text>
-                <Text>{balance ? "Rp " + numberWithCommas( this.countTotalBalance(balance ? balance : [])) : "Not Available"}</Text>
+                <Text>{balance ? "Rp " + numberWithDot( this.countTotalBalance(balance ? balance : [])) : "Not Available"}</Text>
               </View>
               <View style={styles.detailTextContainer}>
                 <Text>Current</Text>

@@ -29,7 +29,6 @@ class EasyPinLogin extends Component{
 
     handleContinue = () => {
         const { easyPin, navigation } = this.props;
-        console.log(easyPin, this.state.pin)
         if(this.state.pin != easyPin){
             ToastAndroid.show("Please enter a valid EasyPIN", ToastAndroid.SHORT);
         }else{

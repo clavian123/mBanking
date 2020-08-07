@@ -6,7 +6,11 @@ import {
     getBankListFailure,
     checkAccountNumberBegin,
     checkAccountNumberSuccess,
-    checkAccountNumberFailure
+    checkAccountNumberFailure,
+    setSourceAccountSuccess,
+    getMethodListBegin,
+    getMethodListSuccess,
+    getMethodListFailure
 } from './transferAction';
 
 import PushNotification from 'react-native-push-notification'
@@ -56,6 +60,27 @@ export function checkAccountNumber(bankCode, bankName, accNumber) {
             }, (error) => {
                 console.log(error);
                 dispatch(checkAccountNumberFailure(error));
+            }
+        )
+    }
+}
+
+export function setSourceAccount(accNumber, fullName, balance) {
+    return dispatch => {
+        dispatch(setSourceAccountSuccess(accNumber, fullName, balance));
+    }
+};
+
+export function getMethodList() {
+    let address = "http://192.168.100.174:8080/transCharge";
+    return dispatch => {
+        dispatch(getMethodListBegin());
+        return axios.post(address).then(
+            (res) => {
+                dispatch(getMethodListSuccess(res.data));
+            }, (error) => {
+                console.log(error);
+                dispatch(getMethodListFailure(error));
             }
         )
     }

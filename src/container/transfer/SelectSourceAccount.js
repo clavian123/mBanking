@@ -30,7 +30,8 @@ class SelectSourceAccount extends React.Component{
                             type={item.type ? item.type : "Saving Account"}
                             name={this.props.name.toUpperCase()}
                             balance={item.balance}
-                            navigation={this.props.navigation}/>
+                            navigation={this.props.navigation}
+                            dispatch={this.props.dispatch}/>
                     )}
                 />
             </View>
