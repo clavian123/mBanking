@@ -10,7 +10,10 @@ import {
     setSourceAccountSuccess,
     getMethodListBegin,
     getMethodListSuccess,
-    getMethodListFailure
+    getMethodListFailure,
+    transferBegin,
+    transferSuccess,
+    transferFailure,
 } from './transferAction';
 
 import PushNotification from 'react-native-push-notification'
@@ -85,3 +88,11 @@ export function getMethodList() {
         )
     }
 }
+
+// export function transfer(sourceAccNumber, destAccNumber, amount, fee, note, bankCode, ){
+//     let address = "http://localhost:8080/saveNewFundTransfer"
+//     return dispatch => {
+//         dispatch(transferBegin());
+//         return axios.post(address)
+//     }
+// }

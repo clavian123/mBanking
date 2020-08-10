@@ -13,7 +13,10 @@ import {
     GET_METHOD_LIST_SUCCESS,
     GET_METHOD_LIST_FAILURE,
     SET_SEND_METHOD,
-    CLEAR_SEND_METHOD
+    CLEAR_SEND_METHOD,
+    TRANSFER_BEGIN,
+    TRANSFER_SUCCESS,
+    TRANSFER_FAILURE,
 } from '../action/index';
 
 initialState = {
@@ -31,7 +34,11 @@ initialState = {
     amount: '',
     note: '',
     methodList: '',
-    sendMethod: '',
+    sendMethod: {
+        id: '',
+        name: '',
+        fee: '',
+    },
     token: '',
     listDest: [],
     bankList: [],
@@ -145,13 +152,40 @@ const transfer = (state = initialState, action) => {
         case SET_SEND_METHOD: 
             return{
                 ...state,
-                sendMethod: action.sendMethod
+                sendMethod: {
+                    id: action.id,
+                    name: action.name,
+                    fee: action.fee,
+                }
             }
 
         case CLEAR_SEND_METHOD:
             return{
                 ...state,
-                sendMethod: ''
+                sendMethod: {
+                    id: '',
+                    name: '',
+                    fee: '',
+                }
+            }
+
+        case TRANSFER_BEGIN:
+            return{
+                ...state,
+                loading: true
+            }
+
+        case TRANSFER_SUCCESS:
+            return{
+                ...state,
+                loading: false
+            }
+
+        case TRANSFER_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.error
             }
 
         default:

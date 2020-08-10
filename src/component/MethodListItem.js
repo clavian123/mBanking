@@ -22,7 +22,7 @@ class MethodListItem extends React.Component{
 
     renderRadioButton = () => {
         const { sendMethod } = this.props;
-        if(sendMethod == this.props.id){
+        if(sendMethod.id == this.props.id){
             return(
                 <View>
                     <Image style={styles.radioIcon} source={require('../../assets/icon-radio.png')}/>
@@ -55,7 +55,7 @@ class MethodListItem extends React.Component{
     }
 
     onPress = () =>{
-        this.props.dispatch(setSendMethod(this.props.id));
+        this.props.dispatch(setSendMethod(this.props.id, this.props.name, this.props.fee));
     }
 
     render(){

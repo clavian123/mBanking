@@ -13,7 +13,10 @@ import {
     GET_METHOD_LIST_SUCCESS,
     GET_METHOD_LIST_FAILURE,
     SET_SEND_METHOD,
-    CLEAR_SEND_METHOD
+    CLEAR_SEND_METHOD,
+    TRANSFER_BEGIN,
+    TRANSFER_SUCCESS,
+    TRANSFER_FAILURE,
 } from '../index';
 
 export const getBankListBegin = () => ({
@@ -82,11 +85,26 @@ export const getMethodListFailure = (error) => ({
     error
 });
 
-export const setSendMethod = (sendMethod) => ({
+export const setSendMethod = (id, name, fee) => ({
     type: SET_SEND_METHOD,
-    sendMethod
+    id,
+    name,
+    fee,
 });
 
 export const clearSendMethod = () => ({
     type: CLEAR_SEND_METHOD
 });
+
+export const transferBegin = () => ({
+    type: TRANSFER_BEGIN
+})
+
+export const transferSuccess = () => ({
+    type: TRANSFER_SUCCESS
+})
+
+export const transferFailure = (error) => ({
+    type: TRANSFER_FAILURE,
+    error
+})
