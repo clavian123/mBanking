@@ -17,12 +17,20 @@ class SelectBank extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-          bankList: []
+            keyword: '',
+            bankList: []
         };
     }
 
     componentDidMount(){
-        this.props.dispatch(getBankList()).then(() => {
+        this.props.dispatch(getBankList(this.state.keyword)).then(() => {
+            const { bankList } = this.props;
+            this.setState({ bankList: bankList });
+        })
+    }
+
+    search = () => {
+        this.props.dispatch(getBankList(this.state.keyword)).then(() => {
             const { bankList } = this.props;
             this.setState({ bankList: bankList });
         })
@@ -35,6 +43,7 @@ class SelectBank extends React.Component{
                     <TextInput
                         placeholder="Please input Bank name or code" 
                         style={styles.searchInput}
+                        onChangeText={(text) => this.setState({ keyword: text }, this.search)}
                     />
                     <Image style={styles.searchIcon} source={require('../../../assets/icon-search-headed-left.png')} />
                 </View>

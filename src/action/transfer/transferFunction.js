@@ -28,11 +28,14 @@ PushNotification.configure({
     requestPermissions: Platform.OS === 'ios'
 });
 
-export function getBankList() {
-    let address = "http://192.168.100.174:8080/targetBank";
+export function getBankList(keyword) {
+    let req = {
+        keyword: keyword
+    }
+    let address = "http://192.168.100.107:8080/targetBank";
     return dispatch => {
         dispatch(getBankListBegin());
-        return axios.post(address).then(
+        return axios.post(address, req).then(
             (res) => {
                 dispatch(getBankListSuccess(res.data));
             }, (error) => {
@@ -47,7 +50,7 @@ export function checkAccountNumber(bankCode, bankName, accNumber) {
     let req = {
         accNumber: accNumber
     }
-    let address = "http://192.168.100.174:8080/findAccountDummyByAccountNumber";
+    let address = "http://192.168.100.107:8080/findAccountDummyByAccountNumber";
     return dispatch => {
         dispatch(checkAccountNumberBegin());
         return axios.post(address, req).then(
@@ -72,7 +75,7 @@ export function setSourceAccount(accNumber, fullName, balance) {
 };
 
 export function getMethodList() {
-    let address = "http://192.168.100.174:8080/transCharge";
+    let address = "http://192.168.100.107:8080/transCharge";
     return dispatch => {
         dispatch(getMethodListBegin());
         return axios.post(address).then(
