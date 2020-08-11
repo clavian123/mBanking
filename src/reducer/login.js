@@ -16,7 +16,8 @@ initialState = {
     error: null,
     name: '',
     customerId: '',
-    cif_code: ''
+    cif_code: '',
+    email: '',
 };
 
 const login = (state = initialState, action) => {
@@ -68,7 +69,8 @@ const login = (state = initialState, action) => {
                 loading: false,
                 name: action.name,
                 cif_code: action.cif_code,
-                easyPin: action.easyPin
+                easyPin: action.easyPin,
+                email: action.email
             };
         
         // case POST_CLIENT_LOGIN_FAILURE:

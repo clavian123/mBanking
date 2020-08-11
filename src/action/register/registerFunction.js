@@ -235,7 +235,7 @@ export function login(username, password){
         dispatch(loginBegin());
         return axios.post(address, req).then(
             (res) => {
-                if( res.data != ""){
+                if( res.data != ""){                    
                     dispatch(loginSuccess(res.data.customer.id, res.data.customer.cifCode, res.data.name, res.data.email, true));
                 }else{
                     alert('Your username or password is wrong');

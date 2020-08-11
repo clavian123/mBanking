@@ -18,9 +18,8 @@ import { Icon } from 'react-native-elements';
 import { ScrollableTabView, DefaultTabBar, ScrollableTabBar, } from '@valdio/react-native-scrollable-tabview'
 
 import { numberWithDot } from '../../generalFunction';
-import { getBalance } from '../../action/home/homeFunction';
+import { getBalance, getStatements } from '../../action/home/homeFunction';
 import AccountCard from '../../component/AccountCard';
-import { getStatements } from '../../action/home/homeFunction';
 import Loading from '../../Loading';
 
 
@@ -46,7 +45,9 @@ class Home extends React.Component {
   componentDidMount() {
     this._isMounted = true;
     const { cif_code } = this.props;
-    this.props.getBalanceAndStatement(cif_code)
+    this.props.dispatch(getBalance(cif_code)).then(()=>{
+      this.props.dispatch(getStatements(cif_code))
+    })
     
   }
 
@@ -78,7 +79,9 @@ class Home extends React.Component {
       refreshing: true,
     })
     const { cif_code, loading } = this.props
-    this.props.getBalanceAndStatement(cif_code)
+    this.props.dispatch(getBalance(cif_code)).then(()=>{
+      this.props.dispatch(getStatements(cif_code))
+    })
     if(!loading){
       this.setState({refreshing: false})
     }
@@ -296,11 +299,4 @@ const mapStateToProps = state => ({
   isLogin: state.login.isLogin
 })
 
-const mapDispatchToProps = dispatch => ({
-  getBalanceAndStatement: cif_code => {
-    dispatch(getStatements(cif_code));
-    dispatch(getBalance(cif_code))
-  }
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps)(Home);

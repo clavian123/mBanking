@@ -1,0 +1,210 @@
+import React, { Component } from 'react';
+import{
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    Image,
+    TextInput,
+    ToastAndroid
+}from 'react-native';
+import { Icon } from 'react-native-elements'
+import { connect } from 'react-redux';
+import { ScrollView } from 'react-native-gesture-handler';
+import { numberWithDot } from '../../generalFunction';
+
+class TransactionDetail extends Component{
+    constructor(props){
+        super(props)
+    }
+
+    handleClose(){
+        const { navigation } = this.props
+        navigation.popToTop()
+    }
+
+    render(){
+        const { transactionDetail, destAcc } = this.props
+        var moment = require('moment');        
+
+        return(
+            <ScrollView style={styles.container}>
+                <View style={styles.checkIconContainer}>
+                    <Icon
+                        name="ios-checkmark-circle-outline"
+                        type="ionicon"
+                        iconStyle={styles.checkIcon}></Icon>
+                </View>
+                
+                
+                <View style={styles.header}>
+                    <Icon
+                    name="ios-close"
+                    type="ionicon"
+                    iconStyle={styles.closeButton}
+                    onPress={()=> this.handleClose()}></Icon>
+                </View>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.title}>Transaction</Text>
+                    <Text style={styles.title}>Success</Text>
+                </View>
+
+                <View style={styles.amountContainer}>
+                    <Text style={{color: 'grey'}}>TOTAL AMOUNT</Text>
+                    <Text style={styles.amount}>{"Rp. " + numberWithDot(transactionDetail.total_amount_debited)}</Text>
+                </View>
+
+                <View style={styles.paymentDetailContainer}>
+                    <Text style={{color: 'grey'}}>PAYMENT DETAIL</Text>
+                    <View style={styles.detailContainer}>
+                        <Text>Amount</Text>
+                        <Text style={{fontWeight: 'bold'}}>{"Rp. " + numberWithDot(transactionDetail.amount)}</Text>
+                    </View>
+                    <View style={styles.detailContainer}>
+                        <Text>Fee (Skn)</Text>
+                        <Text style={{fontWeight: 'bold'}}>{"Rp. " + numberWithDot(transactionDetail.bank_charge)}</Text>
+                    </View>
+                </View>
+
+                <View style={styles.fromContainer}>
+                    <Text style={{color: 'grey'}}>FROM</Text>
+                    <Text style={{ marginTop: 5, fontWeight: 'bold' }}>{transactionDetail.account.account_name.toUpperCase()}</Text>
+                    <Text>{"SavingAccount " + transactionDetail.account.accountNumber}</Text>
+                </View>
+
+                <View style={styles.sentToContainer}>
+                    <Text style={{color: 'grey'}}>TO</Text>
+                    <Text style={{marginTop: 5, fontWeight: 'bold'}}>{transactionDetail.target_account.name.toUpperCase()}</Text>
+                    <Text>{transactionDetail.target_bank.bank_name + " " + transactionDetail.target_account.account_number}</Text>
+                </View>
+
+                <View style={styles.divider}></View>
+                
+                <View style={styles.transactionDetailContainer}>
+                    <Text style={{color: 'grey'}}>TRANSACTION DETAIL</Text>
+                    <View style={styles.transactionDetail}>
+                        <Text>Date and Time</Text>
+                        <Text>{moment(transactionDetail.transfer_date).format('DD MMM YYYY, hh:mm A')}</Text>
+                    </View>
+                    <View style={styles.transactionDetail}>
+                        <Text>Transaction ID</Text>
+                        <Text>{transactionDetail.transaction_reference_number}</Text>
+                    </View>
+                    <View style={styles.transactionDetail}>
+                        <Text>Notes</Text>
+                        <Text>{transactionDetail.message}</Text>
+                    </View>
+                </View>
+
+                <View style={styles.divider}></View>
+
+                <Text style={styles.footer}>This receipt is valid proof of transaction from PT. Bank Sinarmas, Tbk.</Text>
+
+                
+
+            </ScrollView>
+        )
+    }
+
+
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'white',
+        // alignItems: 'center',
+        padding: 10,
+        overflow: 'visible'
+    },
+    header: {
+        flexDirection: 'row',
+        height: 40,
+        width: '100%',
+        alignItems: 'center',
+        padding: 10,
+    },
+    closeButton:{
+        fontSize: 45
+    }, 
+    titleContainer:{
+        width: '100%',
+        padding: 5,
+    },
+    title:{
+        fontSize: 25,
+        fontWeight: 'bold'
+    },
+    amountContainer: {
+        width: '100%',
+        padding: 5,
+        marginTop: 40,
+    },
+    amount:{
+        fontSize: 25,
+        fontWeight: 'bold'
+    },
+    paymentDetailContainer:{
+        marginTop: 10,
+        padding: 5,
+    },
+    detailContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 5,
+    },
+    fromContainer:{
+        padding : 5,
+        marginTop: 5
+    },
+    sentToContainer:{
+        padding: 5,
+        marginTop: 5,
+    },
+    divider:{
+        borderWidth: 0.5,
+        borderStyle: 'dashed',
+        borderRadius: 5,
+        marginVertical: 20,
+    },
+    transactionDetailContainer:{
+        padding: 5
+    },
+    transactionDetail:{
+        marginTop: 10,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    footer:{
+        color: 'grey',
+        textAlign: 'center',
+        marginBottom: 30
+    },
+    checkIconContainer:{
+        backgroundColor: 'rgba(0,255,0,0.2)',
+        position: 'absolute',
+        width: 180,
+        height: 180,
+        borderRadius: 90,
+        justifyContent: 'center',
+        alignItems: 'center',
+        top: 0,
+        right: -20,
+    },
+    checkIcon:{
+        fontSize: 150,
+        width: 150,
+        borderRadius: 75,
+        color: 'green',
+        backgroundColor: 'rgba(255,255,255,0.7)',
+        textAlign: 'center',
+        textAlignVertical: 'center'
+    }
+})
+
+const mapStateToProps = state => ({
+    transactionDetail: state.transfer.transactionDetail,
+    destAcc: state.transfer.destAcc
+});
+
+export default connect(mapStateToProps)(TransactionDetail)

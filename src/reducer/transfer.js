@@ -14,6 +14,18 @@ import {
     GET_METHOD_LIST_FAILURE,
     SET_SEND_METHOD,
     CLEAR_SEND_METHOD,
+    GET_LIST_DEST_BEGIN,
+    GET_LIST_DEST_SUCCESS,
+    GET_LIST_DEST_FAILURE,
+    GET_TRANSFER_TOKEN_BEGIN,
+    GET_TRANSFER_TOKEN_SUCCESS,
+    GET_TRANSFER_TOKEN_FAILURE,
+    VALIDATE_TRANSFER_TOKEN_BEGIN,
+    VALIDATE_TRANSFER_TOKEN_SUCCESS,
+    VALIDATE_TRANSFER_TOKEN_FAILURE,
+    SAVE_NEW_TARGET_ACCOUNT_BEGIN,
+    SAVE_NEW_TARGET_ACCOUNT_SUCCESS,
+    SAVE_NEW_TARGET_ACCOUNT_FAILURE,
     TRANSFER_BEGIN,
     TRANSFER_SUCCESS,
     TRANSFER_FAILURE,
@@ -39,11 +51,13 @@ initialState = {
         name: '',
         fee: '',
     },
-    token: '',
+    transactionDetail: '',
     listDest: [],
     bankList: [],
     loading: false,
-    error: null
+    error: null,
+    validateOtp: '',
+    saveNewTargetAccount: false
 };
 
 const transfer = (state = initialState, action) => {
@@ -169,16 +183,99 @@ const transfer = (state = initialState, action) => {
                 }
             }
 
-        case TRANSFER_BEGIN:
+        case GET_LIST_DEST_BEGIN:
             return{
                 ...state,
                 loading: true
             }
 
+        case GET_LIST_DEST_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                listDest: action.listDest
+            }
+
+        case GET_LIST_DEST_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.error
+            }
+
+        case GET_TRANSFER_TOKEN_BEGIN:
+            return {
+                ...state,
+                loading: true
+            }
+
+        case GET_TRANSFER_TOKEN_SUCCESS:
+            return {
+                ...state,
+                loading: false
+            }
+
+        case GET_TRANSFER_TOKEN_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.error
+            }
+
+        case VALIDATE_TRANSFER_TOKEN_BEGIN:
+            return {
+                ...state,
+                loading: true,
+            }
+
+        case VALIDATE_TRANSFER_TOKEN_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                validateOtp: action.validateOtp
+            }
+
+        case VALIDATE_TRANSFER_TOKEN_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.error
+            }
+
+        case SAVE_NEW_TARGET_ACCOUNT_BEGIN:
+            return {
+                ...state,
+                loading: true
+            }
+
+        case SAVE_NEW_TARGET_ACCOUNT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                saveNewTargetAccount: action.saveNewTargetAccount
+            }
+
+        case SAVE_NEW_TARGET_ACCOUNT_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.error,
+                saveNewTargetAccount: false
+            }
+
+        case TRANSFER_BEGIN:
+            return{
+                ...state,
+                loading: true,
+                saveNewTargetAccount: false
+            }
+
         case TRANSFER_SUCCESS:
             return{
                 ...state,
-                loading: false
+                loading: false,
+                transactionDetail: action.transactionDetail,
+                validateOtp: false
             }
 
         case TRANSFER_FAILURE:

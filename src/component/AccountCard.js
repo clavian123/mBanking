@@ -48,9 +48,6 @@ class AccountCard extends React.Component {
     }
 
     handleStatementListClicked = () => {
-        // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        console.log(this.props.balance);
-
         this.props.navigation.navigate('AccountStatementList', {
             accNumber: this.props.accNumber,
             balance: this.props.balance,

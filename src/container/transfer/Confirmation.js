@@ -16,15 +16,21 @@ import { connect } from 'react-redux';
 
 import { numberWithCommas } from '../../generalFunction'
 import { numberWithDot } from '../../generalFunction';
+import { transfer, getListDest, getTransferToken } from '../../action/transfer/transferFunction'
 import moment from 'moment';
+import Loading from '../../Loading';
 
 
 class Confirmation extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isAmountDetailClicked: false
+            isAmountDetailClicked: false,
         }
+    }
+
+    componentDidMount(){
+        this.props.dispatch(getListDest(this.props.cif_code))
     }
 
     handleAmountDetailClicked(){
@@ -39,10 +45,31 @@ class Confirmation extends React.Component {
         })
     }
 
+    handleTransferClicked(){
+        const { listDest, destAcc, navigation, cif_code, amount, sendMethod } = this.props
+        
+        if (listDest.filter((item) => item.account_number == destAcc.accNumber && item.bank_detail.sknCode == destAcc.bankCode).length != 0) {
+            navigation.navigate('ValidateEasyPin', {
+                flow: 'transfer'
+            })
+        } else {
+            this.props.dispatch(getTransferToken(cif_code, amount + sendMethod.fee, destAcc.accNumber, destAcc.fullName, destAcc.bankName)).then(() => {
+                navigation.navigate('OtpValidation', {
+                    flow: 'transfer'
+                })
+            })
+        }
+    }
+
     render() {
         
         var date = moment().utcOffset('+07:00').format('dddd, DD MMM YYYY')
-        const {sourceAcc, destAcc, amount, note, sendMethod} = this.props
+        const {sourceAcc, destAcc, amount, note, sendMethod, loading} = this.props
+
+        if(loading){
+            return(<Loading></Loading>)
+        }
+
         return (
             <ScrollView style={styles.container}>
 
@@ -123,7 +150,7 @@ class Confirmation extends React.Component {
                     <Text style={{color: 'grey'}}>Upon completion, all transaction cannot be cancelled</Text>
                 </View>
 
-                <TouchableOpacity style={styles.transferButton}>
+                <TouchableOpacity style={styles.transferButton} onPress={()=> this.handleTransferClicked()}>
                     <Text style={{color: 'white', fontSize: 17}}>TRANSFER</Text>
                 </TouchableOpacity>
 
@@ -261,6 +288,9 @@ const mapStateToProps = state => ({
     amount: state.transfer.amount,
     note: state.transfer.note,
     sendMethod: state.transfer.sendMethod,
+    listDest: state.transfer.listDest,
+    cif_code: state.login.cif_code,
+    loading: state.transfer.loading
 })
 
 export default connect(mapStateToProps)(Confirmation)

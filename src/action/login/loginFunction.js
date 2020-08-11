@@ -31,9 +31,9 @@ export function handleSyncStorage() {
     }
 };
 
-export function handleLogin(name, cif_code, easyPin) {
+export function handleLogin(name, cif_code, easyPin, email) {
     return dispatch => {
-        dispatch(loginSuccess(name, cif_code, easyPin));
+        dispatch(loginSuccess(name, cif_code, easyPin, email));
         syncLoginToStorage(name, cif_code, easyPin);
         dispatch(postValidateClientLogin(true));
     }

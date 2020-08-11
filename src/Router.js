@@ -20,6 +20,7 @@ import ResetPasswordScreen from './container/register/ResetPassword';
 import CreateEasyPinScreen from './container/easyPin/CreateEasyPin';
 import ConfirmEasyPinScreen from './container/easyPin/ConfirmEasyPin';
 import EasyPinLoginScreen from './container/easyPin/EasyPinLogin';
+import ValidateEasyPinScreen from './container/easyPin/ValidateEasyPin';
 
 import HomeScreen from './container/home/Home';
 import BalanceInquiryScreen from './container/home/BalanceInquiry';
@@ -34,6 +35,8 @@ import SetAmountScreen from './container/transfer/SetAmount';
 import SelectSourceScreen from './container/transfer/SelectSourceAccount';
 import SendMoneyMethodScreen from './container/transfer/SendMoneyMethod';
 import ConfirmationScreen from './container/transfer/Confirmation';
+import TransactionDetailScreen from './container/transfer/TransactionDetail';
+import OtpValidationScreen from './container/transfer/OtpValidation';
 
 import PaymentScreen from './container/payment/Payment';
 import CreditCardScreen from './container/payment/CreditCard';
@@ -300,6 +303,22 @@ function TransferStackScreen() {
                 }}
             >
             </Stack.Screen>
+            <Stack.Screen
+                name="TransactionDetail"
+                component={TransactionDetailScreen}
+                options={{
+                    headerShown: false
+                }}
+            >
+            </Stack.Screen>
+            <Stack.Screen
+                name="OtpValidation"
+                component={OtpValidationScreen}
+                options={{
+                    headerShown: false
+                }}
+            >
+            </Stack.Screen>
         </Stack.Navigator>
     );
 }
@@ -470,8 +489,27 @@ class RootNavigator extends React.Component {
                 <Stack.Navigator>
                     {isLogin ? (
                         <>
-                            <Stack.Screen options={{ headerShown: false }} name="EasyPinLogin" component={EasyPinLoginScreen} />
-                            <Stack.Screen options={{ headerShown: false }} name="HomeTab" component={HomeTabScreen} /> 
+                            <Stack.Screen 
+                                options={{ headerShown: false }}
+                                name="EasyPinLogin"
+                                component={EasyPinLoginScreen} />
+                            <Stack.Screen
+                                options={{ headerShown: false }}
+                                name="HomeTab"
+                                component={HomeTabScreen} />
+                            <Stack.Screen
+                                options={{
+                                    headerShown: true,
+                                    title: '',
+                                    headerStyle: {
+                                        backgroundColor: '#c10000',
+                                        elevation: 0,
+
+                                    },
+                                    headerTintColor: 'white'
+                                }}
+                                name="ValidateEasyPin"
+                                component={ValidateEasyPinScreen} /> 
                         </>
                     ) 
                     : 

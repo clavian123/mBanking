@@ -24,12 +24,12 @@ class ConfirmEasyPin extends Component{
 
     handleContinue = () => {
         const confirmEasyPin = this.state.confirmEasyPin;
-        const { route, cif_code, name } = this.props;
+        const { route, cif_code, name, email } = this.props;
         const { easyPin } = route.params;
         if(confirmEasyPin != easyPin){
             ToastAndroid.show("Please enter a valid EasyPIN", ToastAndroid.SHORT);
         }else{
-            this.props.dispatch(handleLogin(name, cif_code, confirmEasyPin));
+            this.props.dispatch(handleLogin(name, cif_code, confirmEasyPin, email));
             this.props.dispatch(skipEasypinLogin(true));
         }
     }
@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
     cif_code: state.register.cif_code,
     name: state.register.name,
+    email: state.register.email
 });
 
 export default connect(mapStateToProps)(ConfirmEasyPin);

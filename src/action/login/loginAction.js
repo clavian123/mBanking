@@ -39,11 +39,12 @@ export const easyPinLogin = (isEasyPinLogin) => ({
 });
 
 
-export const loginSuccess = (name, cif_code, easyPin) => ({
+export const loginSuccess = (name, cif_code, easyPin, email) => ({
     type: LOGIN_SUCCESS,
     name,
     cif_code,
-    easyPin
+    easyPin,
+    email,
 });
 
 export const postClientLoginFailure = (error) => ({

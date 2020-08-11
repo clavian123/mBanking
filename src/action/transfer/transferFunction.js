@@ -14,6 +14,18 @@ import {
     transferBegin,
     transferSuccess,
     transferFailure,
+    getListDestBegin,
+    getListDestSuccess,
+    getListdestFailure,
+    getTransferTokenBegin,
+    getTransferTokenSuccess,
+    getTransferTokenFailure,
+    validateTransferTokenBegin,
+    validateTransferTokenSuccess,
+    validateTransferTokenFailure,
+    saveNewTargetAccountBegin,
+    saveNewTargetAccountSuccess,
+    saveNewTargetAccountFailure,    
 } from './transferAction';
 
 import PushNotification from 'react-native-push-notification'
@@ -31,11 +43,14 @@ PushNotification.configure({
     requestPermissions: Platform.OS === 'ios'
 });
 
-export function getBankList() {
+export function getBankList(keyword) {
+    let req = {
+        keyword: keyword
+    }
     let address = "http://localhost:8080/targetBank";
     return dispatch => {
         dispatch(getBankListBegin());
-        return axios.post(address).then(
+        return axios.post(address, req).then(
             (res) => {
                 dispatch(getBankListSuccess(res.data));
             }, (error) => {
@@ -89,10 +104,117 @@ export function getMethodList() {
     }
 }
 
-// export function transfer(sourceAccNumber, destAccNumber, amount, fee, note, bankCode, ){
-//     let address = "http://localhost:8080/saveNewFundTransfer"
-//     return dispatch => {
-//         dispatch(transferBegin());
-//         return axios.post(address)
-//     }
-// }
+export function getListDest(cif_code){
+    let req = {
+        cif_code: cif_code
+    }
+    let address = "http://localhost:8080/getTargetAccounts"
+
+    return dispatch => {
+        dispatch(getListDestBegin());
+        return axios.post(address, req).then(
+            (res) => {
+                dispatch(getListDestSuccess(res.data))
+            }, (error) => {
+                console.log(error);
+                dispatch(getListdestFailure(error))
+            }
+        )
+    }
+}
+
+export function transfer(sourceAccNumber, destAccNumber, amount, fee, note, bankCode ){
+    let req = {
+        accountNumber: sourceAccNumber,
+        targetAccountNumber: destAccNumber,
+        amount: amount,
+        bankCharge: fee,
+        message: note,
+        targetBank: bankCode,
+        status: 4,
+        lookup: 1,
+    }
+    let address = "http://localhost:8080/saveNewFundTransfer"
+
+    return dispatch => {
+        dispatch(transferBegin());
+        return axios.post(address, req).then(
+            (res) => {
+                dispatch(transferSuccess(res.data))
+            }, (error) => {
+                console.log(error);
+                dispatch(transferFailure(error))
+            }
+        )
+    }
+}
+
+export function getTransferToken(cif_code, totalAmount, destAccNumber, destAccName, targetBankName){
+    let req = {
+        cif_code: cif_code,
+        totalAmount: totalAmount,
+        accNumber: destAccNumber,
+        accName: destAccName,
+        bankName: targetBankName,
+        currency: "IDR"
+    }
+    let address = "http://localhost:8080/saveTransferOtp"
+
+    return dispatch => {
+        dispatch(getTransferTokenBegin());
+        return axios.post(address, req).then(
+            (res) => {
+                dispatch(getTransferTokenSuccess())
+            }, (error) => {
+                console.log(error)
+                dispatch(getTransferTokenFailure(error))
+            }
+        )
+    }
+}
+
+export function validateTransferToken(cif_code, token){
+    let req = {
+        cif_code: cif_code,
+        token: token
+    }
+    let address = "http://localhost:8080/validateTransferOtp"
+
+    return dispatch => {
+        dispatch(validateTransferTokenBegin())
+        return axios.post(address, req).then(
+            (res) => {
+                dispatch(validateTransferTokenSuccess(res.data))
+            }, (error) => {
+                console.log(error);
+                dispatch(validateTransferTokenFailure(error))
+            }
+        )
+    }
+}
+
+export function saveNewTargetAccount(cif_code, accountNumber, bankCode){
+    let req = {
+        cif_code: cif_code,
+        accountNumber: accountNumber,
+        bankCode: bankCode,
+        status: 4
+    }
+    let address = "http://localhost:8080/saveNewTargetAccount"
+
+    return dispatch => {
+        dispatch(saveNewTargetAccountBegin())
+        return axios.post(address, req).then(
+            (res) => {
+                if(res.data){
+                    dispatch(saveNewTargetAccountSuccess(true))
+                }else{
+                    dispatch(saveNewTargetAccountSuccess(false))
+                }
+            }, (error) =>{
+                console.log(error);
+                dispatch(saveNewTargetAccountFailure(error))
+            }
+        )
+    }
+}

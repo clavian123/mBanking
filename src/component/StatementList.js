@@ -39,7 +39,7 @@ class StatementList extends React.Component {
 
         var moment = require('moment');
 
-        var  statements  = this.props.statements.reverse();
+        var  statements  = this.props.home ? this.props.statements.reverse().slice(0,5) : this.props.statements.reverse();
 
         if(this.state.refreshing){
             return (
