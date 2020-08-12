@@ -10,7 +10,7 @@ import {
 
 import { connect } from 'react-redux';
 import { TextInput } from 'react-native-gesture-handler';
-import { transfer, validateTransferToken, saveNewTargetAccount } from '../../action/transfer/transferFunction';
+import { transfer, validateTransferToken, saveNewTargetAccount, getTransferToken } from '../../action/transfer/transferFunction';
 import Loading from '../../Loading'
 
 class OtpValidation extends Component {
@@ -44,8 +44,12 @@ class OtpValidation extends Component {
                     ToastAndroid.show("Token is incorrect", ToastAndroid.SHORT)
                 }
             })
-        }
-        
+        }   
+    }
+
+    handleResend = () => {
+        const { destAcc, cif_code, amount, sendMethod } = this.props        
+        this.props.dispatch(getTransferToken(cif_code, amount + sendMethod.fee, destAcc.accNumber, destAcc.fullName, destAcc.bankName))
     }
 
     render() {

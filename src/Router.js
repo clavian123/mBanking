@@ -315,7 +315,13 @@ function TransferStackScreen() {
                 name="OtpValidation"
                 component={OtpValidationScreen}
                 options={{
-                    headerShown: false
+                    headerShown: true,
+                    headerStyle:{
+                        elevation: 0,
+                        backgroundColor: '#21C275',
+                    },
+                    headerTintColor: 'white',
+                    title:'',
                 }}
             >
             </Stack.Screen>
