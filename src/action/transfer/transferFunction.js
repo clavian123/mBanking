@@ -61,7 +61,7 @@ export function getBankList(keyword) {
     }
 }
 
-export function checkAccountNumber(bankCode, bankName, accNumber) {
+export function checkAccountNumber(bankCode, bankId, bankName, accNumber) {
     let req = {
         accNumber: accNumber
     }
@@ -71,7 +71,7 @@ export function checkAccountNumber(bankCode, bankName, accNumber) {
         return axios.post(address, req).then(
             (res) => {
                 if(res.data != null) {
-                    dispatch(checkAccountNumberSuccess(bankCode, bankName, res.data.accountNumber, res.data.account_name));
+                    dispatch(checkAccountNumberSuccess(bankCode, bankId, bankName, res.data.accountNumber, res.data.account_name));
                 }else{
                     dispatch(checkAccountNumberFailure('Fail'));
                 }
@@ -123,14 +123,14 @@ export function getListDest(cif_code){
     }
 }
 
-export function transfer(sourceAccNumber, destAccNumber, amount, fee, note, bankCode ){
+export function transfer(sourceAccNumber, destAccNumber, amount, fee, note, bankId){
     let req = {
         accountNumber: sourceAccNumber,
         targetAccountNumber: destAccNumber,
         amount: amount,
         bankCharge: fee,
         message: note,
-        targetBank: bankCode,
+        targetBankId: bankId,
         status: 4,
         lookup: 1,
     }
@@ -164,7 +164,8 @@ export function getTransferToken(cif_code, totalAmount, destAccNumber, destAccNa
         dispatch(getTransferTokenBegin());
         return axios.post(address, req).then(
             (res) => {
-                dispatch(getTransferTokenSuccess())
+                console.log(res.data.customer);
+                dispatch(getTransferTokenSuccess(res.data.customer.email))
             }, (error) => {
                 console.log(error)
                 dispatch(getTransferTokenFailure(error))
@@ -193,11 +194,11 @@ export function validateTransferToken(cif_code, token){
     }
 }
 
-export function saveNewTargetAccount(cif_code, accountNumber, bankCode){
+export function saveNewTargetAccount(cif_code, accountNumber, bankId){
     let req = {
         cif_code: cif_code,
         accountNumber: accountNumber,
-        bankCode: bankCode,
+        bankId: bankId,
         status: 4
     }
     let address = "http://localhost:8080/saveNewTargetAccount"

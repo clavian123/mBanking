@@ -34,6 +34,7 @@ import {
 initialState = {
     destAcc: {
         bankCode: '',
+        bankId: '',
         bankName: 'Bank Name or Code',
         accNumber: '',
         fullName: '',
@@ -57,7 +58,8 @@ initialState = {
     loading: false,
     error: null,
     validateOtp: '',
-    saveNewTargetAccount: false
+    saveNewTargetAccount: false,
+    email: ''
 };
 
 const transfer = (state = initialState, action) => {
@@ -94,6 +96,7 @@ const transfer = (state = initialState, action) => {
                 loading: false,
                 destAcc: {
                     bankCode: action.bankCode,
+                    bankId: action.bankId,
                     bankName: action.bankName,
                     accNumber: action.accNumber,
                     fullName: action.fullName
@@ -212,7 +215,8 @@ const transfer = (state = initialState, action) => {
         case GET_TRANSFER_TOKEN_SUCCESS:
             return {
                 ...state,
-                loading: false
+                loading: false,
+                email: action.email
             }
 
         case GET_TRANSFER_TOKEN_FAILURE:

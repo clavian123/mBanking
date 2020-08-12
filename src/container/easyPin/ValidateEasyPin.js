@@ -28,7 +28,7 @@ class ValidateEasyPin extends Component{
         const { navigation } = this.props
         if(easyPin == this.state.easyPin){
             if(flow == 'transfer'){
-                this.props.dispatch(transfer(sourceAcc.accNumber, destAcc.accNumber, amount, sendMethod.fee, note, destAcc.bankCode)).then(()=> {
+                this.props.dispatch(transfer(sourceAcc.accNumber, destAcc.accNumber, amount, sendMethod.fee, note, destAcc.bankId)).then(()=> {
                     navigation.navigate('TransactionDetail')
                 })
             }

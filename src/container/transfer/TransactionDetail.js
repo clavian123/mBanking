@@ -25,6 +25,7 @@ class TransactionDetail extends Component{
 
     render(){
         const { transactionDetail, destAcc } = this.props
+        
         var moment = require('moment');        
 
         return(

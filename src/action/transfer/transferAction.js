@@ -49,9 +49,10 @@ export const checkAccountNumberBegin = () => ({
     type: CHECK_ACCOUNT_NUMBER_BEGIN
 });
 
-export const checkAccountNumberSuccess = (bankCode, bankName, accNumber, fullName) => ({
+export const checkAccountNumberSuccess = (bankCode, bankId, bankName, accNumber, fullName) => ({
     type: CHECK_ACCOUNT_NUMBER_SUCCESS,
     bankCode,
+    bankId,
     bankName,
     accNumber,
     fullName
@@ -126,8 +127,9 @@ export const getTransferTokenBegin = () => ({
     type: GET_TRANSFER_TOKEN_BEGIN
 })
 
-export const getTransferTokenSuccess = () => ({
-    type: GET_TRANSFER_TOKEN_SUCCESS
+export const getTransferTokenSuccess = (email) => ({
+    type: GET_TRANSFER_TOKEN_SUCCESS,
+    email
 })
 
 export const getTransferTokenFailure = (error) => ({

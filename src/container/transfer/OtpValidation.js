@@ -29,10 +29,10 @@ class OtpValidation extends Component {
             this.props.dispatch(validateTransferToken(cif_code, this.state.token)).then(()=> {
                 const { validateOtp } = this.props
                 if(validateOtp){
-                    this.props.dispatch(saveNewTargetAccount(cif_code, destAcc.accNumber, destAcc.bankCode)).then(()=>{
+                    this.props.dispatch(saveNewTargetAccount(cif_code, destAcc.accNumber, destAcc.bankId)).then(()=>{
                         const { saveNewTargetAccount } = this.props
                         if(saveNewTargetAccount){
-                            this.props.dispatch(transfer(sourceAcc.accNumber, destAcc.accNumber, amount, sendMethod.fee, note, destAcc.bankCode)).then(() => {
+                            this.props.dispatch(transfer(sourceAcc.accNumber, destAcc.accNumber, amount, sendMethod.fee, note, destAcc.bankId)).then(() => {
                                 navigation.navigate('TransactionDetail')
                             })
                         }
@@ -54,6 +54,7 @@ class OtpValidation extends Component {
 
     render() {
         const { email, loading } = this.props
+        
         if(loading){
             return ( <Loading/>)
         }
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    email: state.login.email,
+    email: state.transfer.email,
     cif_code: state.login.cif_code,
     loading: state.transfer.loading,
     validateOtp: state.transfer.validateOtp,
