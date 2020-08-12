@@ -9,6 +9,7 @@ import {
     SET_TRANSFER_AMOUNT,
     SET_TRANSFER_NOTE,
     SET_SOURCE_ACCOUNT_SUCCESS,
+    SET_DESTINATION_ACCOUNT_SUCCESS,
     GET_METHOD_LIST_BEGIN,
     GET_METHOD_LIST_SUCCESS,
     GET_METHOD_LIST_FAILURE,
@@ -81,6 +82,14 @@ export const setSourceAccountSuccess = (accNumber, fullName, balance) => ({
     accNumber,
     fullName,
     balance
+});
+
+export const setDestinationAccountSuccess = (bankCode, bankName, accNumber, fullName) => ({
+    type: SET_DESTINATION_ACCOUNT_SUCCESS,
+    bankCode,
+    bankName,
+    accNumber,
+    fullName
 });
 
 export const getMethodListBegin = () => ({

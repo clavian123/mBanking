@@ -9,6 +9,7 @@ import {
     SET_TRANSFER_AMOUNT,
     SET_TRANSFER_NOTE,
     SET_SOURCE_ACCOUNT_SUCCESS,
+    SET_DESTINATION_ACCOUNT_SUCCESS,
     GET_METHOD_LIST_BEGIN,
     GET_METHOD_LIST_SUCCESS,
     GET_METHOD_LIST_FAILURE,
@@ -112,6 +113,7 @@ const transfer = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 destAcc: {
+                    bankCode: '',
                     bankName: 'Bank Name or Code',
                     accNumber: '',
                     fullName: ''
@@ -130,6 +132,17 @@ const transfer = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 note: action.note
+            }
+
+        case SET_DESTINATION_ACCOUNT_SUCCESS:
+            return{
+                ...state,
+                destAcc: {
+                    bankCode: action.bankCode,
+                    bankName: action.bankName,
+                    accNumber: action.accNumber,
+                    fullName: action.fullName
+                }
             }
 
         case SET_SOURCE_ACCOUNT_SUCCESS:

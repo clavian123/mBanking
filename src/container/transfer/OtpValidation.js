@@ -23,6 +23,7 @@ class OtpValidation extends Component {
 
     handleContinue = () => {
         const { destAcc, sourceAcc, amount, sendMethod, note, cif_code, navigation } = this.props
+        console.log(destAcc, cif_code)
         if(this.state.token == ''){
             ToastAndroid.show("Please enter a valid token", ToastAndroid.SHORT)
         }else{

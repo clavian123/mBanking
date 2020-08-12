@@ -8,6 +8,7 @@ import {
     checkAccountNumberSuccess,
     checkAccountNumberFailure,
     setSourceAccountSuccess,
+    setDestinationAccountSuccess,
     getMethodListBegin,
     getMethodListSuccess,
     getMethodListFailure,
@@ -47,7 +48,7 @@ export function getBankList(keyword) {
     let req = {
         keyword: keyword
     }
-    let address = "http://localhost:8080/targetBank";
+    let address = "http://192.168.43.220:8080/targetBank";
     return dispatch => {
         dispatch(getBankListBegin());
         return axios.post(address, req).then(
@@ -65,7 +66,7 @@ export function checkAccountNumber(bankCode, bankName, accNumber) {
     let req = {
         accNumber: accNumber
     }
-    let address = "http://localhost:8080/findAccountDummyByAccountNumber";
+    let address = "http://192.168.43.220:8080/findAccountDummyByAccountNumber";
     return dispatch => {
         dispatch(checkAccountNumberBegin());
         return axios.post(address, req).then(
@@ -89,8 +90,14 @@ export function setSourceAccount(accNumber, fullName, balance) {
     }
 };
 
+export function setDestinationAccount(bankCode, bankName, accNumber, name) {
+    return dispatch => {
+        dispatch(setDestinationAccountSuccess(bankCode, bankName, accNumber, name));
+    }
+};
+
 export function getMethodList() {
-    let address = "http://localhost:8080/transCharge";
+    let address = "http://192.168.43.220:8080/transCharge";
     return dispatch => {
         dispatch(getMethodListBegin());
         return axios.post(address).then(
@@ -104,11 +111,12 @@ export function getMethodList() {
     }
 }
 
-export function getListDest(cif_code){
+export function getListDest(cif_code, keyword){
     let req = {
-        cif_code: cif_code
+        cif_code: cif_code,
+        keyword: keyword
     }
-    let address = "http://localhost:8080/getTargetAccounts"
+    let address = "http://192.168.43.220:8080/getTargetAccounts"
 
     return dispatch => {
         dispatch(getListDestBegin());
@@ -134,7 +142,7 @@ export function transfer(sourceAccNumber, destAccNumber, amount, fee, note, bank
         status: 4,
         lookup: 1,
     }
-    let address = "http://localhost:8080/saveNewFundTransfer"
+    let address = "http://192.168.43.220:8080/saveNewFundTransfer"
 
     return dispatch => {
         dispatch(transferBegin());
@@ -158,7 +166,7 @@ export function getTransferToken(cif_code, totalAmount, destAccNumber, destAccNa
         bankName: targetBankName,
         currency: "IDR"
     }
-    let address = "http://localhost:8080/saveTransferOtp"
+    let address = "http://192.168.43.220:8080/saveTransferOtp"
 
     return dispatch => {
         dispatch(getTransferTokenBegin());
@@ -178,7 +186,7 @@ export function validateTransferToken(cif_code, token){
         cif_code: cif_code,
         token: token
     }
-    let address = "http://localhost:8080/validateTransferOtp"
+    let address = "http://192.168.43.220:8080/validateTransferOtp"
 
     return dispatch => {
         dispatch(validateTransferTokenBegin())
@@ -198,9 +206,9 @@ export function saveNewTargetAccount(cif_code, accountNumber, bankCode){
         cif_code: cif_code,
         accountNumber: accountNumber,
         bankCode: bankCode,
-        status: 4
+        status: 10
     }
-    let address = "http://localhost:8080/saveNewTargetAccount"
+    let address = "http://192.168.43.220:8080/saveNewTargetAccount"
 
     return dispatch => {
         dispatch(saveNewTargetAccountBegin())

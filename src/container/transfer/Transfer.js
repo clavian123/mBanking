@@ -10,7 +10,8 @@ import { TextInput, FlatList } from 'react-native-gesture-handler';
 
 import { connect } from 'react-redux';
 import AccountListItem from '../../component/AccountListItem';
-import { emptyAccountNumber } from '../../action/transfer/transferAction';
+import { emptyAccountNumber, setDestinationAccountSuccess } from '../../action/transfer/transferAction';
+import {getListDest} from '../../action/transfer/transferFunction';
 
 class Transfer extends React.Component {
 
@@ -18,8 +19,19 @@ class Transfer extends React.Component {
     super(props);
     this.state = {
       accNumber: '',
-      buttonColor: '#FA8072'
+      listDest: [],
+      buttonColor: '#FA8072',
+      keyword: ''
     };
+  }
+
+  componentDidMount(){
+    const { cif_code } = this.props;
+    this.props.dispatch(getListDest(cif_code, "")).then(() => {
+      const { listDest } = this.props;
+      this.setState({ listDest: listDest })
+    });
+    
   }
 
   handleChangeColor = () => {
@@ -31,19 +43,32 @@ class Transfer extends React.Component {
   }
 
   handleNextButton = () => {
-    const{ navigation } = this.props;
+    const { navigation, listDest } = this.props;
     if(this.state.buttonColor == '#C10000'){
-      this.props.dispatch(emptyAccountNumber());
-      navigation.navigate('SelectPayee', {
-        accNumber: this.state.accNumber,
-        buttonColor: '#FA8072'
-      });
+      if(listDest.filter((item) => item.account_number == this.state.accNumber).length != 0) {
+        let acc = listDest.filter((item) => item.account_number == this.state.accNumber)[0];
+        this.props.dispatch(setDestinationAccountSuccess(acc.bank_detail.network_code, acc.bank_detail.bank_name, acc.account_number, acc.name));
+        navigation.navigate('SetAmount');
+      } else {
+        this.props.dispatch(emptyAccountNumber());
+        navigation.navigate('SelectPayee', {
+          accNumber: this.state.accNumber,
+          buttonColor: '#FA8072'
+        });
+      }
     }
   }
 
-  render() {
+  handleSearch = () => {
+    const keyword = this.state.keyword;
+    const { cif_code } = this.props;
+    this.props.dispatch(getListDest(cif_code, keyword)).then(() => {
+      const { listDest } = this.props;
+      this.setState({ listDest: listDest })
+    });
+  }
 
-    const { listDest } = this.props;
+  render() {
 
     return (
       <View style={styles.container}>
@@ -98,16 +123,18 @@ class Transfer extends React.Component {
           <TextInput 
             placeholder="Account number"
             style={styles.searchInput}
+            onChangeText={(text) => this.setState({ keyword: text })}
           />
         </View>
 
+        <View style={styles.list}>
         <FlatList
-          style={styles.list}
-          data={listDest}
+          data={this.state.listDest}
           renderItem={({item}) => (
-            <AccountListItem name={item.fullName} accNumber={item.accNumberDest}/>
+            <AccountListItem navigation={this.props.navigation} name={item.name} accNumber={item.account_number} bankCode={item.bank_detail.network_code} bankName={item.bank_detail.bank_name}/>
           )}
         />
+        </View>
       </View>
     );
   }
@@ -115,9 +142,8 @@ class Transfer extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    height: "100%",
-    backgroundColor:"white"
+    flex: 1,
+    backgroundColor:"white",
   },
   inputView:{
     flexDirection: "row",
@@ -139,7 +165,6 @@ const styles = StyleSheet.create({
     height: 32,
     marginVertical: 8,
     marginLeft: 20,
-    
   },
   iconNext: {
     height: 25,
@@ -185,12 +210,17 @@ const styles = StyleSheet.create({
     right: 10
   },
   list: {
-    marginTop: 60
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-end'
   }
 });
 
 const mapStateToProps = state => ({
-  easyPin: state.login.easyPin
+  cif_code: state.login.cif_code,
+  easyPin: state.login.easyPin,
+  listDest: state.transfer.listDest,
+  destAcc: state.transfer.destAcc
 });
 
 export default connect(mapStateToProps)(Transfer);

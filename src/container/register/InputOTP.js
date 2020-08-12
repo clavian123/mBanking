@@ -4,7 +4,8 @@ import{
     Text,
     View,
     Image,
-    TouchableOpacity
+    TouchableOpacity,
+    ToastAndroid
 }from 'react-native';
 
 import { connect } from 'react-redux';

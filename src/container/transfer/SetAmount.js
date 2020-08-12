@@ -10,7 +10,6 @@ import{
     ToastAndroid,
 }from 'react-native';
 
-import { numberWithCommas } from '../../generalFunction'
 import { numberWithDot } from '../../generalFunction';
 import { connect } from 'react-redux';
 import { setTransferAmount, setTransferNote, clearSendMethod } from '../../action/transfer/transferAction';
@@ -243,7 +242,7 @@ const styles = StyleSheet.create({
     },
     nextButton: {
         width: '90%',
-        backgroundColor: 'red',
+        backgroundColor: '#C10000',
         borderRadius: 30,
         marginHorizontal: 20,
         marginBottom: 10

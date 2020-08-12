@@ -3,14 +3,23 @@ import {
     View,
     StyleSheet,
     Text,
-    Image
+    Image,
+    TouchableOpacity
 } from 'react-native'
 import Swipeout from 'react-native-swipeout'
+import { setDestinationAccount } from '../action/transfer/transferFunction';
+import { connect } from 'react-redux';
 
-export default class AccountListItem extends React.Component{
+class AccountListItem extends React.Component{
 
     constructor(props) {
         super(props);
+    }
+
+    handleClick = () => {
+        const { navigation } = this.props;
+        this.props.dispatch(setDestinationAccount(this.props.bankCode, this.props.bankName, this.props.accNumber, this.props.name));
+        navigation.navigate('SetAmount');
     }
 
     render(){
@@ -38,16 +47,16 @@ export default class AccountListItem extends React.Component{
                 autoClose="true"
                 backgroundColor="transparent"
             >
-                <View style={styles.container}>
+                <TouchableOpacity onPress={this.handleClick} style={styles.container}>
                     <View style={styles.accountDetail}>
                         <Text style={{fontSize: 15}}>{this.props.name}</Text>
                         <Text style={{fontSize: 14}}>{this.props.accNumber}</Text>
                     </View>
                     <View style={styles.bankDetail}>
-                        <Text style={styles.textBank} numberOfLines={2}>{'PT. Bank Sinarmas TBK.'.toUpperCase()}</Text>
+                        <Text style={styles.textBank} numberOfLines={2}>{this.props.bankName}</Text>
                     </View>
                     <Image style={styles.iconNext} source={require('../../assets/icon-next.png')}/>
-                </View>
+                </TouchableOpacity>
             </Swipeout>
         )
     }
@@ -87,4 +96,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'column',
     }
-})
+});
+
+mapPropToState = state => ({
+
+});
+
+export default connect(mapPropToState)(AccountListItem);

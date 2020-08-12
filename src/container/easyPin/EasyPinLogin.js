@@ -6,10 +6,13 @@ import{
     StyleSheet,
     Image,
     TextInput,
-    ToastAndroid
+    ToastAndroid,
+    Alert,
+    TouchableHighlight
 }from 'react-native';
 
 import { connect } from 'react-redux';
+import { handleLogout } from '../../action/login/loginFunction';
 
 class EasyPinLogin extends Component{
 
@@ -36,6 +39,24 @@ class EasyPinLogin extends Component{
         }
     }
 
+    resetEasyPin = () => {
+        Alert.alert(
+            "Clear Mobile Banking Data",
+            "Thiw will clear Mobile Banking data on your device, are you sure?",
+            [
+                {
+                    text: "YES, CLEAR NOW",
+                    onPress: () => {
+                        this.props.dispatch(handleLogout());
+                    }
+                },
+                {
+                    text: "CANCEL"
+                }
+            ]
+        )
+    }
+
     render(){
         return(
             <View style={styles.container}>
@@ -55,6 +76,12 @@ class EasyPinLogin extends Component{
                     onChangeText={(text) => this.setState({ pin: text })}
                 />
                 <Text style={styles.remindText}>For your security, please keep your EasyPIN secret</Text>
+                <View style={styles.resetContainer}>
+                    <Text style={styles.remindText}>Have login problem? </Text>
+                    <TouchableHighlight onPress={this.resetEasyPin}>
+                        <Text style={styles.resetButton}>Reset EasyPIN</Text>
+                    </TouchableHighlight>
+                </View>
                 <TouchableOpacity style={styles.button} onPress={this.handleContinue}>
                     <Text style={styles.buttonText}>CONTINUE</Text>
                 </TouchableOpacity>
@@ -107,6 +134,16 @@ const styles = StyleSheet.create({
     },
     remindText:{
         color: 'white'
+    },
+    resetContainer: {
+        flexDirection: 'row',
+        width: '80%',
+        marginHorizontal: 20
+    },
+    resetButton: {
+        textDecorationLine: 'underline',
+        color: 'white',
+        fontWeight: 'bold'
     },
     button: {
         marginHorizontal: 20,
