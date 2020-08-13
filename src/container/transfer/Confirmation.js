@@ -30,7 +30,7 @@ class Confirmation extends React.Component {
     }
 
     componentDidMount(){
-        this.props.dispatch(getListDest(this.props.cif_code))
+        this.props.dispatch(getListDest(this.props.cif_code, ""))
     }
 
     handleAmountDetailClicked(){
@@ -48,7 +48,7 @@ class Confirmation extends React.Component {
     handleTransferClicked(){
         const { listDest, destAcc, navigation, cif_code, amount, sendMethod } = this.props
         
-        if (listDest.filter((item) => item.account_number == destAcc.accNumber && item.bank_detail.sknCode == destAcc.bankCode).length != 0) {
+        if (listDest.filter((item) => item.account_number == destAcc.accNumber && item.bank_detail.id == destAcc.bankId).length != 0) {
             navigation.navigate('ValidateEasyPin', {
                 flow: 'transfer'
             })

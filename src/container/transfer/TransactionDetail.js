@@ -12,6 +12,7 @@ import { Icon } from 'react-native-elements'
 import { connect } from 'react-redux';
 import { ScrollView } from 'react-native-gesture-handler';
 import { numberWithDot } from '../../generalFunction';
+import { getListDest } from '../../action/transfer/transferFunction';
 
 class TransactionDetail extends Component{
     constructor(props){
@@ -19,12 +20,16 @@ class TransactionDetail extends Component{
     }
 
     handleClose(){
-        const { navigation } = this.props
-        navigation.popToTop()
+        const { navigation, cif_code } = this.props;
+        this.props.dispatch(getListDest(cif_code, "")).then(() => {
+            navigation.popToTop();
+        })
+        
     }
 
     render(){
         const { transactionDetail, destAcc } = this.props
+        
         var moment = require('moment');        
 
         return(
@@ -203,8 +208,10 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
+    cif_code: state.login.cif_code,
     transactionDetail: state.transfer.transactionDetail,
-    destAcc: state.transfer.destAcc
+    destAcc: state.transfer.destAcc,
+    listDest: state.transfer.listDest
 });
 
 export default connect(mapStateToProps)(TransactionDetail)

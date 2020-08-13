@@ -7,7 +7,7 @@ import {
     TouchableOpacity
 } from 'react-native'
 import Swipeout from 'react-native-swipeout'
-import { setDestinationAccount } from '../action/transfer/transferFunction';
+import { setDestinationAccount, deleteTargetAccount, getListDest } from '../action/transfer/transferFunction';
 import { connect } from 'react-redux';
 
 class AccountListItem extends React.Component{
@@ -18,7 +18,7 @@ class AccountListItem extends React.Component{
 
     handleClick = () => {
         const { navigation } = this.props;
-        this.props.dispatch(setDestinationAccount(this.props.bankCode, this.props.bankName, this.props.accNumber, this.props.name));
+        this.props.dispatch(setDestinationAccount(this.props.id, this.props.bankCode, this.props.bankName, this.props.accNumber, this.props.name));
         navigation.navigate('SetAmount');
     }
 
@@ -35,7 +35,10 @@ class AccountListItem extends React.Component{
                 backgroundColor: "red",
                 underlayColor: '#888888',
                 onPress: () => {
-                    console.log("Delete Item");
+                    const { listDest, cif_code } = this.props;
+                    let acc = listDest.filter((item) => item.account_number == this.props.accNumber)[0];
+                    deleteTargetAccount(acc.id);
+                    this.props.dispatch(getListDest(cif_code, ""));
                 }   
             }
         ]
@@ -99,7 +102,8 @@ const styles = StyleSheet.create({
 });
 
 mapPropToState = state => ({
-
+    cif_code: state.login.cif_code,
+    listDest: state.transfer.listDest
 });
 
 export default connect(mapPropToState)(AccountListItem);

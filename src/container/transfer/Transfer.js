@@ -25,13 +25,13 @@ class Transfer extends React.Component {
     };
   }
 
-  componentDidMount(){
+  loadData = () => {
     const { cif_code } = this.props;
-    this.props.dispatch(getListDest(cif_code, "")).then(() => {
-      const { listDest } = this.props;
-      this.setState({ listDest: listDest })
-    });
-    
+    this.props.dispatch(getListDest(cif_code, ""));
+  }
+
+  componentWillMount(){
+    this.loadData();
   }
 
   handleChangeColor = () => {
@@ -47,7 +47,7 @@ class Transfer extends React.Component {
     if(this.state.buttonColor == '#C10000'){
       if(listDest.filter((item) => item.account_number == this.state.accNumber).length != 0) {
         let acc = listDest.filter((item) => item.account_number == this.state.accNumber)[0];
-        this.props.dispatch(setDestinationAccountSuccess(acc.bank_detail.network_code, acc.bank_detail.bank_name, acc.account_number, acc.name));
+        this.props.dispatch(setDestinationAccountSuccess(acc.bank_detail.id, acc.bank_detail.network_code, acc.bank_detail.bank_name, acc.account_number, acc.name));
         navigation.navigate('SetAmount');
       } else {
         this.props.dispatch(emptyAccountNumber());
@@ -62,14 +62,10 @@ class Transfer extends React.Component {
   handleSearch = () => {
     const keyword = this.state.keyword;
     const { cif_code } = this.props;
-    this.props.dispatch(getListDest(cif_code, keyword)).then(() => {
-      const { listDest } = this.props;
-      this.setState({ listDest: listDest })
-    });
+    this.props.dispatch(getListDest(cif_code, keyword));
   }
 
   render() {
-
     return (
       <View style={styles.container}>
         <Text
@@ -123,15 +119,16 @@ class Transfer extends React.Component {
           <TextInput 
             placeholder="Account number"
             style={styles.searchInput}
-            onChangeText={(text) => this.setState({ keyword: text })}
+            onChangeText={(text) => this.setState({ keyword: text }, this.handleSearch)}
           />
         </View>
 
         <View style={styles.list}>
         <FlatList
-          data={this.state.listDest}
+          extraData={this.props.listDest}
+          data={this.props.listDest}
           renderItem={({item}) => (
-            <AccountListItem navigation={this.props.navigation} name={item.name} accNumber={item.account_number} bankCode={item.bank_detail.network_code} bankName={item.bank_detail.bank_name}/>
+            <AccountListItem navigation={this.props.navigation} loadData={this.loadData} id={item.bank_detail.id} name={item.name} accNumber={item.account_number} bankCode={item.bank_detail.network_code} bankName={item.bank_detail.bank_name}/>
           )}
         />
         </View>
@@ -187,13 +184,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 20
   },
   searchSection: {
-    flex: 1,
     flexDirection: 'row',
     marginHorizontal: 20,
     marginTop: 20
   },
   searchInput: {
-    flex: 1,
     width: "90%",
     height: 50,
     fontSize: 17,
@@ -201,6 +196,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     borderColor: "#888888",
+    flex: 1
   },
   searchIcon: {
     width: 25,
@@ -211,6 +207,7 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1,
+    marginVertical: 20,
     flexDirection: 'column',
     justifyContent: 'flex-end'
   }

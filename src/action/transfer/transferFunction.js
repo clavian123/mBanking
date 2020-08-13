@@ -30,6 +30,7 @@ import {
 } from './transferAction';
 
 import PushNotification from 'react-native-push-notification'
+import { ToastAndroid } from 'react-native';
 
 PushNotification.configure({
     onNotification: function (notification) {
@@ -62,7 +63,7 @@ export function getBankList(keyword) {
     }
 }
 
-export function checkAccountNumber(bankCode, bankName, accNumber) {
+export function checkAccountNumber(bankCode, bankId, bankName, accNumber) {
     let req = {
         accNumber: accNumber
     }
@@ -72,7 +73,7 @@ export function checkAccountNumber(bankCode, bankName, accNumber) {
         return axios.post(address, req).then(
             (res) => {
                 if(res.data != null) {
-                    dispatch(checkAccountNumberSuccess(bankCode, bankName, res.data.accountNumber, res.data.account_name));
+                    dispatch(checkAccountNumberSuccess(bankCode, bankId, bankName, res.data.accountNumber, res.data.account_name));
                 }else{
                     dispatch(checkAccountNumberFailure('Fail'));
                 }
@@ -90,9 +91,9 @@ export function setSourceAccount(accNumber, fullName, balance) {
     }
 };
 
-export function setDestinationAccount(bankCode, bankName, accNumber, name) {
+export function setDestinationAccount(bankId, bankCode, bankName, accNumber, name) {
     return dispatch => {
-        dispatch(setDestinationAccountSuccess(bankCode, bankName, accNumber, name));
+        dispatch(setDestinationAccountSuccess(bankId, bankCode, bankName, accNumber, name));
     }
 };
 
@@ -131,14 +132,14 @@ export function getListDest(cif_code, keyword){
     }
 }
 
-export function transfer(sourceAccNumber, destAccNumber, amount, fee, note, bankCode ){
+export function transfer(sourceAccNumber, destAccNumber, amount, fee, note, bankId){
     let req = {
         accountNumber: sourceAccNumber,
         targetAccountNumber: destAccNumber,
         amount: amount,
         bankCharge: fee,
         message: note,
-        targetBank: bankCode,
+        targetBankId: bankId,
         status: 4,
         lookup: 1,
     }
@@ -172,7 +173,8 @@ export function getTransferToken(cif_code, totalAmount, destAccNumber, destAccNa
         dispatch(getTransferTokenBegin());
         return axios.post(address, req).then(
             (res) => {
-                dispatch(getTransferTokenSuccess())
+                console.log(res.data.customer);
+                dispatch(getTransferTokenSuccess(res.data.customer.email))
             }, (error) => {
                 console.log(error)
                 dispatch(getTransferTokenFailure(error))
@@ -201,11 +203,11 @@ export function validateTransferToken(cif_code, token){
     }
 }
 
-export function saveNewTargetAccount(cif_code, accountNumber, bankCode){
+export function saveNewTargetAccount(cif_code, accountNumber, bankId){
     let req = {
         cif_code: cif_code,
         accountNumber: accountNumber,
-        bankCode: bankCode,
+        bankId: bankId,
         status: 10
     }
     let address = "http://192.168.43.220:8080/saveNewTargetAccount"
@@ -225,4 +227,19 @@ export function saveNewTargetAccount(cif_code, accountNumber, bankCode){
             }
         )
     }
+}
+
+export function deleteTargetAccount(targetAccount){
+    let req = {
+        targetAccount: targetAccount
+    }
+    let address = "http://192.168.43.220:8080/deleteTargetAccount"
+
+    return axios.post(address, req).then(
+        (res) => {
+            ToastAndroid.show("Account has succesfully removed", ToastAndroid.SHORT);
+        }, (error) => {
+            console.log(error);
+        }
+    )
 }

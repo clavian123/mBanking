@@ -19,7 +19,8 @@ class BankListItem extends React.Component{
 
     handlePress = () => {
         const{ navigation } = this.props;
-        this.props.dispatch(checkAccountNumber(this.props.code, this.props.name, this.props.accNumber)).then(() => {
+        console.log(this.props.id);
+        this.props.dispatch(checkAccountNumber(this.props.code, this.props.id,  this.props.name, this.props.accNumber)).then(() => {
             const{ destAcc } = this.props;
             if(destAcc.accNumber == null){
                 this.props.dispatch(emptyAccountNumber());
