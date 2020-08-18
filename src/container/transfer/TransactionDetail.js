@@ -13,10 +13,18 @@ import { connect } from 'react-redux';
 import { ScrollView } from 'react-native-gesture-handler';
 import { numberWithDot } from '../../generalFunction';
 import { getListDest } from '../../action/transfer/transferFunction';
+import { getBalance, getStatements } from '../../action/home/homeFunction';
 
 class TransactionDetail extends Component{
     constructor(props){
         super(props)
+    }
+
+    componentDidMount(){
+        const { cif_code } = this.props;
+        this.props.dispatch(getBalance(cif_code)).then (() => {
+            this.props.dispatch(getStatements(cif_code))
+        })
     }
 
     handleClose(){

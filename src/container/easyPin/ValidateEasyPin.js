@@ -57,7 +57,6 @@ class ValidateEasyPin extends Component{
                     keyboardType='number-pad'
                     maxLength={6}
                     secureTextEntry={true}
-                    autoFocus={true}
                     onChangeText={(text) => this.setState({ easyPin: text })}/>
 
                 <TouchableOpacity style={styles.button} onPress={()=>this.handleContinue()}>
