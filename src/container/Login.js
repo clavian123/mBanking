@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -32,11 +33,10 @@ class Login extends Component {
       this.props.dispatch(login(username, password)).then(() => {
         const { validateLogin, cif_code } = this.props;
         if(validateLogin == true){
-          this.props.dispatch(getLoginToken(cif_code)).then(() => {
+          this.props.dispatch(getLoginToken(cif_code))
             navigation.navigate("InputOTP", {
               type: "LOGIN"
             });
-          });
         }else{
           
         }
@@ -54,7 +54,7 @@ class Login extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container} behavior={'height'}>
         <View style={styles.registerContainer}>
           <Text>Don't have an account?</Text>
           <TouchableOpacity
@@ -156,7 +156,7 @@ class Login extends Component {
             <Text style={styles.textSignUp}>Sign Up</Text>
           </TouchableOpacity>
         </View> */}
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 };

@@ -53,10 +53,9 @@ class Confirmation extends React.Component {
                 flow: 'transfer'
             })
         } else {
-            this.props.dispatch(getTransferToken(cif_code, amount + sendMethod.fee, destAcc.accNumber, destAcc.fullName, destAcc.bankName)).then(() => {
-                navigation.navigate('OtpValidation', {
-                    flow: 'transfer'
-                })
+            this.props.dispatch(getTransferToken(cif_code, amount + sendMethod.fee, destAcc.accNumber, destAcc.fullName, destAcc.bankName))
+            navigation.navigate('OtpValidation', {
+                flow: 'transfer'
             })
         }
     }

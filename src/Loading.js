@@ -8,7 +8,7 @@ import {
 export default class Loading extends Component {
   render() {
     return (
-      <View style={[styles.container, styles.horizontal]}>
+      <View style={{...styles.container, backgroundColor: this.props.transparent ? "rgba(0, 0, 0, 0.5)" : null}}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     )
@@ -18,11 +18,9 @@ export default class Loading extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center'
-  },
-  horizontal: {
+    justifyContent: 'center',
     flexDirection: 'row',
     justifyContent: 'space-around',
     padding: 10
-  }
+  },
 })

@@ -6,7 +6,8 @@ import {
     TouchableOpacity, 
     Image,
     Alert,
-    ToastAndroid
+    ToastAndroid,
+    KeyboardAvoidingView
 }from 'react-native';
 
 import { connect } from 'react-redux';
@@ -114,8 +115,7 @@ class CreateUser extends Component{
 
     render(){
         return(
-            // <KeyboardAvoidingView style={{flex: 1}}>
-            <View style={styles.container}>
+            <KeyboardAvoidingView style={styles.container} behavior={'height'}>
                 <Text style={styles.label}>
                     Great! Now let's create{'\n'}your new account
                 </Text>
@@ -156,8 +156,7 @@ class CreateUser extends Component{
                 <TouchableOpacity style={styles.button} onPress={this.handleContinue}>
                     <Text style={styles.buttonText}>CONTINUE</Text>
                 </TouchableOpacity>
-            </View>
-            // </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
         )
     }
 }

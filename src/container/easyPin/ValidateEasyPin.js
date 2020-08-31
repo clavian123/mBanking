@@ -6,7 +6,8 @@ import{
     StyleSheet,
     Image,
     TextInput,
-    ToastAndroid
+    ToastAndroid,
+    Modal
 }from 'react-native';
 
 import { connect } from 'react-redux';
@@ -39,12 +40,18 @@ class ValidateEasyPin extends Component{
 
     render(){
         const { loading } = this.props
-        if(loading){
-            return(<Loading></Loading>)
-        }
+        // if(loading){
+        //     return(<Loading></Loading>)
+        // }
         return(
             <View style={styles.container}>
-
+                {
+                    loading ?
+                    <Modal transparent={true}> 
+                        <Loading transparent={true}/>
+                    </Modal>
+                    : null
+                }
                 <View style={styles.header}>
                     <Text style={styles.title}>Enter EasyPIN</Text>
                     <Image style={styles.keyboardIcon} source={require('../../../assets/icon-keyboard.png')}/>

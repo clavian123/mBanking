@@ -10,13 +10,12 @@ export default class AboutUs extends React.Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.textTitle}>
-                    DBBS 3 MOBILE BANKING APPLICATION
+                    mBanking Prototype
                 </Text>
                 <Text style={styles.textLabel}>Developed By:</Text>
-                <Text style={styles.textName}>Dania Ester</Text>
-                <Text style={styles.textName}>Joel Geraldine</Text>
-                <Text style={styles.textName}>Kevin Willianes</Text>
+                <Text style={styles.textName}>Jun Chandra</Text>
                 <Text style={styles.textName}>Rian Krishandi</Text>
+                <Text style={styles.textName}>Clavian Candrian</Text>
             </View >
         );
     }

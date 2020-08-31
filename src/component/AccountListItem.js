@@ -47,7 +47,7 @@ class AccountListItem extends React.Component{
             <Swipeout 
                 style={{marginHorizontal: 20}}
                 right={swipeBtns}
-                autoClose="true"
+                autoClose={true}
                 backgroundColor="transparent"
             >
                 <TouchableOpacity onPress={this.handleClick} style={styles.container}>
