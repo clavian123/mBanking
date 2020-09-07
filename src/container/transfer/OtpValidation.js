@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    email: state.transfer.email,
+    email: state.home.email,
     cif_code: state.login.cif_code,
     loading: state.transfer.loading,
     validateOtp: state.transfer.validateOtp,

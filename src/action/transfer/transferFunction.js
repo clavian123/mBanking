@@ -140,8 +140,6 @@ export function transfer(sourceAccNumber, destAccNumber, amount, fee, note, bank
         bankCharge: fee,
         message: note,
         targetBankId: bankId,
-        status: 4,
-        lookup: 1,
     }
     let address = "http://localhost:8080/saveNewFundTransfer"
 
@@ -208,7 +206,6 @@ export function saveNewTargetAccount(cif_code, accountNumber, bankId){
         cif_code: cif_code,
         accountNumber: accountNumber,
         bankId: bankId,
-        status: 10
     }
     let address = "http://localhost:8080/saveNewTargetAccount"
 

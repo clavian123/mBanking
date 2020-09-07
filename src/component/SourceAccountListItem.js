@@ -5,27 +5,33 @@ import{
     Image,
     StyleSheet,
     TouchableOpacity,
+    ToastAndroid
 }from 'react-native';
 
 import { numberWithDot } from '../generalFunction';
 import { setSourceAccount } from '../action/transfer/transferFunction';
+import { connect } from 'react-redux';
 
-export default class SourceAccountListItem extends React.Component{
+class SourceAccountListItem extends React.Component{
 
     constructor(props) {
         super(props);
     }
 
     handleAccountClicked(){
-        const { navigation } = this.props
-        this.props.dispatch(setSourceAccount(this.props.number, this.props.name, this.props.balance))        
-        navigation.navigate("SetAmount", {
-           sourceAccNumber: this.props.number,
-           sourceAccName: this.props.name,
-           sourceAccType: this.props.type,
-           sourceAccBalance: this.props.balance
-        });
-        
+        const { navigation, destAcc } = this.props
+
+        if(destAcc.accNumber == this.props.number){
+            ToastAndroid.show("You can't transfer to the same account", ToastAndroid.SHORT);
+        } else {
+            this.props.dispatch(setSourceAccount(this.props.number, this.props.name, this.props.balance))
+            navigation.navigate("SetAmount", {
+                sourceAccNumber: this.props.number,
+                sourceAccName: this.props.name,
+                sourceAccType: this.props.type,
+                sourceAccBalance: this.props.balance
+            });
+        }
     }
 
     render(){
@@ -81,3 +87,10 @@ const styles = StyleSheet.create({
         marginVertical: 45
     }
 })
+
+const mapStateToProps = state => ({
+    sourceAcc: state.transfer.sourceAcc,
+    destAcc: state.transfer.destAcc
+})
+
+export default connect(mapStateToProps)(SourceAccountListItem);

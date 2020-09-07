@@ -138,7 +138,7 @@ class Confirmation extends React.Component {
 
                 <View style={styles.noteContainer}>
                     <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Notes</Text>
-                    <Text>{note}</Text>
+                    <Text>{note ? note : "-"}</Text>
                 </View>
 
                 <View style={styles.alertContainer}>
