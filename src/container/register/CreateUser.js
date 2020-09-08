@@ -6,7 +6,8 @@ import {
     TouchableOpacity, 
     Image,
     Alert,
-    ToastAndroid
+    ToastAndroid,
+    KeyboardAvoidingView
 }from 'react-native';
 
 import { connect } from 'react-redux';
@@ -114,8 +115,12 @@ class CreateUser extends Component{
 
     render(){
         return(
-            // <KeyboardAvoidingView style={{flex: 1}}>
-            <View style={styles.container}>
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior={Platform.OS == "ios" ? "padding" : "height"}
+                keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
+                enabled={Platform.OS === "ios" ? true : false}
+            >
                 <Text style={styles.label}>
                     Great! Now let's create{'\n'}your new account
                 </Text>
@@ -147,6 +152,7 @@ class CreateUser extends Component{
                             borderBottomColor={this.state.passwordBorderColor}
                             borderBottomWidth={this.state.passwordBorderWidth}
                             onChangeText={(text) => this.setState({password: text}, this.validatePassword)}
+                            autoCapitalize="none"
                         />
                     </View>
                     <TouchableOpacity style={styles.eyeIconContainer} onPress={this.handleSecureText}>
@@ -156,8 +162,7 @@ class CreateUser extends Component{
                 <TouchableOpacity style={styles.button} onPress={this.handleContinue}>
                     <Text style={styles.buttonText}>CONTINUE</Text>
                 </TouchableOpacity>
-            </View>
-            // </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
         )
     }
 }
@@ -236,6 +241,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'red',
         borderRadius: 30,
         paddingVertical: 15,
+        justifyContent: 'flex-end',
         position: 'absolute',
         bottom: 20
     },

@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
         right: 0
     },
     remindText:{
-        color: 'white'
+        color: 'white',
     },
     resetContainer: {
         flexDirection: 'row',

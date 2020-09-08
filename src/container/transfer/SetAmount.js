@@ -8,6 +8,7 @@ import{
     TouchableOpacity,
     ScrollView,
     ToastAndroid,
+    KeyboardAvoidingView
 }from 'react-native';
 
 import { numberWithDot } from '../../generalFunction';
@@ -58,6 +59,11 @@ class SetAmount extends React.Component{
 
         return(
             <ScrollView style={styles.container}>
+                <KeyboardAvoidingView
+                    behavior={Platform.OS == "ios" ? "padding" : "height"}
+                    keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
+                    enabled={Platform.OS === "ios" ? true : false}
+                >
                 <View style={styles.setAmountLabelContainer}>
                     <View style={styles.rpIconContainer}>
                         <Text style={styles.rpIconText}>Rp</Text>
@@ -113,6 +119,7 @@ class SetAmount extends React.Component{
                 <TouchableOpacity onPress={this.handleNext} style={styles.nextButton}>
                         <Text style={styles.nextText}>NEXT</Text>
                 </TouchableOpacity>
+                </KeyboardAvoidingView>
             </ScrollView>
         )
     }

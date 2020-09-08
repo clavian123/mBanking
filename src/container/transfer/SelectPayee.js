@@ -5,7 +5,8 @@ import{
     Image,
     Text,
     TouchableOpacity,
-    ToastAndroid
+    ToastAndroid,
+    KeyboardAvoidingView
 }from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
@@ -55,7 +56,12 @@ class SelectPayee extends React.Component{
         const { destAcc, route } = this.props;
 
         return(
-            <View style={styles.container}>
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior={Platform.OS == "ios" ? "padding" : "height"}
+                keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
+                enabled={Platform.OS === "ios" ? true : false}
+            >
                 <View style={styles.selectLabel}>
                     <View style={styles.iconContainer}>
                         <Image style={styles.icon} source={require('../../../assets/icon-account.png')}/>
@@ -105,7 +111,7 @@ class SelectPayee extends React.Component{
                         <Text style={styles.nextText}>NEXT</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </KeyboardAvoidingView>
         )
     }
 }

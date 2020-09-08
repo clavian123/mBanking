@@ -6,7 +6,8 @@ import {
     Image,
     TouchableOpacity,
     Alert,
-    ToastAndroid
+    ToastAndroid,
+    KeyboardAvoidingView
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -122,7 +123,12 @@ class ResetPassword extends Component {
     render() {
         const { username } = this.props;
         return (
-            <View style={styles.container}>
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior={Platform.OS == "ios" ? "padding" : "height"}
+                keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
+                enabled={Platform.OS === "ios" ? true : false}
+            >
                 <Text style={styles.label}>
                     Enter new password
                 </Text>
@@ -171,7 +177,7 @@ class ResetPassword extends Component {
                 <TouchableOpacity style={styles.button} onPress={this.handleContinue}>
                     <Text style={styles.buttonText}>CONTINUE</Text>
                 </TouchableOpacity>
-            </View>
+            </KeyboardAvoidingView>
         )
     }
 }

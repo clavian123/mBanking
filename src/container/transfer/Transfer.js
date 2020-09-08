@@ -5,6 +5,7 @@ import {
   Text,
   TouchableHighlight,
   Image,
+  KeyboardAvoidingView
 } from 'react-native';
 import { TextInput, FlatList } from 'react-native-gesture-handler';
 
@@ -67,7 +68,12 @@ class Transfer extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS == "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
+        enabled={Platform.OS === "ios" ? true : false}
+      >
         <Text
           style={{
             fontWeight: "bold", 
@@ -125,14 +131,15 @@ class Transfer extends React.Component {
 
         <View style={styles.list}>
         <FlatList
-          extraData={this.props.listDest}
           data={this.props.listDest}
+          extraData={[this.props.listDest]}
           renderItem={({item}) => (
             <AccountListItem navigation={this.props.navigation} loadData={this.loadData} id={item.bank_detail.id} name={item.name} accNumber={item.account_number} bankCode={item.bank_detail.network_code} bankName={item.bank_detail.bank_name}/>
           )}
+          keyExtractor={item => item.id}
         />
         </View>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 };

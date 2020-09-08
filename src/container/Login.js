@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import {
   Image,
   StyleSheet,
-  TextInput,
   Text,
   TouchableOpacity,
   View,
+  KeyboardAvoidingView
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -54,7 +54,12 @@ class Login extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS == "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
+        enabled={Platform.OS === "ios" ? true : false}
+      >
         <View style={styles.registerContainer}>
           <Text>Don't have an account?</Text>
           <TouchableOpacity
@@ -93,6 +98,7 @@ class Login extends Component {
             borderBottomColor={"#888888"}
             borderBottomWidth={1}
             onChangeText={(text) => this.setState({ password: text })}
+            autoCapitalize="none"
           />
           </View>
           <TouchableOpacity style={styles.eyeIconContainer} onPress={this.handleSecureText}>
@@ -112,51 +118,7 @@ class Login extends Component {
         <TouchableOpacity onPress={this.handleLogin} style={styles.button}>
           <Text style={styles.buttonText}>LOG IN</Text>
         </TouchableOpacity>
-        {/* <View style={styles.viewLogo}>
-          <Image
-            style={styles.imageLogo}
-            source={require('../../assets/logo-project.png')}
-          />
-          <Text style={styles.textLogo}>M-Banking DBBS 3</Text>
-        </View>
-        <View style={styles.viewInput}>
-          <TextInput
-            value={this.state.username}
-            onChangeText={(username) => this.setState({ username: username })}
-            placeholder="Username"
-            style={styles.textInput}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          ></TextInput>
-          <TextInput
-            value={this.state.password}
-            onChangeText={(password) => this.setState({ password: password })}
-            placeholder="Password"
-            style={styles.textInput}
-            secureTextEntry={true}
-            autoCapitalize="none"
-          >
-          </TextInput>
-          <TouchableOpacity
-            onPress={
-              () => this.handleLogin()
-            }
-            style={styles.buttonLogin}
-          >
-            <Text style={styles.textLogin}>Login</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.viewSignUp}>
-          <Text style={styles.textSignUpLabel}>Don't have an account yet? </Text>
-          <TouchableOpacity
-            onPress={
-              () => this.props.navigation.navigate('InputPAN')
-            }
-          >
-            <Text style={styles.textSignUp}>Sign Up</Text>
-          </TouchableOpacity>
-        </View> */}
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 };
@@ -237,67 +199,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white'
   }
-  // viewLogo: {
-  //   alignItems: "center",
-  //   justifyContent: "flex-end",
-  //   flexGrow: 1,
-  // },
-  // viewInput: {
-  //   flexGrow: 1,
-  //   alignItems: 'center',
-  //   justifyContent: "center",
-  //   // backgroundColor:'red'
-  // },
-  // viewSignUp: {
-  //   flexGrow: 1,
-  //   alignItems: 'flex-end',
-  //   justifyContent: 'center',
-  //   marginVertical: 16,
-  //   flexDirection: 'row',
-  // },
-  // textInput: {
-  //   width: 300,
-  //   borderColor: 'black',
-  //   borderStyle: 'solid',
-  //   borderWidth: 1,
-  //   borderRadius: 10,
-  //   paddingHorizontal: 16,
-  //   marginVertical: 10,
-  //   fontSize: 16,
-  //   // backgroundColor: "#eeeeee",
-  //   // elevation: 10,
-  // },
-  // imageLogo: {
-  //   width: 130,
-  //   height: 130,
-  // },
-  // textLogo: {
-  //   marginVertical: 10,
-  //   fontSize: 20,
-  // },
-  // textLogin: {
-  //   fontSize: 17,
-  //   fontWeight: '500',
-  //   color: 'white',
-  //   textAlign: 'center'
-  // },
-  // textSignUpLabel: {
-  //   fontSize: 16,
-  // },
-  // textSignUp: {
-  //   fontSize: 16,
-  //   color: 'rgb(0,0,255)',
-  // },
-  // buttonLogin: {
-  //   backgroundColor: '#c10000',
-  //   marginVertical: 10,
-  //   borderRadius: 10,
-  //   // borderBottomLeftRadius: 15,
-  //   // borderBottomRightRadius: 15,
-  //   paddingVertical: 16,
-  //   width: 300,
-  //   // elevation: 10,
-  // }
 });
 
 const mapStateToProps = state => ({

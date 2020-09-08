@@ -6,7 +6,8 @@ import{
     StyleSheet,
     Image,
     TextInput,
-    ToastAndroid
+    ToastAndroid,
+    KeyboardAvoidingView
 }from 'react-native';
 
 class CreateEasyPin extends Component{
@@ -34,7 +35,12 @@ class CreateEasyPin extends Component{
 
     render(){
         return(
-            <View style={styles.container}>
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior={Platform.OS == "ios" ? "padding" : "height"}
+                keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
+                enabled={Platform.OS === "ios" ? true : false}
+            >
                 <View style={styles.labelContainer}>
                     <Text style={styles.labelText}>
                         <Text>Create </Text>
@@ -56,7 +62,7 @@ class CreateEasyPin extends Component{
                 <TouchableOpacity style={styles.button} onPress={this.handleContinue}>
                     <Text style={styles.buttonText}>CONTINUE</Text>
                 </TouchableOpacity>
-            </View>
+            </KeyboardAvoidingView>
         )
     }
 

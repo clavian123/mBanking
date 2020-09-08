@@ -4,7 +4,8 @@ import {
   Text,
   View,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  KeyboardAvoidingView
 } from 'react-native';
 
 import { checkPan, getRegisterToken } from '../../action/register/registerFunction';
@@ -58,7 +59,12 @@ class InputPAN extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS == "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
+        enabled={Platform.OS === "ios" ? true : false}
+        style={styles.container}
+      >
         <Text style={styles.label}>
           {`As a start, help us to identify you`}
         </Text>
@@ -76,14 +82,6 @@ class InputPAN extends React.Component {
               borderBottomWidth={this.state.borderWidth}
               onChangeText={(text) => this.setState({pan: text}, this.checkPan)}
             />
-            {/* <TextInput
-              style={{...styles.input, borderBottomColor: this.state.borderColor, borderBottomWidth: this.state.borderWidth}}
-              placeholder="Enter ATM Card Number"
-              keyboardType="number-pad"
-              onChangeText={text => this.setState({ pan: text }, this.checkPan)}
-            >
-            </TextInput> */}
-          
             { this.state.isWrong && 
               <View style={styles.wrongInput}>
                 <Image style={styles.wrongIcon} source={require('../../../assets/icon-exclamation.png')} />
@@ -98,7 +96,7 @@ class InputPAN extends React.Component {
             <Text style={styles.continueText}>CONTINUE</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 };

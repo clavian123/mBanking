@@ -48,7 +48,6 @@ class Home extends React.Component {
     this.props.dispatch(getBalance(cif_code)).then(()=>{
       this.props.dispatch(getStatements(cif_code))
     })
-    
   }
 
   componentWillUnmount() {

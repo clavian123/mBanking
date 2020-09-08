@@ -5,7 +5,8 @@ import {
     View,
     Image,
     TouchableOpacity,
-    ToastAndroid
+    ToastAndroid,
+    KeyboardAvoidingView
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -60,7 +61,12 @@ class OtpValidation extends Component {
             return ( <Loading/>)
         }
         return (
-            <View style={styles.container}>
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior={Platform.OS == "ios" ? "padding" : "height"}
+                keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
+                enabled={Platform.OS === "ios" ? true : false}
+            >
                 <View style={styles.labelContainer}>
                     <View>
                         <Text style={styles.labelText}>
@@ -104,7 +110,7 @@ class OtpValidation extends Component {
                         CONTINUE
                     </Text>
                 </TouchableOpacity>
-            </View>
+            </KeyboardAvoidingView>
         )
     }
 }

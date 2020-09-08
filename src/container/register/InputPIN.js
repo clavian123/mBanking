@@ -4,7 +4,8 @@ import{
     Text,
     TouchableOpacity,
     StyleSheet,
-    ToastAndroid
+    ToastAndroid,
+    KeyboardAvoidingView
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -42,19 +43,14 @@ class InputPIN extends Component{
         
     }
 
-    // handleNavigation = () => {
-    //     const{ customerApps } = this.props;
-    //     const{ navigation } = this.props;
-    //     if(customerApps == null){   
-    //         navigation.navigate('CreateUser');  
-    //     }else{
-    //         navigation.navigate('ResetPassword');
-    //     }
-    // }
-
     render(){
         return(
-            <View style={styles.container}>
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior={Platform.OS == "ios" ? "padding" : "height"}
+                keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
+                enabled={Platform.OS === "ios" ? true : false}
+            >
                 <Text style={styles.label}>
                     Enter your Sinarmas ATM{'\n'}PIN
                 </Text>
@@ -89,7 +85,7 @@ class InputPIN extends Component{
                 <TouchableOpacity style={styles.button} onPress={this.handleContinue}>
                     <Text style={styles.buttonText}>CONTINUE</Text>
                 </TouchableOpacity>
-            </View>
+            </KeyboardAvoidingView>
         )
     }
 

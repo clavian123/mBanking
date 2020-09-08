@@ -5,7 +5,8 @@ import{
     View,
     Image,
     TouchableOpacity,
-    ToastAndroid
+    ToastAndroid,
+    KeyboardAvoidingView
 }from 'react-native';
 
 import { connect } from 'react-redux';
@@ -58,7 +59,12 @@ class InputOTP extends React.Component{
     render(){
         const { email } = this.props
         return(
-            <View style={styles.container}>
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior={Platform.OS == "ios" ? "padding" : "height"}
+                keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
+                enabled={Platform.OS === "ios" ? true : false}
+            >
                 <View style={styles.labelContainer}>
                     <View>
                         <Text style={styles.labelText}>
@@ -102,7 +108,7 @@ class InputOTP extends React.Component{
                         CONTINUE
                     </Text>
                 </TouchableOpacity>
-            </View>
+            </KeyboardAvoidingView>
         )
     }
 
