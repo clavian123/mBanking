@@ -35,6 +35,13 @@ class StatementList extends React.Component {
         
     }
 
+    handleAllTransactionClicked(){
+        this.props.navigation.navigate('AccountStatementList', {
+            accNumber: this.props.accNumber,
+            balance: this.props.balance,
+        })
+    }
+
     render() {
 
         var moment = require('moment');
@@ -92,6 +99,25 @@ class StatementList extends React.Component {
                                 
                             </TouchableOpacity>
                         )
+                    }
+                    {
+                        this.props.home ?
+                            <TouchableOpacity style={styles.container} onPress={() => this.handleAllTransactionClicked()}>
+                                <View style={styles.viewSubLeft}>
+                                    <Text style={styles.allTransactionText}>See All Transaction</Text>
+                                </View>
+                                
+                                <View style={styles.viewSubRight}>
+                                    <Icon
+                                        name="arrow-right"
+                                        type="simple-line-icon"
+                                        iconStyle={styles.allTransactionIcon}
+                                        underlayColor="#d63447">
+                                    </Icon>
+                                </View>
+                                
+                            </TouchableOpacity>
+                            : null
                     }
                 </ScrollView>
             )
@@ -152,6 +178,18 @@ const styles = StyleSheet.create({
         fontSize: 13,
         color: '#d63447',
         marginRight: 10
+    },
+    allTransactionText:{
+        color: 'red',
+        fontSize: 15,
+        textAlignVertical: 'center',
+        height: 30,
+        fontWeight: 'bold'
+    },
+    allTransactionIcon: {
+        fontSize: 15,
+        color: '#d63447',
+        marginRight: 10,
     },
 })
 

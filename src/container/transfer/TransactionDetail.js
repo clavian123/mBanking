@@ -23,7 +23,9 @@ class TransactionDetail extends Component{
     componentDidMount(){
         const { cif_code } = this.props;
         this.props.dispatch(getBalance(cif_code)).then (() => {
-            this.props.dispatch(getStatements(cif_code))
+            this.props.dispatch(getStatements(cif_code)).then (() => {
+                console.log("Updated!");
+            })
         })
     }
 

@@ -6,18 +6,31 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
+  FlatList
 } from 'react-native';
+import PaymentListItem from '../../component/PaymentListItem';
 
 export default class Payment extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      transactions: [
-        { id: 1, description: "089628650630", transactionType: "OVO" }
+      subscriber: [
+        {
+          id: 1,
+          number: '082284174302',
+          merchant: 'OVO'
+        }
       ]
     };
+  }
+
+  handleMerchant = (merchant) => {
+    const { navigation } = this.props;
+    navigation.navigate('SetPhoneNumber', {
+      merchant: merchant
+    })
   }
 
   render() {
@@ -25,7 +38,9 @@ export default class Payment extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView>
+
           <View style={styles.viewScrollView}>
+
             <View>
               <Text style={{
                 fontSize: 16,
@@ -33,51 +48,52 @@ export default class Payment extends React.Component {
                 marginBottom: 10
               }}>
                 Pay/Top Up
-          </Text>
+              </Text>
             </View>
+            
             <View style={styles.viewPayTopUpList}>
               {payTopUpList
                 .map(payTopUpItem => {
                   return (
-                    <TouchableOpacity key={payTopUpItem.id} style={styles.buttonPayTopUpItem}>
+                    <TouchableOpacity key={payTopUpItem.id} style={styles.buttonPayTopUpItem} onPress={() => this.handleMerchant(payTopUpItem.label)}>
                       <Image
                         source={payTopUpItem.iconSource}
                         style={styles.iconPayTopUp}
                       />
-                      <Text style={{ fontSize: 12 }}>{payTopUpItem.label}</Text>
+                      <Text style={{ fontSize: 15 }}>{payTopUpItem.label}</Text>
                     </TouchableOpacity>
                   );
                 })
               }
             </View>
+
             <View style={styles.viewOr}>
               <View style={styles.viewLine} />
               <Text style={{ color: 'grey', fontSize: 12, paddingHorizontal: 15 }}>OR</Text>
               <View style={styles.viewLine} />
             </View>
+
             <View>
               <Text style={{ fontSize: 16, marginBottom: 10 }}>Find from Previous Transactions</Text>
               <View style={styles.viewTextInput}>
-                <TextInput placeholder="Biller name/subscriber number" style={styles.textInput} />
+                <TextInput placeholder="Biller name / Subscriber number" style={styles.textInput} />
                 <Image source={require('../../../assets/icon-search-headed-left.png')} style={styles.iconSearch} />
               </View>
-              <View style={styles.viewTransactionList}>
-                {
-                  transactions && transactions.length > 0 ? (
-                    transactions
-                      .map(transaction =>
-                        <TouchableOpacity style={styles.buttonTransaction}>
-                          <Text style={{ flex: 1 }}>{transaction.description}</Text>
-                          <Text style={{ color: 'grey', fontSize: 12 }}>{transaction.transactionType}</Text>
-                          <Image source={require('../../../assets/icon-next.png')} style={styles.iconNext} />
-                        </TouchableOpacity>
-                      )
-                  ) : (
-                      <Text style={{ color: 'grey' }}>Nothing to show</Text>
-                    )
-                }
-              </View>
             </View>
+
+            <View style={styles.list}>
+                <FlatList 
+                  data = {this.state.subscriber}
+                  renderItem={({item}) => (
+                    <PaymentListItem navigation={this.props.navigation} id={item.id} number={item.number} merchant={item.merchant} />
+                  )}
+                  ListEmptyComponent={
+                    <Text style={{ marginTop: 50, textAlign: 'center', color: 'grey' }}>Nothing to show</Text>
+                  }
+                  keyExtractor={item => item.id}
+                />
+              </View>
+
           </View>
         </ScrollView>
       </View>
@@ -96,7 +112,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: 'lightgrey',
     flexDirection: 'row',
-    paddingLeft: 5,
     paddingVertical: 10
   },
   container: {
@@ -111,18 +126,20 @@ const styles = StyleSheet.create({
     width: 25
   },
   iconPayTopUp: {
-    height: 40,
-    width: 40
+    height: 45,
+    width: 45
   },
   iconSearch: {
-    height: 25,
-    marginRight: 5,
+    height: 30,
+    marginRight: 10,
     width: 25
   },
   textInput: {
     flex: 1,
     paddingHorizontal: 10,
-    paddingVertical: 5
+    paddingVertical: 5,
+    fontSize: 17,
+    height: 50
   },
   viewLine: {
     backgroundColor: 'grey',
@@ -133,7 +150,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
-    marginVertical: 30
+    marginVertical: 20
   },
   viewPayTopUpList: {
     flex: 1,
@@ -145,14 +162,15 @@ const styles = StyleSheet.create({
   },
   viewTextInput: {
     alignItems: 'center',
-    borderColor: 'lightgrey',
+    borderColor: '#888888',
     borderRadius: 5,
     borderWidth: 1,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginTop: 10
   },
-  viewTransactionList: {
-    alignItems: 'center',
-    marginTop: 30
+  list: {
+    flex: 1,
+    marginVertical: 20
   }
 });
 

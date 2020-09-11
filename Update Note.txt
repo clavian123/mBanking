@@ -1,0 +1,6 @@
+11 September 2020 13:49 - Jun (
+- Mengganti nama dan ikon aplikasi
+- Penyesuaian ukuran ikon merchant pada tab Payment
+- Penambahan activity di container payment: SetPhoneNumber, PaymentSetAmount, PaymentConfirmation
+- Penambahan component: PaymentListItem
+)

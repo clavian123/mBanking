@@ -1,31 +1,23 @@
-import React from 'react';
-import {
+import React, {Component} from 'react';
+import { 
     View,
     Text,
     StyleSheet,
     TouchableOpacity,
     ScrollView,
-    LayoutAnimation,
+    LayoutAnimation
 } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { connect } from 'react-redux';
-
 import { numberWithDot } from '../../generalFunction';
-import { getListDest, getTransferToken } from '../../action/transfer/transferFunction'
 import moment from 'moment';
-import Loading from '../../Loading';
 
+class PaymentConfirmation extends Component {
 
-class Confirmation extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             isAmountDetailClicked: false,
         }
-    }
-
-    componentDidMount(){
-        this.props.dispatch(getListDest(this.props.cif_code, ""))
     }
 
     handleAmountDetailClicked(){
@@ -38,40 +30,21 @@ class Confirmation extends React.Component {
             isAmountDetailClicked: !this.state.isAmountDetailClicked
         })
     }
+    
+    render(){
 
-    handleTransferClicked(){
-        const { listDest, destAcc, navigation, cif_code, amount, sendMethod } = this.props
-        
-        if (listDest.filter((item) => item.account_number == destAcc.accNumber && item.bank_detail.id == destAcc.bankId).length != 0) {
-            navigation.navigate('ValidateEasyPin', {
-                flow: 'transfer'
-            })
-        } else {
-            this.props.dispatch(getTransferToken(cif_code, amount + sendMethod.fee, destAcc.accNumber, destAcc.fullName, destAcc.bankName))
-            navigation.navigate('OtpValidation', {
-                flow: 'transfer'
-            })
-        }
-    }
-
-    render() {
-        
         var date = moment().utcOffset('+07:00').format('dddd, DD MMM YYYY')
-        const {sourceAcc, destAcc, amount, note, sendMethod, loading} = this.props
+        const {route} = this.props
 
-        if(loading){
-            return(<Loading></Loading>)
-        }
-
-        return (
+        return(
             <ScrollView style={styles.container}>
 
-                <Text style={styles.header}>Send money confirmation</Text>
-
+                <Text style={styles.header}>Pay / Purchase confirmation</Text>
+            
                 <View style={styles.amountContainer}>
                     <View style={styles.amountTotalContainer}>
                         <Text style={styles.currency}>Rp</Text>
-                        <Text style={styles.amount}>{"Rp " + numberWithDot(amount + sendMethod.fee)}</Text>
+                        <Text style={styles.amount}>{"Rp " + numberWithDot(route.params.amount)}</Text>
                         <TouchableOpacity style={styles.amountDetailButton} onPress={() => this.handleAmountDetailClicked()}>
                             <Icon
                                 name={this.state.isAmountDetailClicked ? "ios-remove-circle" : "ios-add-circle"}
@@ -87,15 +60,14 @@ class Confirmation extends React.Component {
                     }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 5 }}>
                             <Text>Amount</Text>
-                            <Text>{"Rp " + numberWithDot(amount.toString())}</Text>
+                            <Text>{"Rp " + numberWithDot(route.params.amount.toString())}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
                             <Text>Fee</Text>
-                            <Text>{sendMethod.fee ? 'Rp ' + numberWithDot(sendMethod.fee) : 'Rp 0'}</Text>
+                            <Text>{'Rp 0'}</Text>
                         </View>
                     </View>
                 </View>
-                
 
                 <Text style={styles.date}>On {date}</Text>
 
@@ -105,8 +77,8 @@ class Confirmation extends React.Component {
                         type="entypo"
                         iconStyle={styles.walletIcon}></Icon>
                     <View>
-                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{sourceAcc.accNumber}</Text>
-                        <Text>{sourceAcc.fullName}</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{route.params.sourceAccNumber}</Text>
+                        <Text>{route.params.sourceAccName}</Text>
                         <Text>Tabunganku</Text>
                     </View>
                 </View>
@@ -114,7 +86,8 @@ class Confirmation extends React.Component {
                 <Icon
                     name="options-vertical"
                     type="simple-line-icon"
-                    iconStyle={styles.tripleDotIcon}></Icon>
+                    iconStyle={styles.tripleDotIcon}>
+                </Icon>
 
                 <View style={styles.accContainer}>
                     <Icon
@@ -122,39 +95,24 @@ class Confirmation extends React.Component {
                         type="ionicon"
                         iconStyle={styles.personIcon}></Icon>
                     <View>
-                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{destAcc.accNumber}</Text>
-                        <Text>{destAcc.fullName.toUpperCase()}</Text>
-                        <Text>{destAcc.bankName}</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{route.params.phoneNumber}</Text>
+                        <Text>{route.params.merchant.toUpperCase()}</Text>
                     </View>
                 </View>
 
                 <View style={styles.line}></View>
 
-                <View style={styles.noteContainer}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Notes</Text>
-                    <Text>{note ? note : "-"}</Text>
-                </View>
-
-                <View style={styles.alertContainer}>
-                    <Icon
-                    name="ios-alert"
-                    type="ionicon"
-                    iconStyle={styles.alertIcon}></Icon>
-                    <Text style={{color: 'grey'}}>Upon completion, all transaction cannot be cancelled</Text>
-                </View>
-
-                <TouchableOpacity style={styles.transferButton} onPress={()=> this.handleTransferClicked()}>
-                    <Text style={{color: 'white', fontSize: 17}}>TRANSFER</Text>
-                </TouchableOpacity>
-
             </ScrollView>
         )
+
     }
+
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: 'white'
     },
     header: {
         fontSize: 20,
@@ -243,47 +201,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.2,
         borderColor: 'grey',
         marginVertical: 20,
-    },
-    noteContainer: {
-        marginHorizontal: 20,
-    },
-    alertContainer:{
-        flexDirection: 'row',
-        margin: 20,
-        borderWidth: 0.5,
-        borderRadius: 5,
-        padding: 10,
-        alignItems: 'center'
-    },
-    alertIcon:{
-        width: 30,
-        height: 30,
-        textAlign: 'center',
-        textAlignVertical: 'center',
-        fontSize: 30,
-        marginRight: 10
-    },
-    transferButton:{
-        backgroundColor: '#c10000',
-        marginHorizontal: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 50,
-        borderRadius: 30,
-        marginBottom:10
     }
+});
 
-})
-
-const mapStateToProps = state => ({
-    sourceAcc: state.transfer.sourceAcc,
-    destAcc: state.transfer.destAcc,
-    amount: state.transfer.amount,
-    note: state.transfer.note,
-    sendMethod: state.transfer.sendMethod,
-    listDest: state.transfer.listDest,
-    cif_code: state.login.cif_code,
-    loading: state.transfer.loading
-})
-
-export default connect(mapStateToProps)(Confirmation)
+export default PaymentConfirmation;

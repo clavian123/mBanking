@@ -6,6 +6,7 @@ import {
     Image,
     TouchableOpacity,
     ToastAndroid,
+    Modal,
     KeyboardAvoidingView
 } from 'react-native';
 
@@ -18,16 +19,17 @@ class OtpValidation extends Component {
     constructor(props) {
         super(props)
         this.state = { 
-            token: ''
+            token: '',
+            loading: false
         }
     }
 
     handleContinue = () => {
         const { destAcc, sourceAcc, amount, sendMethod, note, cif_code, navigation } = this.props
-        console.log(destAcc, cif_code)
         if(this.state.token == ''){
             ToastAndroid.show("Please enter a valid token", ToastAndroid.SHORT)
         }else{
+            this.setState({loading: true})
             this.props.dispatch(validateTransferToken(cif_code, this.state.token)).then(()=> {
                 const { validateOtp } = this.props
                 if(validateOtp){
@@ -35,14 +37,17 @@ class OtpValidation extends Component {
                         const { saveNewTargetAccount } = this.props
                         if(saveNewTargetAccount){
                             this.props.dispatch(transfer(sourceAcc.accNumber, destAcc.accNumber, amount, sendMethod.fee, note, destAcc.bankId)).then(() => {
+                                this.setState({loading: false})
                                 navigation.navigate('TransactionDetail')
                             })
                         }
                         else{
+                            this.setState({loading: false})
                             ToastAndroid.show("Failed to register new Target Account!", ToastAndroid.SHORT)
                         }
                     })
                 }else{
+                    this.setState({loading: false})
                     ToastAndroid.show("Token is incorrect", ToastAndroid.SHORT)
                 }
             })
@@ -52,21 +57,24 @@ class OtpValidation extends Component {
     handleResend = () => {
         const { destAcc, cif_code, amount, sendMethod } = this.props        
         this.props.dispatch(getTransferToken(cif_code, amount + sendMethod.fee, destAcc.accNumber, destAcc.fullName, destAcc.bankName))
+        ToastAndroid.show("We are resending the Token", ToastAndroid.SHORT)
     }
 
     render() {
         const { email, loading } = this.props
         
-        if(loading){
-            return ( <Loading/>)
-        }
+        // if(loading){
+        //     return ( <Loading/>)
+        // }
         return (
-            <KeyboardAvoidingView
-                style={styles.container}
-                behavior={Platform.OS == "ios" ? "padding" : "height"}
-                keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
-                enabled={Platform.OS === "ios" ? true : false}
-            >
+            <KeyboardAvoidingView style={styles.container} behavior={'height'}>
+                {
+                    this.state.loading ? 
+                    <Modal transparent={true}>
+                        <Loading transparent={true}/>
+                    </Modal>
+                    : null
+                }
                 <View style={styles.labelContainer}>
                     <View>
                         <Text style={styles.labelText}>
@@ -206,7 +214,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    email: state.transfer.email,
+    email: state.home.email,
     cif_code: state.login.cif_code,
     loading: state.transfer.loading,
     validateOtp: state.transfer.validateOtp,

@@ -59,12 +59,7 @@ class InputOTP extends React.Component{
     render(){
         const { email } = this.props
         return(
-            <KeyboardAvoidingView
-                style={styles.container}
-                behavior={Platform.OS == "ios" ? "padding" : "height"}
-                keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
-                enabled={Platform.OS === "ios" ? true : false}
-            >
+            <KeyboardAvoidingView behavior={'height'} style={styles.container}>
                 <View style={styles.labelContainer}>
                     <View>
                         <Text style={styles.labelText}>

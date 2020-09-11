@@ -1,27 +1,30 @@
 import axios from 'axios';
 
 import {
-    getBalanceBegin,
-    getBalanceSuccess,
-    getBalanceFailure,
+    getAccountAndBalanceBegin,
+    getAccountAndBalanceSuccess,
+    getAccountAndBalanceFailure,
     getAccountStatementBegin,
     getAccountStatementSuccess,
-    getAccountStatementFailure
+    getAccountStatementFailure,
+    getCustomerDataBegin,
+    getCustomerDataSuccess,
+    getCustomerDataFailure,
 } from './homeAction';
 
 export function getBalance(cif_code) {
     let req = {
         cif_code: cif_code
     };
-    let address = "http://192.168.100.184:8080/linkUnlinkAccount";
+    let address = "http://192.168.100.231:8080/linkUnlinkAccount";
     return dispatch => {
-        dispatch(getBalanceBegin());
+        dispatch(getAccountAndBalanceBegin());
         return axios.post(address, req).then(
             (res) => {
-                dispatch(getBalanceSuccess(res.data));
+                dispatch(getAccountAndBalanceSuccess(res.data));
             }, (error) => {
                 console.log(error);
-                dispatch(getBalanceFailure(error));
+                dispatch(getAccountAndBalanceFailure(error));
             }
         )
     }
@@ -31,7 +34,7 @@ export function getStatements(cif_code) {
     let req = {
         cif_code: cif_code,
     };
-    let address = "http://192.168.100.184:8080/getAllAccountStatementByCustomer";
+    let address = "http://192.168.100.231:8080/getAllAccountStatementByCustomer";
     return dispatch => {
         dispatch(getAccountStatementBegin());
         return axios.post(address, req).then(
@@ -45,3 +48,23 @@ export function getStatements(cif_code) {
         )
     }
 };
+
+export function getCustomerData(cif_code) {
+    let req = {
+        cif_code: cif_code
+    };
+    let address = "http://192.168.100.231:8080/getCustomerDummyByCifCode";
+
+    return dispatch => {
+        dispatch(getCustomerDataBegin());
+        return axios.post(address, req).then(
+            (res) => {
+                // console.log(res.data);
+                dispatch(getCustomerDataSuccess(res.data.gender, res.data.email))
+            }, (error) => {
+                console.log(error);
+                dispatch(getCustomerDataFailure(error))
+            }
+        )
+    }
+}

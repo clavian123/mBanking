@@ -39,9 +39,9 @@ import TransactionDetailScreen from './container/transfer/TransactionDetail';
 import OtpValidationScreen from './container/transfer/OtpValidation';
 
 import PaymentScreen from './container/payment/Payment';
-import CreditCardScreen from './container/payment/CreditCard';
-import InsuranceScreen from './container/payment/Insurance';
-import PhoneBalanceScreen from './container/payment/PhoneBalance'
+import SetPhoneNumberScreen from './container/payment/SetPhoneNumber';
+import PaymentSetAmountScreen from './container/payment/PaymentSetAmount';
+import PaymentConfirmationScreen from './container/payment/PaymentConfirmation';
 
 import AccountScreen from './container/account/Account';
 import ChangePINScreen from './container/account/ChangePIN';
@@ -347,40 +347,52 @@ function PaymentStackScreen() {
             >
             </Stack.Screen>
             <Stack.Screen
-                name="CreditCard"
-                component={CreditCardScreen}
+                name="SetPhoneNumber"
+                component={SetPhoneNumberScreen}
                 options={{
-                    title: 'Credit Card',
+                    title: 'Pay / Top Up',
                     headerStyle: {
-                        backgroundColor: '#c10000'
+                        backgroundColor: "#C10000"
                     },
-                    headerTintColor: '#fff'
+                    headerTintColor: '#FFF'
                 }}
-            >
+            >    
             </Stack.Screen>
             <Stack.Screen
-                name="Insurance"
-                component={InsuranceScreen}
+                name="PaymentSetAmount"
+                component={PaymentSetAmountScreen}
                 options={{
-                    title: 'Insurance',
+                    title: 'Pay / Top Up',
                     headerStyle: {
-                        backgroundColor: '#c10000'
+                        backgroundColor: "#C10000"
                     },
-                    headerTintColor: '#fff'
+                    headerTintColor: '#FFF'
                 }}
-            >
+            >    
             </Stack.Screen>
             <Stack.Screen
-                name="PhoneBalance"
-                component={PhoneBalanceScreen}
+                name="SelectSource"
+                component={SelectSourceScreen}
                 options={{
-                    title: 'Phone Balance',
+                    title: 'Bill Pay',
                     headerStyle: {
-                        backgroundColor: '#c10000'
+                        backgroundColor: "#C10000"
                     },
-                    headerTintColor: '#fff'
+                    headerTintColor: '#FFF'
                 }}
-            >
+            >    
+            </Stack.Screen>
+            <Stack.Screen
+                name="PaymentConfirmation"
+                component={PaymentConfirmationScreen}
+                options={{
+                    title: 'Confirmation',
+                    headerStyle: {
+                        backgroundColor: "#C10000"
+                    },
+                    headerTintColor: '#FFF'
+                }}
+            >    
             </Stack.Screen>
         </Stack.Navigator>
     );

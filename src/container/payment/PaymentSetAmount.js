@@ -1,69 +1,62 @@
-import React from 'react';
-import{
+import React, {Component} from 'react';
+import {
+    KeyboardAvoidingView,
     View,
+    StyleSheet,
     TextInput,
     Text,
-    StyleSheet,
     Image,
     TouchableOpacity,
-    ScrollView,
-    ToastAndroid,
-    KeyboardAvoidingView
-}from 'react-native';
-
+    ToastAndroid
+} from 'react-native';
 import { numberWithDot } from '../../generalFunction';
-import { connect } from 'react-redux';
-import { setTransferAmount, setTransferNote, clearSendMethod } from '../../action/transfer/transferAction';
 
-class SetAmount extends React.Component{
+class PaymentSetAmount extends Component {
 
     constructor(props){
         super(props)
         this.state={
-            amount: '',
-            description: ''
+            amount: ''
         }
     }
 
     handleSelectAccount = () => {
         const{ navigation } = this.props;
-        navigation.navigate('SelectSource');
+        navigation.navigate('SelectSource', {
+            type: "Billpayment"
+        });
     }
 
     handleNext = () => {
-        this.props.dispatch(clearSendMethod());
-        const { navigation, destAcc, sourceAcc, route, note } = this.props;
+        const { route, navigation } = this.props;
         const amount = this.state.amount;
         if(isNaN(amount)){
             ToastAndroid.show("Amount must be numeric", ToastAndroid.SHORT);
-        }else if(amount < 1000){
-            ToastAndroid.show("Amount must more than 1000", ToastAndroid.SHORT);
+        }else if(amount < 20000){
+            ToastAndroid.show("Amount must at least 20000", ToastAndroid.SHORT);
         }else if(route.params == null){
             ToastAndroid.show("Please select your source account", ToastAndroid.SHORT);
-        }else if(parseInt(amount) > parseInt(sourceAcc.balance)){
+        }else if(parseInt(amount) > parseInt(route.params.sourceAccBalance)){
             ToastAndroid.show("Your balance is not enough", ToastAndroid.SHORT);
         }else{
-            this.props.dispatch(setTransferAmount(parseFloat(this.state.amount)));
-            this.props.dispatch(setTransferNote(this.state.description));
-            if(destAcc.bankCode == '153'){    
-                navigation.navigate('Confirmation');
-            }else{
-                navigation.navigate('SendMoneyMethod');
-            }
+            navigation.navigate('PaymentConfirmation',
+                {
+                    amount: this.state.amount,
+                    sourceAccNumber: route.params.sourceAccNumber,
+                    sourceAccName: route.params.sourceAccName,
+                    phoneNumber: route.params.phoneNumber,
+                    merchant: route.params.merchant
+                }
+            );
         }
     }
 
     render(){
 
-        const { params } = this.props.route
+        const { params } = this.props.route;
 
         return(
-            <ScrollView style={styles.container}>
-                <KeyboardAvoidingView
-                    behavior={Platform.OS == "ios" ? "padding" : "height"}
-                    keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
-                    enabled={Platform.OS === "ios" ? true : false}
-                >
+            <KeyboardAvoidingView style={styles.container} behavior={'height'}>
                 <View style={styles.setAmountLabelContainer}>
                     <View style={styles.rpIconContainer}>
                         <Text style={styles.rpIconText}>Rp</Text>
@@ -96,7 +89,7 @@ class SetAmount extends React.Component{
                 </TouchableOpacity>
 
                 {
-                    params ? 
+                    params.sourceAccName ? 
                     <View style={{...styles.sourceAccountDetailContainer, height: params ? null : 0}}>
                         <Text style={styles.sourceAccountDetailTitle}>{params.sourceAccNumber}</Text>
                         <Text>{params.sourceAccName.toUpperCase()}</Text>
@@ -108,27 +101,20 @@ class SetAmount extends React.Component{
 
                 <View style={styles.line}/>
 
-                <Text style={styles.additionalText}>Additional information (optional)</Text>
-
-                <TextInput
-                    placeholder="Description (Max. 16 characters)"
-                    style={styles.descriptionInput}
-                    maxLength={16}
-                    onChangeText={(description) => this.setState({description: description})}/>
-
+                <View style={styles.buttonContainer}>                
                 <TouchableOpacity onPress={this.handleNext} style={styles.nextButton}>
                         <Text style={styles.nextText}>NEXT</Text>
                 </TouchableOpacity>
-                </KeyboardAvoidingView>
-            </ScrollView>
+                </View>
+            </KeyboardAvoidingView>
         )
     }
+
 }
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%',
-        height: '100%',
+        flex: 1,
         backgroundColor: 'white'
     },
     setAmountLabelContainer: {
@@ -230,31 +216,6 @@ const styles = StyleSheet.create({
         right: 10,
         alignSelf: 'center'
     },
-    additionalText: {
-        fontSize: 16,
-        marginHorizontal: 20
-    },
-    descriptionInput: {
-        marginVertical: 20,
-        marginHorizontal: 20,
-        width: '90%',
-        borderBottomWidth: 1,
-        borderBottomColor: '#888888',
-        fontSize: 16
-    },
-    nextButton: {
-        width: '90%',
-        backgroundColor: '#C10000',
-        borderRadius: 30,
-        marginHorizontal: 20,
-        marginBottom: 10
-    },
-    nextText: {
-        textAlign: 'center',
-        paddingVertical: 15,
-        fontSize: 16,
-        color: 'white'
-    },
     sourceAccountDetailContainer:{
         width: '90%',
         alignSelf: 'center'
@@ -263,12 +224,25 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 17
     },
-
+    buttonContainer: {
+        flex: 1,
+        justifyContent: 'flex-end'
+    },
+    nextButton: {
+        width: '90%',
+        height: 50,
+        backgroundColor: '#C10000',
+        borderRadius: 30,
+        marginHorizontal: 20,
+        marginBottom: 20
+    },
+    nextText: {
+        textAlign: 'center',
+        alignSelf :'center',
+        paddingVertical: 15,
+        fontSize: 16,
+        color: 'white'
+    }
 });
 
-const mapStateToProps = state => ({
-    sourceAcc: state.transfer.sourceAcc,
-    destAcc: state.transfer.destAcc
-})
-
-export default connect(mapStateToProps)(SetAmount);
+export default PaymentSetAmount;

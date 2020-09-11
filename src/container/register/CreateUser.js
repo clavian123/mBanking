@@ -115,12 +115,7 @@ class CreateUser extends Component{
 
     render(){
         return(
-            <KeyboardAvoidingView
-                style={styles.container}
-                behavior={Platform.OS == "ios" ? "padding" : "height"}
-                keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
-                enabled={Platform.OS === "ios" ? true : false}
-            >
+            <KeyboardAvoidingView style={styles.container} behavior={'height'}>
                 <Text style={styles.label}>
                     Great! Now let's create{'\n'}your new account
                 </Text>

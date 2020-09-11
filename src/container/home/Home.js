@@ -18,7 +18,7 @@ import { Icon } from 'react-native-elements';
 import { ScrollableTabView, DefaultTabBar, ScrollableTabBar, } from '@valdio/react-native-scrollable-tabview'
 
 import { numberWithDot } from '../../generalFunction';
-import { getBalance, getStatements } from '../../action/home/homeFunction';
+import { getBalance, getStatements, getCustomerData } from '../../action/home/homeFunction';
 import AccountCard from '../../component/AccountCard';
 import Loading from '../../Loading';
 
@@ -35,7 +35,7 @@ class Home extends React.Component {
       isDetailVisible: false,
       isStatementVisible: false,
       statements: [],
-      refreshing: false,
+      loading: false,
     };
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -45,8 +45,13 @@ class Home extends React.Component {
   componentDidMount() {
     this._isMounted = true;
     const { cif_code } = this.props;
+    this.setState({loading: true})
     this.props.dispatch(getBalance(cif_code)).then(()=>{
-      this.props.dispatch(getStatements(cif_code))
+      this.props.dispatch(getStatements(cif_code)).then(()=>{
+        this.props.dispatch(getCustomerData(cif_code)).then(()=>{
+          this.setState({loading: false})
+        })
+      })
     })
   }
 
@@ -74,30 +79,30 @@ class Home extends React.Component {
   }
 
   onRefresh = () => {
-    this.setState({
-      refreshing: true,
-    })
-    const { cif_code, loading } = this.props
+    this.setState({loading: true,})
+    const {cif_code} = this.props
     this.props.dispatch(getBalance(cif_code)).then(()=>{
-      this.props.dispatch(getStatements(cif_code))
+      this.props.dispatch(getStatements(cif_code)).then(()=>{
+        this.props.dispatch(getCustomerData(cif_code)).then(()=>{
+          this.setState({loading: false})
+        })
+      })
     })
-    if(!loading){
-      this.setState({refreshing: false})
-    }
   }
 
   render() {
 
-    const { balance, loading, name } = this.props
+    const { balance, name, gender } = this.props
+    const { loading } = this.state
 
-    if (loading) {
+    if (loading || this.props.loading) {
       return <Loading />;
     }
     return (
       <View style={{
         flex: 1,
         height: Dimensions.get("window").height,
-        backgroundColor: '#dedede'
+        backgroundColor: 'white'
       }}>
 
         {/* HEADER */}
@@ -114,7 +119,7 @@ class Home extends React.Component {
             ...styles.greetingsContainer,
             height: this.state.isDetailVisible ? 220 : 100
           }}>
-            <Text style={styles.greetingsText}> Hi, Mr. {name}</Text>
+            <Text style={styles.greetingsText}> Hi, {gender ? gender.toLowerCase() == 'male' ? "Mr." : "Mrs." : null} {name}</Text>
             <View style={{
               ...styles.detailContainer,
               height: this.state.isDetailVisible ? 120 : 0,
@@ -295,7 +300,9 @@ const mapStateToProps = state => ({
   loading: state.home.loading,
   name: state.login.name,
   cif_code: state.login.cif_code,
-  isLogin: state.login.isLogin
+  isLogin: state.login.isLogin,
+  gender: state.home.gender,
+  email: state.home.email,
 })
 
 export default connect(mapStateToProps)(Home);

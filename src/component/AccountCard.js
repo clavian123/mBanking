@@ -126,7 +126,9 @@ class AccountCard extends React.Component {
                                     statements={statements}
                                     accNumber={this.props.accNumber}
                                     key={statements.posting_date}
-                                    home={this.props.home ? true : false}>
+                                    home={this.props.home ? true : false}
+                                    balance={this.props.balance}
+                                    navigation={this.props.navigation}>
                                 </StatementList>
                             </View>
 

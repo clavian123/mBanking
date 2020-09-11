@@ -32,11 +32,10 @@ class Login extends Component {
       this.props.dispatch(login(username, password)).then(() => {
         const { validateLogin, cif_code } = this.props;
         if(validateLogin == true){
-          this.props.dispatch(getLoginToken(cif_code)).then(() => {
+          this.props.dispatch(getLoginToken(cif_code))
             navigation.navigate("InputOTP", {
               type: "LOGIN"
             });
-          });
         }else{
           
         }

@@ -26,6 +26,7 @@ class SelectSourceAccount extends React.Component{
                     data={this.props.balance}
                     renderItem={({item}) => (
                         <SourceAccountListItem
+                            transactionType={this.props.route.params.type}
                             number={item.accountNumber}
                             type={item.type ? item.type : "Saving Account"}
                             name={this.props.name.toUpperCase()}

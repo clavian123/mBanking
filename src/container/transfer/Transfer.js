@@ -152,7 +152,8 @@ const styles = StyleSheet.create({
   inputView:{
     flexDirection: "row",
     marginHorizontal: 20,
-    width: "100%"
+    width: "100%",
+    alignItems: 'center'
   },
   textInputStyle: {
     width: "75%",
@@ -167,15 +168,14 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     width: 32,
     height: 32,
-    marginVertical: 8,
+    justifyContent: 'center',
     marginLeft: 20,
   },
   iconNext: {
     height: 25,
     tintColor: 'white',
     width: 25,
-    marginLeft: 3,
-    marginTop: 3,
+    alignSelf: 'center',
     resizeMode: 'stretch'
   },
   viewLine: {
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   searchIcon: {
     width: 25,
     height: 30,
-    marginVertical: 10,
+    alignSelf: 'center',
     position: 'absolute',
     right: 10
   },
