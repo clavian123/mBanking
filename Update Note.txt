@@ -4,3 +4,14 @@
 - Penambahan activity di container payment: SetPhoneNumber, PaymentSetAmount, PaymentConfirmation
 - Penambahan component: PaymentListItem
 )
+
+15 September 2020 14:17 - Clavian (
+- Penyesuaian request dan validasi OTP dengan struktur dan proses yang baru di Login, Register, Transfer
+- Penambahan Toast error ketika login dengan username atau password yang salah
+- Penyesuaian getRegisterToken dan validateRegisterToken jadi menggunakan cif_code, sebelumnya id
+- Penambahan reducer: payment
+- Penambahan action: paymentAction, paymentFunction
+- Melengkapi tampilan PaymentConfirmation
+- Penambahan container: PaymentDetail
+- Melengkapi proses transaksi bill payment
+)

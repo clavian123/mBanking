@@ -42,6 +42,7 @@ import PaymentScreen from './container/payment/Payment';
 import SetPhoneNumberScreen from './container/payment/SetPhoneNumber';
 import PaymentSetAmountScreen from './container/payment/PaymentSetAmount';
 import PaymentConfirmationScreen from './container/payment/PaymentConfirmation';
+import PaymentDetailScreen from './container/payment/PaymentDetail';
 
 import AccountScreen from './container/account/Account';
 import ChangePINScreen from './container/account/ChangePIN';
@@ -391,6 +392,14 @@ function PaymentStackScreen() {
                         backgroundColor: "#C10000"
                     },
                     headerTintColor: '#FFF'
+                }}
+            >    
+            </Stack.Screen>
+            <Stack.Screen
+                name="PaymentDetail"
+                component={PaymentDetailScreen}
+                options={{
+                    headerShown: false
                 }}
             >    
             </Stack.Screen>

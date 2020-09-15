@@ -7,7 +7,8 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  FlatList
+  FlatList,
+  ToastAndroid,
 } from 'react-native';
 import PaymentListItem from '../../component/PaymentListItem';
 
@@ -26,11 +27,16 @@ export default class Payment extends React.Component {
     };
   }
 
-  handleMerchant = (merchant) => {
+  handleMerchant = (merchant, code) => {
     const { navigation } = this.props;
-    navigation.navigate('SetPhoneNumber', {
-      merchant: merchant
-    })
+    if (code == "") {
+      ToastAndroid.show("This service is unavailable right now", ToastAndroid.SHORT)
+    } else {
+      navigation.navigate('SetPhoneNumber', {
+        merchant: merchant,
+        code: code
+      })
+    }
   }
 
   render() {
@@ -55,7 +61,7 @@ export default class Payment extends React.Component {
               {payTopUpList
                 .map(payTopUpItem => {
                   return (
-                    <TouchableOpacity key={payTopUpItem.id} style={styles.buttonPayTopUpItem} onPress={() => this.handleMerchant(payTopUpItem.label)}>
+                    <TouchableOpacity key={payTopUpItem.id} style={styles.buttonPayTopUpItem} onPress={() => this.handleMerchant(payTopUpItem.label, payTopUpItem.code)}>
                       <Image
                         source={payTopUpItem.iconSource}
                         style={styles.iconPayTopUp}
@@ -178,41 +184,49 @@ const payTopUpList = [
   {
     id: 1,
     iconSource: require("../../../assets/icon-ovo.png"),
-    label: "OVO"
+    label: "OVO",
+    code: "5374"
   },
   {
     id: 2,
     iconSource: require("../../../assets/icon-go-pay.jpg"),
-    label: "Go-Pay"
+    label: "Go-Pay",
+    code: "2289"
   },
   {
     id: 3,
     iconSource: require("../../../assets/icon-tokopedia.png"),
-    label: "Tokopedia"
+    label: "Tokopedia",
+    code: "4992"
   },
   {
     id: 4,
     iconSource: require("../../../assets/icon-scan.png"),
-    label: "Scan"
+    label: "Scan",
+    code: ""
   },
   {
     id: 5,
     iconSource: require("../../../assets/icon-water.png"),
-    label: "Water"
+    label: "Water",
+    code: ""
   },
   {
     id: 6,
     iconSource: require("../../../assets/icon-electricity.png"),
-    label: "Electricity"
+    label: "Electricity",
+    code: ""
   },
   {
     id: 7,
     iconSource: require("../../../assets/icon-credit-card.png"),
-    label: "Credit Card"
+    label: "Credit Card",
+    code: ""
   },
   {
     id: 8,
     iconSource: require("../../../assets/icon-others.png"),
-    label: "Others"
+    label: "Others",
+    code: ""
   }
 ];

@@ -5,7 +5,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  ToastAndroid
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -37,7 +38,7 @@ class Login extends Component {
               type: "LOGIN"
             });
         }else{
-          
+          ToastAndroid.show("Invalid username or password!", ToastAndroid.SHORT)
         }
       });
     }

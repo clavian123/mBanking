@@ -5,11 +5,14 @@ import {
     StyleSheet,
     TouchableOpacity,
     ScrollView,
-    LayoutAnimation
+    LayoutAnimation,
+    Modal,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { numberWithDot } from '../../generalFunction';
 import moment from 'moment';
+import { connect } from 'react-redux';
+import Loading from '../../Loading';
 
 class PaymentConfirmation extends Component {
 
@@ -30,21 +33,32 @@ class PaymentConfirmation extends Component {
             isAmountDetailClicked: !this.state.isAmountDetailClicked
         })
     }
+
+    handleConfirmPayment(){
+        const { navigation } = this.props
+        navigation.navigate('ValidateEasyPin', {flow: 'billpayment'})
+    }
     
     render(){
 
         var date = moment().utcOffset('+07:00').format('dddd, DD MMM YYYY')
-        const {route} = this.props
-
+        const {amount, targetSubs, sourceAcc, loading} = this.props
+        
         return(
             <ScrollView style={styles.container}>
-
+                {
+                    loading ?
+                    <Modal transparent={true}> 
+                        <Loading transparent={true}/>
+                    </Modal>
+                    : null
+                }
                 <Text style={styles.header}>Pay / Purchase confirmation</Text>
             
                 <View style={styles.amountContainer}>
                     <View style={styles.amountTotalContainer}>
                         <Text style={styles.currency}>Rp</Text>
-                        <Text style={styles.amount}>{"Rp " + numberWithDot(route.params.amount)}</Text>
+                        <Text style={styles.amount}>{"Rp " + numberWithDot(parseInt(amount)+parseInt(targetSubs.bankCharge))}</Text>
                         <TouchableOpacity style={styles.amountDetailButton} onPress={() => this.handleAmountDetailClicked()}>
                             <Icon
                                 name={this.state.isAmountDetailClicked ? "ios-remove-circle" : "ios-add-circle"}
@@ -60,11 +74,11 @@ class PaymentConfirmation extends Component {
                     }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 5 }}>
                             <Text>Amount</Text>
-                            <Text>{"Rp " + numberWithDot(route.params.amount.toString())}</Text>
+                            <Text>{"Rp " + numberWithDot(amount.toString())}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
                             <Text>Fee</Text>
-                            <Text>{'Rp 0'}</Text>
+                            <Text>Rp {numberWithDot(targetSubs.bankCharge)}</Text>
                         </View>
                     </View>
                 </View>
@@ -77,8 +91,8 @@ class PaymentConfirmation extends Component {
                         type="entypo"
                         iconStyle={styles.walletIcon}></Icon>
                     <View>
-                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{route.params.sourceAccNumber}</Text>
-                        <Text>{route.params.sourceAccName}</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{sourceAcc.accNumber}</Text>
+                        <Text>{sourceAcc.fullName}</Text>
                         <Text>Tabunganku</Text>
                     </View>
                 </View>
@@ -95,12 +109,42 @@ class PaymentConfirmation extends Component {
                         type="ionicon"
                         iconStyle={styles.personIcon}></Icon>
                     <View>
-                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{route.params.phoneNumber}</Text>
-                        <Text>{route.params.merchant.toUpperCase()}</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{targetSubs.accNumber}</Text>
+                        <Text>{targetSubs.merchantName.toUpperCase()}</Text>
                     </View>
                 </View>
 
                 <View style={styles.line}></View>
+
+                <View style={styles.additionalInfo}>
+                    <Text style={styles.infoTitle}>Payment:</Text>
+                    <Text style={styles.infoValue}>{targetSubs.merchantName}</Text>
+                    <Text style={styles.infoTitle}>Payment Number:</Text>
+                    <Text style={styles.infoValue}>{targetSubs.accNumber}</Text>
+                    <Text style={styles.infoTitle}>Name:</Text>
+                    <Text style={styles.infoValue}>{targetSubs.merchantName + " " + targetSubs.accName}</Text>
+                    <Text style={styles.infoTitle}>Payment Amount:</Text>
+                    <Text style={styles.infoValue}>Rp. {numberWithDot(targetSubs.bankCharge + parseInt(amount))}</Text>
+                    {
+                        targetSubs.bankCharge > 0 ?
+                        <Text style={styles.infoTitle}>Transaction fee Rp. {numberWithDot(targetSubs.bankCharge)} will be charged</Text>
+                        : null
+                    }
+
+                    
+                    <Text style={styles.infoTitle}>Denomination Amount:</Text>
+                    <Text style={styles.infoValue}>Rp. {numberWithDot(amount)}</Text>
+                </View>
+                <View style={styles.alertContainer}>
+                    <Icon
+                    name="ios-alert"
+                    type="ionicon"
+                    iconStyle={styles.alertIcon}></Icon>
+                    <Text style={{color: 'grey'}}>Upon completion, all transaction cannot be cancelled</Text>
+                </View>
+                <TouchableOpacity style={styles.transferButton} onPress={()=> this.handleConfirmPayment()}>
+                    <Text style={{color: 'white', fontSize: 17}}>CONFIRM PAYMENT</Text>
+                </TouchableOpacity>
 
             </ScrollView>
         )
@@ -201,7 +245,48 @@ const styles = StyleSheet.create({
         borderWidth: 0.2,
         borderColor: 'grey',
         marginVertical: 20,
+    },
+    additionalInfo:{
+        marginHorizontal: 20
+    },
+    infoTitle:{
+        fontWeight: 'bold'
+    },
+    infoValue:{
+        marginBottom: 10
+    },
+    alertContainer:{
+        flexDirection: 'row',
+        margin: 20,
+        borderWidth: 0.5,
+        borderRadius: 5,
+        padding: 10,
+        alignItems: 'center'
+    },
+    alertIcon:{
+        width: 30,
+        height: 30,
+        textAlign: 'center',
+        textAlignVertical: 'center',
+        fontSize: 30,
+        marginRight: 10
+    },
+    transferButton:{
+        backgroundColor: '#c10000',
+        marginHorizontal: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 50,
+        borderRadius: 30,
+        marginBottom:10
     }
 });
 
-export default PaymentConfirmation;
+const mapStateToProps = state => ({
+    sourceAcc: state.payment.sourceAcc,
+    loading: state.payment.loading,
+    targetSubs: state.payment.targetSubs,
+    amount: state.payment.amount,
+})
+
+export default connect(mapStateToProps)(PaymentConfirmation);

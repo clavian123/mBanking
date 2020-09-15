@@ -10,6 +10,7 @@ import{
 
 import { numberWithDot } from '../generalFunction';
 import { setSourceAccount } from '../action/transfer/transferFunction';
+import { setPaymentSourceAccount } from '../action/payment/paymentAction';
 import { connect } from 'react-redux';
 
 class SourceAccountListItem extends React.Component{
@@ -22,6 +23,7 @@ class SourceAccountListItem extends React.Component{
         const { navigation, destAcc } = this.props
 
         if(this.props.transactionType === "Billpayment"){
+            this.props.dispatch(setPaymentSourceAccount(this.props.number, this.props.name, this.props.balance))
             navigation.navigate("PaymentSetAmount", {
                 sourceAccNumber: this.props.number,
                 sourceAccName: this.props.name,

@@ -7,9 +7,13 @@ import {
     Text,
     Image,
     TouchableOpacity,
-    ToastAndroid
+    ToastAndroid,
+    Modal,
 } from 'react-native';
 import { numberWithDot } from '../../generalFunction';
+import { connect } from 'react-redux';
+import { setPaymentAmount } from '../../action/payment/paymentAction';
+import { getPaymentTransCharge } from '../../action/payment/paymentFunction';
 
 class PaymentSetAmount extends Component {
 
@@ -17,6 +21,15 @@ class PaymentSetAmount extends Component {
         super(props)
         this.state={
             amount: ''
+        }
+    }
+
+    componentDidMount(){
+        var billedAmount = this.props.amount;
+        if(billedAmount > 0) {
+            this.setState({
+                amount: billedAmount
+            })
         }
     }
 
@@ -28,7 +41,7 @@ class PaymentSetAmount extends Component {
     }
 
     handleNext = () => {
-        const { route, navigation } = this.props;
+        const { route, navigation, sourceAcc, targetSubs} = this.props;
         const amount = this.state.amount;
         if(isNaN(amount)){
             ToastAndroid.show("Amount must be numeric", ToastAndroid.SHORT);
@@ -36,27 +49,25 @@ class PaymentSetAmount extends Component {
             ToastAndroid.show("Amount must at least 20000", ToastAndroid.SHORT);
         }else if(route.params == null){
             ToastAndroid.show("Please select your source account", ToastAndroid.SHORT);
-        }else if(parseInt(amount) > parseInt(route.params.sourceAccBalance)){
+        }else if(parseInt(amount) > parseInt(sourceAcc.balance)){
             ToastAndroid.show("Your balance is not enough", ToastAndroid.SHORT);
-        }else{
-            navigation.navigate('PaymentConfirmation',
-                {
-                    amount: this.state.amount,
-                    sourceAccNumber: route.params.sourceAccNumber,
-                    sourceAccName: route.params.sourceAccName,
-                    phoneNumber: route.params.phoneNumber,
-                    merchant: route.params.merchant
-                }
-            );
+        }else{            
+            this.props.dispatch(setPaymentAmount(amount))            
+            this.props.dispatch(getPaymentTransCharge(targetSubs.merchantCode, targetSubs.merchantName, targetSubs.accNumber, targetSubs.accName)).then((res) => {
+                navigation.navigate('PaymentConfirmation');
+
+            })
         }
     }
 
     render(){
 
         const { params } = this.props.route;
+        const { loading } = this.props;
+        var billedAmount = this.props.amount;   
 
         return(
-            <KeyboardAvoidingView style={styles.container} behavior={'height'}>
+            <KeyboardAvoidingView style={styles.container} >
                 <View style={styles.setAmountLabelContainer}>
                     <View style={styles.rpIconContainer}>
                         <Text style={styles.rpIconText}>Rp</Text>
@@ -70,7 +81,9 @@ class PaymentSetAmount extends Component {
                         keyboardType={"numeric"}
                         style={styles.amountInput}
                         placeholder="0" 
-                        onChangeText={(amount) => this.setState({amount:amount})}/>
+                        onChangeText={(amount) => this.setState({amount:amount})}
+                        defaultValue={billedAmount > 0 ? billedAmount.toString() : null}
+                        editable={billedAmount > 0 ? false : true}/>
                     <Image style={styles.pencilIcon} source={require('../../../assets/icon-pencil.png')} />
                 </View>
 
@@ -156,6 +169,7 @@ const styles = StyleSheet.create({
     },
     amountInput:{
         fontSize: 20,
+        color: 'black',
         fontWeight: 'bold',
         textAlign: 'center',
         width: '100%',
@@ -245,4 +259,11 @@ const styles = StyleSheet.create({
     }
 });
 
-export default PaymentSetAmount;
+const mapStateToProps = state => ({
+    sourceAcc: state.payment.sourceAcc,
+    amount: state.payment.amount,
+    targetSubs: state.payment.targetSubs,
+    loading: state.payment.loading,
+})
+
+export default connect (mapStateToProps)(PaymentSetAmount);

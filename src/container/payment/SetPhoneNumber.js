@@ -7,9 +7,14 @@ import{
     Image,
     TextInput, 
     TouchableOpacity,
-    FlatList
+    FlatList,
+    Modal,
+    ToastAndroid,
 } from 'react-native';
 import { PaymentListItem } from '../../component/PaymentListItem';
+import { checkPaymentAccountNumber } from '../../action/payment/paymentFunction';
+import { connect } from 'react-redux';
+import Loading from '../../Loading';
 
 class Pay extends Component{
 
@@ -17,7 +22,7 @@ class Pay extends Component{
         super(props);
         this.state = {
           buttonColor: '#FA8072',
-          phoneNumber: '',
+          phoneNumber: "",
           subscriber: [
 
           ]
@@ -35,19 +40,29 @@ class Pay extends Component{
     handleNext = () => {
         const { navigation, route } = this.props;
         if(this.state.phoneNumber.length >= 10){
-            navigation.navigate('PaymentSetAmount', {
-                phoneNumber: this.state.phoneNumber,
-                merchant: route.params.merchant
-            });
+            this.props.dispatch(checkPaymentAccountNumber(route.params.code, this.state.phoneNumber)).then((res)=>{
+                if(res){
+                    navigation.navigate('PaymentSetAmount', {
+                        phoneNumber: this.state.phoneNumber,
+                        merchant: route.params.merchant
+                    });
+                }
+            })
         }
     }
 
     render(){
 
-        const { route } = this.props;
-
+        const { route, loading } = this.props;
         return(
             <KeyboardAvoidingView style={styles.container} behavior={'height'}>
+                {
+                    loading ?
+                    <Modal transparent={true}>
+                        <Loading transparent={true}/>
+                    </Modal>
+                    : null
+                }
                 <View style={styles.labelContainer}>
                     <View style={styles.payIconContainer}>
                         <Image style={styles.payIcon} source={require('../../../assets/icon-pay.png')}/>
@@ -62,11 +77,12 @@ class Pay extends Component{
                         <TextInput 
                             style={styles.phoneInput} 
                             placeholder="Phone Number"
+                            keyboardType="number-pad"
                             onChangeText={(text) => this.setState({ phoneNumber: text }, this.handleChangeColor)}
                         />
                         <Image style={styles.contactIcon} source={require('../../../assets/icon-contacts.png')}/>
                     </View>
-                    <TouchableOpacity onPress={this.handleNext} style={{...styles.nextIconContainer, backgroundColor: this.state.buttonColor}}>
+                    <TouchableOpacity onPress={() => this.handleNext()} style={{...styles.nextIconContainer, backgroundColor: this.state.buttonColor}}>
                         <Image style={styles.nextIcon} source={require('../../../assets/icon-next.png')}/>
                     </TouchableOpacity>
                 </View>
@@ -229,4 +245,9 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Pay;
+const mapStateToProps = state => ({
+    loading: state.payment.loading,
+    amount: state.payment.amount,
+})
+
+export default connect(mapStateToProps)(Pay);

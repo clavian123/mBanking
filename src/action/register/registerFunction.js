@@ -43,7 +43,7 @@ export function checkPan(pan){
     let req = ({
         pan: pan
     });
-    let address = "http://192.168.100.231:8080/getCustomerDummyByPAN";
+    let address = "http://localhost:8080/getCustomerDummyByPAN";
     return dispatch => {
         dispatch(checkPanBegin());
         return axios.post(address, req).then(
@@ -59,12 +59,13 @@ export function checkPan(pan){
     }
 }
 
-export function getRegisterToken(customer){
+export function getRegisterToken(cif_code){
     let req = ({
-        customer: customer
+        cif_code: cif_code,
+        code: "REGISTER"
     });
 
-    let address = "http://192.168.100.231:8080/saveRegisterOtp";
+    let address = "http://localhost:8080/saveTempOtp";
     return dispatch => {
         dispatch(getRegisterTokenBegin());
         return axios.post(address, req).then(
@@ -80,13 +81,14 @@ export function getRegisterToken(customer){
     }
 }
 
-export function validateRegisterToken(customer, token){
+export function validateRegisterToken(cif_code, token){
     let req = ({
-        customer: customer,
-        token: token
+        cif_code: cif_code,
+        token: token,
+        code: "REGISTER"
     });
 
-    let address = "http://192.168.100.231:8080/validateRegisterOtp";
+    let address = "http://localhost:8080/validateTempOtp";
     return dispatch => {
         dispatch(validateRegisterTokenBegin());
         return axios.post(address, req). then(
@@ -106,7 +108,7 @@ export function validatePin(customer, pin){
         pin: pin
     });
 
-    let address = "http://192.168.100.231:8080/validatePIN";
+    let address = "http://localhost:8080/validatePIN";
     return dispatch => {
         dispatch(validatePinBegin());
         return axios.post(address, req).then(
@@ -125,7 +127,7 @@ export function checkCustomer(cifcode){
         cif_code: cifcode
     });
 
-    let address = "http://192.168.100.231:8080/getCustomerByCifCode";
+    let address = "http://localhost:8080/getCustomerByCifCode";
 
     return dispatch => {
         dispatch(checkCustomerBegin());
@@ -145,7 +147,7 @@ export function checkUsername(username){
         username: username
     }
 
-    let address = "http://192.168.100.231:8080/checkUsername";
+    let address = "http://localhost:8080/checkUsername";
 
     return dispatch => {
         dispatch(checkUsernameBegin());
@@ -168,7 +170,7 @@ export function createNewUser(username, password, customer, status){
         status: status
     }
 
-    let address = "http://192.168.100.231:8080/saveNewUser";
+    let address = "http://localhost:8080/saveNewUser";
 
     return dispatch => {
         dispatch(createNewUserBegin());
@@ -188,7 +190,7 @@ export function getUser(customer){
         customer: customer
     }
 
-    let address = "http://192.168.100.231:8080/getUserByCustomer";
+    let address = "http://localhost:8080/getUserByCustomer";
 
     return dispatch => {
         dispatch(getUserBegin());
@@ -209,7 +211,7 @@ export function resetUserPassword(username, password){
         password: password
     }
 
-    let address = "http://192.168.100.231:8080/resetUserPassword";
+    let address = "http://localhost:8080/resetUserPassword";
 
     return dispatch => {
         dispatch(resetUserPasswordBegin());
@@ -229,7 +231,7 @@ export function login(username, password){
         username: username,
         password: password
     }
-    let address = "http://192.168.100.231:8080/login";
+    let address = "http://localhost:8080/login";
 
     return dispatch => {
         dispatch(loginBegin());
@@ -252,9 +254,10 @@ export function login(username, password){
 
 export function getLoginToken(cif_code){
     let req = {
-        cif_code: cif_code
+        cif_code: cif_code,
+        code: "LOGIN"
     }
-    let address = "http://192.168.100.211:8080/saveLoginOtp";
+    let address = "http://localhost:8080/saveTempOtp";
 
     return dispatch => {
         dispatch(getLoginOtpBegin());
@@ -272,9 +275,10 @@ export function getLoginToken(cif_code){
 export function validateLoginToken(cif_code, token){
     let req = {
         cif_code: cif_code,
-        token: token
+        token: token,
+        code: "LOGIN"
     }
-    let address = "http://192.168.100.211:8080/validateLoginOtp";
+    let address = "http://localhost:8080/validateTempOtp";
 
     return dispatch => {
         dispatch(validateLoginTokenBegin());

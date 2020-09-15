@@ -27,7 +27,9 @@ class SetAmount extends React.Component{
 
     handleSelectAccount = () => {
         const{ navigation } = this.props;
-        navigation.navigate('SelectSource');
+        navigation.navigate('SelectSource', {
+            type: "fundTransfer"
+        });
     }
 
     handleNext = () => {

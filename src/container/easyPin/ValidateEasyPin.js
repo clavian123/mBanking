@@ -12,6 +12,7 @@ import{
 
 import { connect } from 'react-redux';
 import { transfer } from '../../action/transfer/transferFunction';
+import { billPayment } from '../../action/payment/paymentFunction';
 import Loading from '../../Loading'
 
 class ValidateEasyPin extends Component{
@@ -19,18 +20,39 @@ class ValidateEasyPin extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            easyPin: ''
+            easyPin: '',
+            loading: false
         }
     }
 
     handleContinue = () => {
-        const { easyPin, destAcc, sourceAcc, amount, sendMethod, note } = this.props
+        const { easyPin } = this.props
         const { flow } = this.props.route.params
         const { navigation } = this.props
         if(easyPin == this.state.easyPin){
             if(flow == 'transfer'){
+                const { destAcc, sourceAcc, amount, sendMethod, note } = this.props
+                this.setState({
+                    loading: true,
+                })
                 this.props.dispatch(transfer(sourceAcc.accNumber, destAcc.accNumber, amount, sendMethod.fee, note, destAcc.bankId)).then(()=> {
+                    this.setState({
+                        loading: false,
+                    })
                     navigation.navigate('TransactionDetail')
+                })
+            }else if(flow == 'billpayment'){
+                const { paymentAmount, paymentSourceAcc, targetSubs } = this.props
+                this.setState({
+                    loading: true,
+                })
+                this.props.dispatch(billPayment(targetSubs.accNumber, targetSubs.accName, paymentSourceAcc.accNumber, paymentAmount, targetSubs.bankCharge, targetSubs.merchantCode)).then((res)=>{
+                    if(res){
+                        this.setState({
+                            loading: false,
+                        })
+                        navigation.navigate('PaymentDetail')
+                    }
                 })
             }
         }else{
@@ -39,10 +61,7 @@ class ValidateEasyPin extends Component{
     }
 
     render(){
-        const { loading } = this.props
-        // if(loading){
-        //     return(<Loading></Loading>)
-        // }
+        const { loading } = this.state
         return(
             <View style={styles.container}>
                 {
@@ -132,7 +151,10 @@ const mapStateToProps = state => ({
     amount: state.transfer.amount,
     sendMethod: state.transfer.sendMethod,
     note: state.transfer.note,
-    loading: state.transfer.loading
+
+    paymentAmount: state.payment.amount,
+    targetSubs: state.payment.targetSubs,
+    paymentSourceAcc: state.payment.sourceAcc,
 });
 
 export default connect(mapStateToProps)(ValidateEasyPin);

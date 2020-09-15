@@ -27,7 +27,7 @@ class InputOTP extends React.Component{
         if(route.params.type === "LOGIN"){
             this.props.dispatch(getLoginToken(cif_code));
         }else{
-            this.props.dispatch(getRegisterToken(customerDummyId));
+            this.props.dispatch(getRegisterToken(cif_code));
         }
     }
 
@@ -44,7 +44,7 @@ class InputOTP extends React.Component{
                 }
             });
         }else{
-            this.props.dispatch(validateRegisterToken(customerDummyId, this.state.token)).then(() => {
+            this.props.dispatch(validateRegisterToken(cif_code, this.state.token)).then(() => {
                 const { validateRegisterToken } = this.props;
                 if(validateRegisterToken == false){
                     ToastAndroid.show("Please enter a valid OTP token", ToastAndroid.SHORT);
