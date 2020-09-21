@@ -47,7 +47,7 @@ class PaymentSetAmount extends Component {
             ToastAndroid.show("Amount must be numeric", ToastAndroid.SHORT);
         }else if(amount < 20000){
             ToastAndroid.show("Amount must at least 20000", ToastAndroid.SHORT);
-        }else if(route.params == null){
+        }else if(route.params.sourceAccBalance == null){
             ToastAndroid.show("Please select your source account", ToastAndroid.SHORT);
         }else if(parseInt(amount) > parseInt(sourceAcc.balance)){
             ToastAndroid.show("Your balance is not enough", ToastAndroid.SHORT);
@@ -55,7 +55,6 @@ class PaymentSetAmount extends Component {
             this.props.dispatch(setPaymentAmount(amount))            
             this.props.dispatch(getPaymentTransCharge(targetSubs.merchantCode, targetSubs.merchantName, targetSubs.accNumber, targetSubs.accName)).then((res) => {
                 navigation.navigate('PaymentConfirmation');
-
             })
         }
     }

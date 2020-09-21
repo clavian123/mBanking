@@ -403,6 +403,20 @@ function PaymentStackScreen() {
                 }}
             >    
             </Stack.Screen>
+            <Stack.Screen 
+                name="InputOTP"
+                component={InputOTPScreen}
+                options={{
+                    title: "",
+                    headerStyle: {
+                        backgroundColor: "#21C275",
+                        shadowColor: 'transparent',
+                        elevation: 0,
+                        borderBottomWidth: 0    
+                    },
+                    headerTintColor: 'white'
+                }}
+            ></Stack.Screen>
         </Stack.Navigator>
     );
 }

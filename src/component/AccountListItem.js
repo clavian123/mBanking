@@ -101,9 +101,9 @@ const styles = StyleSheet.create({
     }
 });
 
-mapPropToState = state => ({
+const mapStateToProps = state => ({
     cif_code: state.login.cif_code,
     listDest: state.transfer.listDest
 });
 
-export default connect(mapPropToState)(AccountListItem);
+export default connect(mapStateToProps)(AccountListItem);

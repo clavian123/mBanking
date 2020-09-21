@@ -9,6 +9,7 @@ import {
     Modal,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { getPaymentToken, getTargetSubscriberList, saveNewTargetSubscriber } from '../../action/payment/paymentFunction';
 import { numberWithDot } from '../../generalFunction';
 import moment from 'moment';
 import { connect } from 'react-redux';
@@ -23,6 +24,11 @@ class PaymentConfirmation extends Component {
         }
     }
 
+    componentDidMount() {
+        const { cif_code } = this.props;
+        this.props.dispatch(getTargetSubscriberList('', '', cif_code));
+    }
+
     handleAmountDetailClicked(){
         LayoutAnimation.configureNext(LayoutAnimation.create(
             150,
@@ -35,8 +41,18 @@ class PaymentConfirmation extends Component {
     }
 
     handleConfirmPayment(){
-        const { navigation } = this.props
-        navigation.navigate('ValidateEasyPin', {flow: 'billpayment'})
+        const { navigation, cif_code, targetSubscriberList, targetSubs, amount } = this.props;
+
+        if( targetSubscriberList.filter((item) => item.subscribernumber == targetSubs.accNumber && item.merchant_detail.code == targetSubs.merchantCode).length != 0){
+            navigation.navigate('ValidateEasyPin', {flow: 'billpayment'});
+        } else {
+            this.props.dispatch(saveNewTargetSubscriber(targetSubs.merchantCode, targetSubs.accNumber, cif_code)).then(() => {
+                this.props.dispatch(getPaymentToken(cif_code, "BILLPAYMENT", amount, "IDR", targetSubs.accNumber, targetSubs.merchantName));
+                navigation.navigate('InputOTP', {
+                    type: 'BILLPAYMENT'
+                });
+            });
+        }
     }
     
     render(){
@@ -283,6 +299,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
+    cif_code: state.login.cif_code,
+    targetSubscriberList: state.payment.targetSubscriberList,
     sourceAcc: state.payment.sourceAcc,
     loading: state.payment.loading,
     targetSubs: state.payment.targetSubs,

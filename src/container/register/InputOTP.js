@@ -11,7 +11,8 @@ import{
 
 import { connect } from 'react-redux';
 import { TextInput } from 'react-native-gesture-handler';
-import { getLoginToken, validateLoginToken, getRegisterToken, validateRegisterToken } from '../../action/register/registerFunction'
+import { getLoginToken, validateLoginToken, getRegisterToken, validateRegisterToken } from '../../action/register/registerFunction';
+import { getPaymentToken, validatePaymentToken, billPayment } from '../../action/payment/paymentFunction';
 
 class InputOTP extends React.Component{
     
@@ -23,18 +24,22 @@ class InputOTP extends React.Component{
     }
 
     handleResend = () => {
-        const { cif_code, customerDummyId, route } = this.props;
+        const { registercif_code, cif_code, route } = this.props;
         if(route.params.type === "LOGIN"){
-            this.props.dispatch(getLoginToken(cif_code));
-        }else{
-            this.props.dispatch(getRegisterToken(cif_code));
+            this.props.dispatch(getLoginToken(registercif_code));
+        }else if(route.params.type === "REGISTER"){
+            this.props.dispatch(getRegisterToken(registercif_code));
+        }else if(route.params.type === "BILLPAYMENT"){
+            const { paymentAmount, targetSubs } = this.props;
+            console.log(cif_code)
+            this.props.dispatch(getPaymentToken(cif_code, "BILLPAYMENT", paymentAmount, "IDR", targetSubs.accNumber, targetSubs.merchantName));
         }
     }
 
     handleContinue = () => {
-        const { cif_code, customerDummyId, route } = this.props;
+        const { registercif_code, cif_code, route } = this.props;
         if(route.params.type === "LOGIN"){
-            this.props.dispatch(validateLoginToken(cif_code, this.state.token)).then(() => {
+            this.props.dispatch(validateLoginToken(registercif_code, this.state.token)).then(() => {
                 const { validateLoginToken } = this.props;
                 if(validateLoginToken == false){
                     ToastAndroid.show("Please enter a valid OTP token", ToastAndroid.SHORT);
@@ -43,8 +48,8 @@ class InputOTP extends React.Component{
                     navigation.navigate('CreateEasyPin');
                 }
             });
-        }else{
-            this.props.dispatch(validateRegisterToken(cif_code, this.state.token)).then(() => {
+        }else if(route.params.type === "REGISTER"){
+            this.props.dispatch(validateRegisterToken(registercif_code, this.state.token)).then(() => {
                 const { validateRegisterToken } = this.props;
                 if(validateRegisterToken == false){
                     ToastAndroid.show("Please enter a valid OTP token", ToastAndroid.SHORT);
@@ -53,11 +58,33 @@ class InputOTP extends React.Component{
                     navigation.navigate('InputPIN');
                 }
             })
+        }else if(route.params.type === "BILLPAYMENT"){
+            this.props.dispatch(validatePaymentToken("BILLPAYMENT", cif_code, this.state.token)).then(() => {
+                const { validatePaymentToken } = this.props;
+                if(validatePaymentToken == false){
+                    ToastAndroid.show("Please enter a valid OTP token", ToastAndroid.SHORT);
+                }else {
+                    const { navigation, paymentAmount, paymentSourceAcc, targetSubs } = this.props;
+                    this.props.dispatch(billPayment(targetSubs.accNumber, targetSubs.accName, paymentSourceAcc.accNumber, paymentAmount, targetSubs.bankCharge, targetSubs.merchantCode)).then((res)=>{
+                        if(res){
+                            navigation.navigate('PaymentDetail')
+                        }
+                    })
+                }
+            })
         }
     }
 
     render(){
-        const { email } = this.props
+        const { route } = this.props;
+        let email;
+        if(route.params.type === "REGISTER"){
+            email = this.props.registerEmail
+        }else if(route.params.type === "LOGIN") {
+            email = this.props.registerEmail
+        }else {
+            email = this.props.email
+        }
         return(
             <KeyboardAvoidingView behavior={'height'} style={styles.container}>
                 <View style={styles.labelContainer}>
@@ -200,11 +227,18 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    email: state.register.email,
+    registerEmail: state.register.email,
+    email: state.home.email,
     customerDummyId: state.register.customerDummyId,
-    cif_code: state.register.cif_code,
+    registercif_code: state.register.cif_code,
+    cif_code: state.login.cif_code,
     validateRegisterToken: state.register.validateRegisterToken,
-    validateLoginToken: state.register.validateLoginToken
+    validateLoginToken: state.register.validateLoginToken,
+    
+    targetSubs: state.payment.targetSubs,
+    validatePaymentToken: state.payment.validateOtp,
+    paymentAmount: state.payment.amount,
+    paymentSourceAcc: state.payment.sourceAcc
 });
   
 export default connect(mapStateToProps)(InputOTP);

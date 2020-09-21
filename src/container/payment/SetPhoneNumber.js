@@ -8,25 +8,32 @@ import{
     TextInput, 
     TouchableOpacity,
     FlatList,
-    Modal,
-    ToastAndroid,
+    Modal
 } from 'react-native';
-import { PaymentListItem } from '../../component/PaymentListItem';
-import { checkPaymentAccountNumber } from '../../action/payment/paymentFunction';
+import PaymentListItem from '../../component/PaymentListItem';
+import { checkPaymentAccountNumber, getTargetSubscriberList } from '../../action/payment/paymentFunction';
 import { connect } from 'react-redux';
 import Loading from '../../Loading';
 
-class Pay extends Component{
+class SetPhoneNumber extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
           buttonColor: '#FA8072',
           phoneNumber: "",
-          subscriber: [
-
-          ]
+          keyword: ""
         };
+    }
+
+    componentDidMount(){
+        const { cif_code, route } = this.props;
+        this.props.dispatch(getTargetSubscriberList("", route.params.code, cif_code));
+    }
+
+    componentWillUnmount(){
+        const { cif_code } = this.props;
+        this.props.dispatch(getTargetSubscriberList("", "", cif_code));
     }
 
     handleChangeColor = () => {
@@ -51,9 +58,15 @@ class Pay extends Component{
         }
     }
 
+    handleSearch = () => {
+        const keyword = this.state.keyword;
+        const {cif_code, route} = this.props;
+        this.props.dispatch(getTargetSubscriberList(keyword, route.params.code, cif_code));
+    }
+
     render(){
 
-        const { route, loading } = this.props;
+        const { route, loading, targetSubscriberList } = this.props;
         return(
             <KeyboardAvoidingView style={styles.container} behavior={'height'}>
                 {
@@ -114,13 +127,14 @@ class Pay extends Component{
                 </View>
                 
                 <View style={styles.list}>
-                    <FlatList 
-                        data = {this.state.subscriber}
-                        renderItem={({item}) => (
-                        <PaymentListItem navigation={this.props.navigation} id={item.id} number={item.number} merchant={item.merchant} />
+                    <FlatList
+                        data = {this.props.targetSubscriberList}
+                        extraData = {this.props.targetSubscriberList}
+                        renderItem = {({item}) => (
+                            <PaymentListItem navigation={this.props.navigation} type={'byMerchant'} id={item.id} number={item.subscribernumber} merchant={item.merchant_detail.name} merchantCode={item.merchant_detail.code}/>
                         )}
                         ListEmptyComponent={
-                        <Text style={{ marginTop: 30, textAlign: 'center', color: 'grey' }}>Nothing to show</Text>
+                            <Text style={{ marginTop: 30, textAlign: 'center', color: 'grey' }}>Nothing to show</Text>
                         }
                         keyExtractor={item => item.id}
                     />
@@ -241,13 +255,16 @@ const styles = StyleSheet.create({
     },
     list: {
         flex: 1,
-        marginVertical: 20
+        marginVertical: 20,
+        marginHorizontal: 20
     }
 });
 
 const mapStateToProps = state => ({
+    cif_code: state.login.cif_code,
+    targetSubscriberList: state.payment.targetSubscriberList,
     loading: state.payment.loading,
     amount: state.payment.amount,
 })
 
-export default connect(mapStateToProps)(Pay);
+export default connect(mapStateToProps)(SetPhoneNumber);

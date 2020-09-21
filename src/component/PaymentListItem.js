@@ -9,6 +9,9 @@ import {
 } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 
+import { connect } from 'react-redux';
+import { checkPaymentAccountNumber ,deleteTargetSubscriber, getTargetSubscriberList } from '../action/payment/paymentFunction';
+
 class PaymentListItem extends Component {
 
     constructor(props) {
@@ -16,7 +19,15 @@ class PaymentListItem extends Component {
     }
 
     handleClick = () => {
-        ToastAndroid.show("Oke", ToastAndroid.SHORT);
+        console.log(this.props.number, this.props.merchantCode)
+        this.props.dispatch(checkPaymentAccountNumber(this.props.merchantCode, this.props.number)).then(() => {
+            this.props.navigation.navigate('PaymentSetAmount', {
+                phoneNumber: this.props.number,
+                merchant: this.props.merchantCode
+            });
+        })
+            
+
     }
 
     render(){
@@ -32,6 +43,13 @@ class PaymentListItem extends Component {
                 backgroundColor: "red",
                 underlayColor: '#888888',
                 onPress: () => {
+                    const { cif_code } = this.props;
+                    this.props.dispatch(deleteTargetSubscriber(this.props.id));
+                    if( this.props.type == 'none'){
+                        this.props.dispatch(getTargetSubscriberList('', '', cif_code))
+                    }else{
+                        this.props.dispatch(getTargetSubscriberList('', this.props.merchantCode, cif_code));
+                    }
                     ToastAndroid.show("Success", ToastAndroid.SHORT);
                 }   
             }
@@ -95,4 +113,8 @@ const styles = StyleSheet.create({
     }
 });
 
-export default PaymentListItem;
+const mapStateToProps = state => ({
+    cif_code: state.login.cif_code
+})
+
+export default connect(mapStateToProps)(PaymentListItem);

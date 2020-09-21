@@ -15,3 +15,8 @@
 - Penambahan container: PaymentDetail
 - Melengkapi proses transaksi bill payment
 )
+
+21 September 2020 10:31 - Jun (
+- Flow payment yang menggunakan data dinamik dari REST API
+- Melengkapi reducer dan action untuk payment pada bagian pengambilan list targetSubscriber, delete targetSubscriber, pengambilan dan validasi token
+)

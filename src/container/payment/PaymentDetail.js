@@ -14,6 +14,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { numberWithDot } from '../../generalFunction';
 import { getListDest } from '../../action/transfer/transferFunction';
 import { getBalance, getStatements } from '../../action/home/homeFunction';
+import { getTargetSubscriberList } from '../../action/payment/paymentFunction';
 
 class PaymentDetail extends Component{
     constructor(props){
@@ -32,7 +33,9 @@ class PaymentDetail extends Component{
     handleClose(){
         const { navigation, cif_code } = this.props;
         this.props.dispatch(getListDest(cif_code, "")).then(() => {
-            navigation.popToTop();
+            this.props.dispatch(getTargetSubscriberList("", "", cif_code)).then(() => {
+                navigation.popToTop();
+            })
         })
         
     }

@@ -10,21 +10,24 @@ import {
   FlatList,
   ToastAndroid,
 } from 'react-native';
+import { connect } from 'react-redux';
+
 import PaymentListItem from '../../component/PaymentListItem';
 
-export default class Payment extends React.Component {
+import { getTargetSubscriberList } from '../../action/payment/paymentFunction';
+
+class Payment extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      subscriber: [
-        {
-          id: 1,
-          number: '082284174302',
-          merchant: 'OVO'
-        }
-      ]
+      keyword: ''
     };
+  }
+
+  componentDidMount(){
+    const {cif_code} = this.props;
+    this.props.dispatch(getTargetSubscriberList('', '', cif_code));
   }
 
   handleMerchant = (merchant, code) => {
@@ -39,8 +42,14 @@ export default class Payment extends React.Component {
     }
   }
 
+  handleSearch = () => {
+    const keyword = this.state.keyword;
+    const {cif_code} = this.props;
+    this.props.dispatch(getTargetSubscriberList(keyword, '',cif_code));
+  }
+
   render() {
-    const { transactions } = this.state;
+
     return (
       <View style={styles.container}>
         <ScrollView>
@@ -82,23 +91,25 @@ export default class Payment extends React.Component {
             <View>
               <Text style={{ fontSize: 16, marginBottom: 10 }}>Find from Previous Transactions</Text>
               <View style={styles.viewTextInput}>
-                <TextInput placeholder="Biller name / Subscriber number" style={styles.textInput} />
+                <TextInput placeholder="Biller name / Subscriber number" style={styles.textInput} 
+                  onChangeText={(text) => this.setState({ keyword: text }, this.handleSearch)}/>
                 <Image source={require('../../../assets/icon-search-headed-left.png')} style={styles.iconSearch} />
               </View>
             </View>
 
             <View style={styles.list}>
                 <FlatList 
-                  data = {this.state.subscriber}
+                  data = {this.props.targetSubscriberList}
+                  extraData = {this.props.targetSubscriberList}
                   renderItem={({item}) => (
-                    <PaymentListItem navigation={this.props.navigation} id={item.id} number={item.number} merchant={item.merchant} />
+                    <PaymentListItem navigation={this.props.navigation} type={'none'} id={item.id} number={item.subscribernumber} merchant={item.merchant_detail.name} merchantCode={item.merchant_detail.code} />
                   )}
                   ListEmptyComponent={
-                    <Text style={{ marginTop: 50, textAlign: 'center', color: 'grey' }}>Nothing to show</Text>
+                    <Text style={{ marginTop: 30, textAlign: 'center', color: 'grey' }}>Nothing to show</Text>
                   }
                   keyExtractor={item => item.id}
                 />
-              </View>
+            </View>
 
           </View>
         </ScrollView>
@@ -230,3 +241,10 @@ const payTopUpList = [
     code: ""
   }
 ];
+
+const mapStateToProps = state => ({
+  cif_code: state.login.cif_code,
+  targetSubscriberList: state.payment.targetSubscriberList
+})
+
+export default connect(mapStateToProps)(Payment);

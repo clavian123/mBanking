@@ -1,26 +1,90 @@
 import axios from 'axios';
 
 import {
+    getTargetSubscriberListBegin,
+    getTargetSubscriberListSuccess,
+    getTargetSubscriberListFailure,
+    deleteTargetSubscriberBegin,
+    deleteTargetSubscriberSuccess,
+    deleteTargetSubscriberFailure,
     checkPaymentAccountNumberBegin,
     checkPaymentAccountNumberSuccess,
     checkPaymentAccountNumberFailure,
     getPaymentTransChargeBegin,
     getPaymentTransChargeSuccess,
     getPaymentTransChargeFailure,
+    saveNewTargetSubscriberBegin,
+    saveNewTargetSubscriberSuccess,
+    saveNewTargetSubscriberFailure,
+    getPaymentTokenBegin,
+    getPaymentTokenSuccess,
+    getPaymentTokenFailure,
+    validatePaymentTokenBegin,
+    validatePaymentTokenSuccess,
+    validatePaymentTokenFailure,
     billPaymentBegin,
     billPaymentSuccess,
     billPaymentFailure,
 } from './paymentAction'
 
-import PushNotification from 'react-native-push-notification'
 import { ToastAndroid } from 'react-native';
+
+export function getTargetSubscriberList(keyword, merchantCode, cif_code) {
+    let req;
+    let address;
+    if(merchantCode == ""){
+        req = {
+            keyword: keyword,
+            cif_code: cif_code
+        }
+        address = "http://192.168.100.67:8080/getTargetSubscriber";
+    }else{
+        req = {
+            keyword: keyword,
+            merchantCode: merchantCode,
+            cif_code: cif_code
+        }
+        address = "http://192.168.100.67:8080/getTargetSubscriberByMerchant"
+    }
+
+    return dispatch => {
+        dispatch(getTargetSubscriberListBegin());
+        return axios.post(address, req).then(
+            (res) => {
+                dispatch(getTargetSubscriberListSuccess(res.data));
+            }, (error) => {
+                console.log(error);
+                dispatch(getTargetSubscriberListFailure(error));
+            }
+        )
+    }
+}
+
+export function deleteTargetSubscriber(targetSubscriber) {
+    let req = {
+        targetSubscriber: targetSubscriber
+    }
+    let address = "http://192.168.100.67:8080/deleteTargetSubscriber";
+    
+    return dispatch => {
+        dispatch(deleteTargetSubscriberBegin());
+        return axios.post(address, req).then(
+            (res) => {
+                dispatch(deleteTargetSubscriberSuccess());
+            }, (error) => {
+                console.log(error);
+                dispatch(deleteTargetSubscriberFailure(error));
+            }
+        )
+    }
+}
 
 export function checkPaymentAccountNumber(merchantCode, accNumber) {
     let req = {
         merchantCode: merchantCode,
         accNumber: accNumber
     }
-    let address = "http://localhost:8080/findBillpaymentAccountDummyByAccountNumberAndMerchant";
+    let address = "http://192.168.100.67:8080/findBillpaymentAccountDummyByAccountNumberAndMerchant";
     
     return dispatch => {
         dispatch(checkPaymentAccountNumberBegin());
@@ -41,7 +105,7 @@ export function getPaymentTransCharge(merchantCode, merchantName, accNumber, acc
     let req = {
         merchantCode: merchantCode,
     }
-    let address = "http://localhost:8080/getBillPaymentTransCharge";
+    let address = "http://192.168.100.67:8080/getBillPaymentTransCharge";
 
     return dispatch => {
         dispatch(getPaymentTransChargeBegin());
@@ -58,6 +122,72 @@ export function getPaymentTransCharge(merchantCode, merchantName, accNumber, acc
     }
 }
 
+export function saveNewTargetSubscriber(merchantCode, subscriberNumber, cif_code) {
+    let req = {
+        merchantCode: merchantCode,
+        subscriberNumber: subscriberNumber,
+        cif_code: cif_code
+    }
+    let address = 'http://192.168.100.67:8080/saveNewTargetSubscriber';
+
+    return dispatch => {
+        dispatch(saveNewTargetSubscriberBegin());
+        return axios.post(address, req).then(
+            (res) => {
+                dispatch(saveNewTargetSubscriberSuccess());
+            }, (error) => {
+                console.log(error);
+                dispatch(saveNewTargetSubscriberFailure(error));
+            }
+        )
+    }
+}
+
+export function getPaymentToken(cif_code, code, totalAmount, currency, subscriberNumber, merchant){
+    let req = {
+        cif_code: cif_code,
+        code: code,
+        totalAmount: totalAmount,
+        currency: currency,
+        subscriberNumber: subscriberNumber,
+        merchant: merchant
+    }
+    let address = 'http://192.168.100.67:8080/saveTempOtp';
+
+    return dispatch => {
+        dispatch(getPaymentTokenBegin());
+        return axios.post(address, req).then(
+            (res) => {
+                dispatch(getPaymentTokenSuccess());
+            }, (error) => {
+                console.log(error);
+                dispatch(getPaymentTokenFailure(error));
+            }
+        )
+    }
+}
+
+export function validatePaymentToken(code, cif_code, token) {
+    let req = {
+        code: code,
+        cif_code: cif_code,
+        token: token
+    }
+    let address = 'http://192.168.100.67:8080/validateTempOtp';
+
+    return dispatch => {
+        dispatch(validatePaymentTokenBegin());
+        return axios.post(address, req).then(
+            (res) => {
+                dispatch(validatePaymentTokenSuccess(res));
+            }, (error) => {
+                console.log(error);
+                dispatch(validatePaymentTokenFailure(error));
+            }
+        )
+    }
+}
+
 export function billPayment(customerNumber, customerName, accNumber, amount, bankCharge, merchantCode) {
     let req = {
         customerNumber: customerNumber,
@@ -68,7 +198,7 @@ export function billPayment(customerNumber, customerName, accNumber, amount, ban
         merchantCode: merchantCode,
     }
 
-    let address = "http://localhost:8080/saveNewBillpaymentTransaction";
+    let address = "http://192.168.100.67:8080/saveNewBillpaymentTransaction";
 
     return dispatch => {
         dispatch(billPaymentBegin());
