@@ -51,10 +51,11 @@ class PaymentSetAmount extends Component {
             ToastAndroid.show("Please select your source account", ToastAndroid.SHORT);
         }else if(parseInt(amount) > parseInt(sourceAcc.balance)){
             ToastAndroid.show("Your balance is not enough", ToastAndroid.SHORT);
-        }else{            
-            this.props.dispatch(setPaymentAmount(amount))            
+        }else{                  
             this.props.dispatch(getPaymentTransCharge(targetSubs.merchantCode, targetSubs.merchantName, targetSubs.accNumber, targetSubs.accName)).then((res) => {
-                navigation.navigate('PaymentConfirmation');
+                navigation.navigate('PaymentConfirmation', {
+                    amount: amount
+                });
             })
         }
     }
@@ -62,7 +63,6 @@ class PaymentSetAmount extends Component {
     render(){
 
         const { params } = this.props.route;
-        const { loading } = this.props;
         var billedAmount = this.props.amount;   
 
         return(
@@ -262,7 +262,6 @@ const mapStateToProps = state => ({
     sourceAcc: state.payment.sourceAcc,
     amount: state.payment.amount,
     targetSubs: state.payment.targetSubs,
-    loading: state.payment.loading,
 })
 
 export default connect (mapStateToProps)(PaymentSetAmount);

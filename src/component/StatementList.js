@@ -102,7 +102,7 @@ class StatementList extends React.Component {
                     }
                     {
                         this.props.home ?
-                            <TouchableOpacity style={styles.container} onPress={() => this.handleAllTransactionClicked()}>
+                            <TouchableOpacity style={styles.allTransactionButton} onPress={() => this.handleAllTransactionClicked()}>
                                 <View style={styles.viewSubLeft}>
                                     <Text style={styles.allTransactionText}>See All Transaction</Text>
                                 </View>
@@ -191,6 +191,10 @@ const styles = StyleSheet.create({
         color: '#d63447',
         marginRight: 10,
     },
+    allTransactionButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    }
 })
 
 export default StatementList;

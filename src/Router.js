@@ -36,7 +36,6 @@ import SelectSourceScreen from './container/transfer/SelectSourceAccount';
 import SendMoneyMethodScreen from './container/transfer/SendMoneyMethod';
 import ConfirmationScreen from './container/transfer/Confirmation';
 import TransactionDetailScreen from './container/transfer/TransactionDetail';
-import OtpValidationScreen from './container/transfer/OtpValidation';
 
 import PaymentScreen from './container/payment/Payment';
 import SetPhoneNumberScreen from './container/payment/SetPhoneNumber';
@@ -313,8 +312,8 @@ function TransferStackScreen() {
             >
             </Stack.Screen>
             <Stack.Screen
-                name="OtpValidation"
-                component={OtpValidationScreen}
+                name="InputOTP"
+                component={InputOTPScreen}
                 options={{
                     headerShown: true,
                     headerStyle:{

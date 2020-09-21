@@ -11,9 +11,9 @@ import {
 import { Icon } from 'react-native-elements';
 import { getPaymentToken, getTargetSubscriberList, saveNewTargetSubscriber } from '../../action/payment/paymentFunction';
 import { numberWithDot } from '../../generalFunction';
+import { setPaymentAmount } from '../../action/payment/paymentAction';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import Loading from '../../Loading';
 
 class PaymentConfirmation extends Component {
 
@@ -40,35 +40,26 @@ class PaymentConfirmation extends Component {
         })
     }
 
-    handleConfirmPayment(){
-        const { navigation, cif_code, targetSubscriberList, targetSubs, amount } = this.props;
-
-        if( targetSubscriberList.filter((item) => item.subscribernumber == targetSubs.accNumber && item.merchant_detail.code == targetSubs.merchantCode).length != 0){
-            navigation.navigate('ValidateEasyPin', {flow: 'billpayment'});
+    handleConfirmPayment() {
+        const { navigation, cif_code, targetSubscriberList, targetSubs, route } = this.props;
+        this.props.dispatch(setPaymentAmount(route.params.amount))
+        if (targetSubscriberList.filter((item) => item.subscribernumber == targetSubs.accNumber && item.merchant_detail.code == targetSubs.merchantCode).length != 0) {
+            navigation.navigate('ValidateEasyPin', { flow: 'billpayment' });
         } else {
-            this.props.dispatch(saveNewTargetSubscriber(targetSubs.merchantCode, targetSubs.accNumber, cif_code)).then(() => {
-                this.props.dispatch(getPaymentToken(cif_code, "BILLPAYMENT", amount, "IDR", targetSubs.accNumber, targetSubs.merchantName));
-                navigation.navigate('InputOTP', {
-                    type: 'BILLPAYMENT'
-                });
+            const { amount } = this.props;
+            this.props.dispatch(getPaymentToken(cif_code, "BILLPAYMENT", amount, "IDR", targetSubs.accNumber, targetSubs.merchantName));
+            navigation.navigate('InputOTP', {
+                type: 'BILLPAYMENT'
             });
         }
     }
     
     render(){
-
         var date = moment().utcOffset('+07:00').format('dddd, DD MMM YYYY')
-        const {amount, targetSubs, sourceAcc, loading} = this.props
-        
+        const { targetSubs, sourceAcc, route } = this.props
+        const { amount } = route.params
         return(
             <ScrollView style={styles.container}>
-                {
-                    loading ?
-                    <Modal transparent={true}> 
-                        <Loading transparent={true}/>
-                    </Modal>
-                    : null
-                }
                 <Text style={styles.header}>Pay / Purchase confirmation</Text>
             
                 <View style={styles.amountContainer}>
@@ -302,7 +293,6 @@ const mapStateToProps = state => ({
     cif_code: state.login.cif_code,
     targetSubscriberList: state.payment.targetSubscriberList,
     sourceAcc: state.payment.sourceAcc,
-    loading: state.payment.loading,
     targetSubs: state.payment.targetSubs,
     amount: state.payment.amount,
 })

@@ -45,13 +45,19 @@ class Home extends React.Component {
   componentDidMount() {
     this._isMounted = true;
     const { cif_code } = this.props;
-    this.setState({loading: true})
+    this.setLoading(true);
     this.props.dispatch(getBalance(cif_code)).then(()=>{
       this.props.dispatch(getStatements(cif_code)).then(()=>{
         this.props.dispatch(getCustomerData(cif_code)).then(()=>{
-          this.setState({loading: false})
+          this.setLoading(false);
         })
       })
+    })
+  }
+
+  setLoading(status){
+    this.setState({
+      loading: status
     })
   }
 
@@ -79,12 +85,12 @@ class Home extends React.Component {
   }
 
   onRefresh = () => {
-    this.setState({loading: true,})
     const {cif_code} = this.props
+    this.setLoading(true);
     this.props.dispatch(getBalance(cif_code)).then(()=>{
       this.props.dispatch(getStatements(cif_code)).then(()=>{
         this.props.dispatch(getCustomerData(cif_code)).then(()=>{
-          this.setState({loading: false})
+          this.setLoading(false);
         })
       })
     })
@@ -108,6 +114,7 @@ class Home extends React.Component {
         {/* HEADER */}
         <ScrollView
           contentContainerStyle={styles.container}
+          showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}

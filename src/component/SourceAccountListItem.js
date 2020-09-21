@@ -67,8 +67,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginVertical: 10,
         backgroundColor: 'white',
-        width: '100%',
+        width: '95%',
         paddingVertical: 10,
+        elevation: 5,
+        borderRadius: 15,
+        alignSelf: 'center'
     },
     cardIcon: {
         width: 50,

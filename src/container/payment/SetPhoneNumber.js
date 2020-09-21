@@ -22,7 +22,8 @@ class SetPhoneNumber extends Component {
         this.state = {
           buttonColor: '#FA8072',
           phoneNumber: "",
-          keyword: ""
+          keyword: "",
+          loading: false,
         };
     }
 
@@ -46,8 +47,10 @@ class SetPhoneNumber extends Component {
 
     handleNext = () => {
         const { navigation, route } = this.props;
+        this.setState({loading: true})
         if(this.state.phoneNumber.length >= 10){
             this.props.dispatch(checkPaymentAccountNumber(route.params.code, this.state.phoneNumber)).then((res)=>{
+                this.setState({loading: false})
                 if(res){
                     navigation.navigate('PaymentSetAmount', {
                         phoneNumber: this.state.phoneNumber,
@@ -66,7 +69,8 @@ class SetPhoneNumber extends Component {
 
     render(){
 
-        const { route, loading, targetSubscriberList } = this.props;
+        const { route } = this.props;
+        const { loading } = this.state;
         return(
             <KeyboardAvoidingView style={styles.container} behavior={'height'}>
                 {

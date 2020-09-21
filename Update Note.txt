@@ -20,3 +20,10 @@
 - Flow payment yang menggunakan data dinamik dari REST API
 - Melengkapi reducer dan action untuk payment pada bagian pengambilan list targetSubscriber, delete targetSubscriber, pengambilan dan validasi token
 )
+
+21 September 2020 16:02 - Clavian (
+- Perubahan flow daftarin targetSubscriber baru jadi setelah validasi otp sukses (true)
+- Perbaikan beberapa animasi loading yang ga dibutuhin atau double
+- Perbaikan validasi payment otp
+- Perubahan tampilan saat pilih source account
+)

@@ -112,6 +112,7 @@ class AccountStatementList extends React.Component {
                 <ScrollView
                     scrollEventThrottle={16}
                     overScrollMode={'never'}
+                    showsVerticalScrollIndicator={false}
                     onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }])}
                     refreshControl={
                         <RefreshControl
