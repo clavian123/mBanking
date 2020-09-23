@@ -44,13 +44,17 @@ class PaymentListItem extends Component {
                 underlayColor: '#888888',
                 onPress: () => {
                     const { cif_code } = this.props;
-                    this.props.dispatch(deleteTargetSubscriber(this.props.id));
-                    if( this.props.type == 'none'){
-                        this.props.dispatch(getTargetSubscriberList('', '', cif_code))
-                    }else{
-                        this.props.dispatch(getTargetSubscriberList('', this.props.merchantCode, cif_code));
-                    }
-                    ToastAndroid.show("Success", ToastAndroid.SHORT);
+                    this.props.dispatch(deleteTargetSubscriber(this.props.id)).then(() => {
+                        if( this.props.type == 'none'){
+                            this.props.dispatch(getTargetSubscriberList('', '', cif_code)).then(() => {
+                                ToastAndroid.show("Success", ToastAndroid.SHORT);
+                            })
+                        }else{
+                            this.props.dispatch(getTargetSubscriberList('', this.props.merchantCode, cif_code)).then(() => {
+                                ToastAndroid.show("Success", ToastAndroid.SHORT);
+                            })
+                        }
+                    })
                 }   
             }
         ]
@@ -114,7 +118,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    cif_code: state.login.cif_code
+    cif_code: state.login.cif_code,
+    targetSubscriberList: state.payment.targetSubscriberList
 })
 
 export default connect(mapStateToProps)(PaymentListItem);

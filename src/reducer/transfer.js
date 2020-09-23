@@ -27,9 +27,12 @@ import {
     SAVE_NEW_TARGET_ACCOUNT_BEGIN,
     SAVE_NEW_TARGET_ACCOUNT_SUCCESS,
     SAVE_NEW_TARGET_ACCOUNT_FAILURE,
+    DELETE_TARGET_ACCOUNT_BEGIN,
+    DELETE_TARGET_ACCOUNT_SUCCESS,
+    DELETE_TARGET_ACCOUNT_FAILURE,
     TRANSFER_BEGIN,
     TRANSFER_SUCCESS,
-    TRANSFER_FAILURE,
+    TRANSFER_FAILURE
 } from '../action/index';
 
 initialState = {
@@ -280,6 +283,25 @@ const transfer = (state = initialState, action) => {
                 loading: false,
                 error: action.error,
                 saveNewTargetAccount: false
+            }
+
+        case DELETE_TARGET_ACCOUNT_BEGIN:
+            return {
+                ...state,
+                loading: true
+            }
+
+        case DELETE_TARGET_ACCOUNT_SUCCESS:
+            return {
+                ...state,
+                loading: false
+            }
+
+        case DELETE_TARGET_ACCOUNT_FAILURE: 
+            return {
+                ...state,
+                loading: false,
+                error: action.error
             }
 
         case TRANSFER_BEGIN:

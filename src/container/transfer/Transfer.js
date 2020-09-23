@@ -5,7 +5,8 @@ import {
   Text,
   TouchableHighlight,
   Image,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Modal
 } from 'react-native';
 import { TextInput, FlatList } from 'react-native-gesture-handler';
 
@@ -13,6 +14,7 @@ import { connect } from 'react-redux';
 import AccountListItem from '../../component/AccountListItem';
 import { emptyAccountNumber, setDestinationAccountSuccess } from '../../action/transfer/transferAction';
 import {getListDest} from '../../action/transfer/transferFunction';
+import Loading from '../../Loading';
 
 class Transfer extends React.Component {
 
@@ -67,6 +69,9 @@ class Transfer extends React.Component {
   }
 
   render() {
+
+    const { loading } = this.props;
+
     return (
       <KeyboardAvoidingView
         style={styles.container}
@@ -74,6 +79,15 @@ class Transfer extends React.Component {
         keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
         enabled={Platform.OS === "ios" ? true : false}
       >
+
+            {
+                loading ? 
+                <Modal transparent={true}>
+                    <Loading transparent={true}/>
+                </Modal>
+                : null
+            }
+
         <Text
           style={{
             fontWeight: "bold", 
@@ -224,7 +238,8 @@ const mapStateToProps = state => ({
   cif_code: state.login.cif_code,
   easyPin: state.login.easyPin,
   listDest: state.transfer.listDest,
-  destAcc: state.transfer.destAcc
+  destAcc: state.transfer.destAcc,
+  loading: state.transfer.loading
 });
 
 export default connect(mapStateToProps)(Transfer);

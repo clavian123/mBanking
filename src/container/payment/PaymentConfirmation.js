@@ -9,7 +9,7 @@ import {
     Modal,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { getPaymentToken, getTargetSubscriberList, saveNewTargetSubscriber } from '../../action/payment/paymentFunction';
+import { getPaymentToken, getTargetSubscriberList } from '../../action/payment/paymentFunction';
 import { numberWithDot } from '../../generalFunction';
 import { setPaymentAmount } from '../../action/payment/paymentAction';
 import moment from 'moment';
@@ -42,12 +42,11 @@ class PaymentConfirmation extends Component {
 
     handleConfirmPayment() {
         const { navigation, cif_code, targetSubscriberList, targetSubs, route } = this.props;
-        this.props.dispatch(setPaymentAmount(route.params.amount))
+        this.props.dispatch(setPaymentAmount(route.params.amount));
         if (targetSubscriberList.filter((item) => item.subscribernumber == targetSubs.accNumber && item.merchant_detail.code == targetSubs.merchantCode).length != 0) {
             navigation.navigate('ValidateEasyPin', { flow: 'billpayment' });
         } else {
-            const { amount } = this.props;
-            this.props.dispatch(getPaymentToken(cif_code, "BILLPAYMENT", amount, "IDR", targetSubs.accNumber, targetSubs.merchantName));
+            this.props.dispatch(getPaymentToken(cif_code, "BILLPAYMENT", route.params.amount, "IDR", targetSubs.accNumber, targetSubs.merchantName));
             navigation.navigate('InputOTP', {
                 type: 'BILLPAYMENT'
             });

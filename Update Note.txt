@@ -27,3 +27,7 @@
 - Perbaikan validasi payment otp
 - Perubahan tampilan saat pilih source account
 )
+
+23 September 2020 16:27 - Jun (
+- Perbaikan list target account dan subscriber pada transfer dan payment
+)

@@ -9,10 +9,12 @@ import {
   View,
   FlatList,
   ToastAndroid,
+  Modal
 } from 'react-native';
 import { connect } from 'react-redux';
 
 import PaymentListItem from '../../component/PaymentListItem';
+import Loading from '../../Loading';
 
 import { getTargetSubscriberList } from '../../action/payment/paymentFunction';
 
@@ -21,12 +23,13 @@ class Payment extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      keyword: ''
+      keyword: '',
+      list: []
     };
   }
 
   componentDidMount(){
-    const {cif_code} = this.props;
+    const { cif_code } = this.props;
     this.props.dispatch(getTargetSubscriberList('', '', cif_code));
   }
 
@@ -50,8 +53,19 @@ class Payment extends React.Component {
 
   render() {
 
+    const { loading } = this.props;
+
     return (
       <View style={styles.container}>
+
+          {
+              loading ? 
+              <Modal transparent={true}>
+                  <Loading transparent={true}/>
+              </Modal>
+              : null
+          }
+
         <ScrollView>
 
           <View style={styles.viewScrollView}>
@@ -100,14 +114,14 @@ class Payment extends React.Component {
             <View style={styles.list}>
                 <FlatList 
                   data = {this.props.targetSubscriberList}
-                  extraData = {this.props.targetSubscriberList}
                   renderItem={({item}) => (
                     <PaymentListItem navigation={this.props.navigation} type={'none'} id={item.id} number={item.subscribernumber} merchant={item.merchant_detail.name} merchantCode={item.merchant_detail.code} />
                   )}
                   ListEmptyComponent={
                     <Text style={{ marginTop: 30, textAlign: 'center', color: 'grey' }}>Nothing to show</Text>
                   }
-                  keyExtractor={item => item.id}
+                  keyExtractor={(item, index) => item.id}
+                  extraData = {this.props.targetSubscriberList}
                 />
             </View>
 
@@ -243,6 +257,7 @@ const payTopUpList = [
 ];
 
 const mapStateToProps = state => ({
+  loading: state.payment.loading,
   cif_code: state.login.cif_code,
   targetSubscriberList: state.payment.targetSubscriberList
 })

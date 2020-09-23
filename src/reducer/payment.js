@@ -53,7 +53,7 @@ const payment = (state = initialState, action) =>{
         case GET_TARGET_SUBSCRIBER_LIST_BEGIN:
             return {
                 ...state,
-                loading: false
+                loading: true
             }
 
         case GET_TARGET_SUBSCRIBER_LIST_SUCCESS:

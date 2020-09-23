@@ -27,6 +27,9 @@ import {
     SAVE_NEW_TARGET_ACCOUNT_BEGIN,
     SAVE_NEW_TARGET_ACCOUNT_SUCCESS,
     SAVE_NEW_TARGET_ACCOUNT_FAILURE,
+    DELETE_TARGET_ACCOUNT_BEGIN,
+    DELETE_TARGET_ACCOUNT_SUCCESS,
+    DELETE_TARGET_ACCOUNT_FAILURE,
     TRANSFER_BEGIN,
     TRANSFER_SUCCESS,
     TRANSFER_FAILURE,
@@ -172,6 +175,19 @@ export const saveNewTargetAccountSuccess = (saveNewTargetAccount) => ({
 
 export const saveNewTargetAccountFailure = (error) => ({
     type: SAVE_NEW_TARGET_ACCOUNT_FAILURE,
+    error
+})
+
+export const deleteTargetAccountBegin = () => ({
+    type: DELETE_TARGET_ACCOUNT_BEGIN
+})
+
+export const deleteTargetAccountSuccess = () => ({
+    type: DELETE_TARGET_ACCOUNT_SUCCESS
+})
+
+export const deleteTargetAccountFailure = (error) => ({
+    type: DELETE_TARGET_ACCOUNT_FAILURE,
     error
 })
 

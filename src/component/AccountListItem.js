@@ -4,7 +4,7 @@ import {
     StyleSheet,
     Text,
     Image,
-    TouchableOpacity
+    TouchableOpacity, ToastAndroid
 } from 'react-native'
 import Swipeout from 'react-native-swipeout'
 import { setDestinationAccount, deleteTargetAccount, getListDest } from '../action/transfer/transferFunction';
@@ -37,8 +37,10 @@ class AccountListItem extends React.Component{
                 onPress: () => {
                     const { listDest, cif_code } = this.props;
                     let acc = listDest.filter((item) => item.account_number == this.props.accNumber)[0];
-                    deleteTargetAccount(acc.id);
-                    this.props.dispatch(getListDest(cif_code, ""));
+                    this.props.dispatch(deleteTargetAccount(acc.id)).then(() => {
+                        this.props.dispatch(getListDest(cif_code, ""));
+                        ToastAndroid.show('Success', ToastAndroid.SHORT);
+                    });
                 }   
             }
         ]

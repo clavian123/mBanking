@@ -26,7 +26,10 @@ import {
     validateTransferTokenFailure,
     saveNewTargetAccountBegin,
     saveNewTargetAccountSuccess,
-    saveNewTargetAccountFailure,    
+    saveNewTargetAccountFailure,
+    deleteTargetAccountBegin,
+    deleteTargetAccountSuccess,
+    deleteTargetAccountFailure    
 } from './transferAction';
 
 import PushNotification from 'react-native-push-notification'
@@ -49,7 +52,7 @@ export function getBankList(keyword) {
     let req = {
         keyword: keyword
     }
-    let address = "http://localhost:8080/targetBank";
+    let address = "http://192.168.100.67:8080/targetBank";
     return dispatch => {
         dispatch(getBankListBegin());
         return axios.post(address, req).then(
@@ -67,7 +70,7 @@ export function checkAccountNumber(bankCode, bankId, bankName, accNumber) {
     let req = {
         accNumber: accNumber
     }
-    let address = "http://localhost:8080/findAccountDummyByAccountNumber";
+    let address = "http://192.168.100.67:8080/findAccountDummyByAccountNumber";
     return dispatch => {
         dispatch(checkAccountNumberBegin());
         return axios.post(address, req).then(
@@ -98,7 +101,7 @@ export function setDestinationAccount(bankId, bankCode, bankName, accNumber, nam
 };
 
 export function getMethodList() {
-    let address = "http://localhost:8080/getFundTransferTransCharge";
+    let address = "http://192.168.100.67:8080/getFundTransferTransCharge";
     return dispatch => {
         dispatch(getMethodListBegin());
         return axios.get(address).then(
@@ -117,7 +120,7 @@ export function getListDest(cif_code, keyword){
         cif_code: cif_code,
         keyword: keyword
     }
-    let address = "http://localhost:8080/getTargetAccounts"
+    let address = "http://192.168.100.67:8080/getTargetAccounts"
 
     return dispatch => {
         dispatch(getListDestBegin());
@@ -141,7 +144,7 @@ export function transfer(sourceAccNumber, destAccNumber, amount, fee, note, bank
         message: note,
         targetBankId: bankId,
     }
-    let address = "http://localhost:8080/saveNewFundTransfer"
+    let address = "http://192.168.100.67:8080/saveNewFundTransfer"
 
     return dispatch => {
         dispatch(transferBegin());
@@ -166,7 +169,7 @@ export function getTransferToken(cif_code, totalAmount, destAccNumber, destAccNa
         currency: "IDR",
         code: "FUNDTRANSFER"
     }
-    let address = "http://localhost:8080/saveTempOtp"
+    let address = "http://192.168.100.67:8080/saveTempOtp"
 
     return dispatch => {
         dispatch(getTransferTokenBegin());
@@ -188,7 +191,7 @@ export function validateTransferToken(cif_code, token){
         token: token,
         code: "FUNDTRANSFER"
     }
-    let address = "http://localhost:8080/validateTempOtp"
+    let address = "http://192.168.100.67:8080/validateTempOtp"
 
     return dispatch => {
         dispatch(validateTransferTokenBegin())
@@ -209,7 +212,7 @@ export function saveNewTargetAccount(cif_code, accountNumber, bankId){
         accountNumber: accountNumber,
         bankId: bankId,
     }
-    let address = "http://localhost:8080/saveNewTargetAccount"
+    let address = "http://192.168.100.67:8080/saveNewTargetAccount"
 
     return dispatch => {
         dispatch(saveNewTargetAccountBegin())
@@ -232,13 +235,17 @@ export function deleteTargetAccount(targetAccount){
     let req = {
         targetAccount: targetAccount
     }
-    let address = "http://localhost:8080/deleteTargetAccount"
+    let address = "http://192.168.100.67:8080/deleteTargetAccount"
 
-    return axios.post(address, req).then(
-        (res) => {
-            ToastAndroid.show("Account has succesfully removed", ToastAndroid.SHORT);
-        }, (error) => {
-            console.log(error);
-        }
-    )
+    return dispatch => {
+        dispatch(deleteTargetAccountBegin());
+        return axios.post(address, req).then(
+            (res) => {
+                dispatch(deleteTargetAccountSuccess())
+            }, (error) => {
+                console.log(error);
+                dispatch(deleteTargetAccountFailure(error));
+            }
+        )
+    }
 }
