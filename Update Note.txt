@@ -31,3 +31,7 @@
 23 September 2020 16:27 - Jun (
 - Perbaikan list target account dan subscriber pada transfer dan payment
 )
+
+23 Oktober 2020 09:03 - Jun (
+- Menambah komponen rekomendasi transaksi
+)
