@@ -19,15 +19,12 @@ class PaymentListItem extends Component {
     }
 
     handleClick = () => {
-        console.log(this.props.number, this.props.merchantCode)
         this.props.dispatch(checkPaymentAccountNumber(this.props.merchantCode, this.props.number)).then(() => {
             this.props.navigation.navigate('PaymentSetAmount', {
                 phoneNumber: this.props.number,
                 merchant: this.props.merchantCode
             });
         })
-            
-
     }
 
     render(){

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {createRef, useCallback} from 'react';
 import {
   Alert,
   Modal,
@@ -11,15 +11,17 @@ import {
   View,
   ScrollView,
   Dimensions,
-  RefreshControl
+  RefreshControl,
+  FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import { ScrollableTabView, DefaultTabBar, ScrollableTabBar, } from '@valdio/react-native-scrollable-tabview'
 
 import { numberWithDot } from '../../generalFunction';
-import { getBalance, getStatements, getCustomerData } from '../../action/home/homeFunction';
+import { getBalance, getStatements, getCustomerData, getTransactionRecommendation } from '../../action/home/homeFunction';
 import AccountCard from '../../component/AccountCard';
+import RecommendationItem from '../../component/RecommendationItem';
 import Loading from '../../Loading';
 
 
@@ -35,7 +37,10 @@ class Home extends React.Component {
       isDetailVisible: false,
       isStatementVisible: false,
       statements: [],
+      index: 1,
       loading: false,
+      isRecommendationVisible: false,
+      bullets: []
     };
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -46,6 +51,23 @@ class Home extends React.Component {
     this._isMounted = true;
     const { cif_code } = this.props;
     this.setLoading(true);
+    this.props.dispatch(getTransactionRecommendation(cif_code)).then(() => {
+      let newBullets = [];
+      for (let i = 1; i <= this.props.transactionRecommendation.length; i++) {
+        newBullets.push(
+          <Text
+            key={i}
+            style={{
+              ...styles.bullet,
+              opacity: this.state.index=== i ? 1 : 0.4
+            }}
+          >
+            &bull;
+          </Text>
+        )
+      }
+      this.setState({ bullets: newBullets })
+    })
     this.props.dispatch(getBalance(cif_code)).then(()=>{
       this.props.dispatch(getStatements(cif_code)).then(()=>{
         this.props.dispatch(getCustomerData(cif_code)).then(()=>{
@@ -69,6 +91,13 @@ class Home extends React.Component {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     this.setState({
       isDetailVisible: !this.state.isDetailVisible
+    })
+  }
+
+  handleRecommendationClicked = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    this.setState({
+      isRecommendationVisible: !this.state.isRecommendationVisible
     })
   }
 
@@ -96,14 +125,41 @@ class Home extends React.Component {
     })
   }
 
+  onViewableItemsChanged = ({ viewableItems, changed }) => {
+    this.setState({ index: viewableItems[0].index + 1})
+  }
+
+  onScroll = () => {
+    let newBullets = [];
+    for (let i = 1; i <= this.props.transactionRecommendation.length; i++) {
+      newBullets.push(
+        <Text
+          key={i}
+          style={{
+            ...styles.bullet,
+            opacity: this.state.index=== i ? 1 : 0.4
+          }}
+        >
+          &bull;
+        </Text>
+      )
+    }
+    this.setState({ bullets: newBullets })
+  }
+
+  viewabilityConfig = {
+    viewAreaCoveragePercentThreshold: 50,
+  };
+
   render() {
 
     const { balance, name, gender } = this.props
-    const { loading } = this.state
+    const { loading } = this.state;
 
     if (loading || this.props.loading) {
       return <Loading />;
     }
+
     return (
       <View style={{
         flex: 1,
@@ -152,6 +208,48 @@ class Home extends React.Component {
               iconStyle={styles.dropIcon}></Icon>
             </TouchableOpacity>
           </View>
+
+          <View style={{...styles.transactionRecommendationContainer, 
+                            height: this.state.isRecommendationVisible ? 200 : 100
+                      }}>
+            <Text style={{...styles.greetingsText, marginVertical: 10}}>Your Top 5 Transaction</Text>
+            <FlatList 
+              onViewableItemsChanged={this.onViewableItemsChanged}
+              viewabilityConfig={{itemVisiblePercentThreshold: 50}}
+              style={{width: "90%",opacity: this.state.isRecommendationVisible ? 1 : 0, marginTop: 10}}
+              horizontal={true}
+              pagingEnabled
+              onScroll={this.onScroll}
+              showsHorizontalScrollIndicator={false}
+              data={this.props.transactionRecommendation}
+              extraData={this.props.transactionRecommendation}
+              renderItem={({ item }) => {
+                return <RecommendationItem 
+                  navigation={this.props.navigation}
+                  target_account_subscriber={item.target_account_subscriber} 
+                  target_name={item.target_name}
+                  type={item.type}
+                  target_bank_merchant_id={item.type=="FUNDTRANSFER" ? item.target_bank.id : item.target_merchant.id}
+                  target_bank_merchant_code={item.type=="FUNDTRANSFER" ? item.target_bank.network_code : item.target_merchant.code}
+                  target_bank_merchant={item.type=="FUNDTRANSFER" ? item.target_bank.bank_name : item.target_merchant.name}
+                />
+              }}
+              ListEmptyComponent={
+                <View style={{ width: Dimensions.get('window').width*0.8, justifyContent: 'center', alignSelf: 'center' }}>
+                  <Text style={{ textAlign: 'center', color: 'grey', fontSize: 16 }}>Nothing to show</Text>
+                </View>
+              }
+            />
+            <View style={{...styles.bullets, opacity: this.state.isRecommendationVisible ? 1 : 0}}>
+              {this.state.bullets}
+            </View>
+            <TouchableOpacity style={styles.dropButton} onPress={this.handleRecommendationClicked}>
+              <Icon 
+              name={this.state.isRecommendationVisible ? "arrow-up" : "arrow-down"} 
+              type="simple-line-icon" 
+              iconStyle={styles.dropIcon}></Icon>
+            </TouchableOpacity>
+          </View>
           
           {/* ACCOUNT AND BALANCE LIST */}
           <ScrollableTabView
@@ -187,12 +285,25 @@ class Home extends React.Component {
 };
 
 const styles = StyleSheet.create({
+  bullets: {
+    alignSelf: 'center',
+    display: 'flex',
+    flexDirection: 'row',
+    paddingHorizontal: 10
+  },
+  bullet: {
+    paddingHorizontal: 5,
+    fontSize: 21,
+    fontWeight: 'bold',
+    color: '#C10000'
+  },
   container: {
     width: "100%",
     alignSelf: "center",
     alignContent: "center",
     alignItems: "center",
   },
+
   buttonText: {
     fontSize: 17,
     fontWeight: '500',
@@ -242,7 +353,6 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     width: 300,
     marginBottom: 0
-
   },
 
   detailTextContainer: {
@@ -252,6 +362,19 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#dedede',
     margin: 0,
+    paddingVertical: 10
+  },
+
+  transactionRecommendationContainer: {
+    flex: 0,
+    width: 360,
+    height: 100,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    borderRadius: 15,
+    elevation: 5,
+    marginTop: 10,
     paddingVertical: 10
   },
 
@@ -310,6 +433,7 @@ const mapStateToProps = state => ({
   isLogin: state.login.isLogin,
   gender: state.home.gender,
   email: state.home.email,
+  transactionRecommendation: state.home.transactionRecommendation
 })
 
 export default connect(mapStateToProps)(Home);

@@ -478,6 +478,7 @@ function HomeTabScreen() {
     return (
         <Tab.Navigator
             initialRouteName="Home"
+            lazy={false}
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconAddress;
@@ -523,7 +524,7 @@ class RootNavigator extends React.Component {
     }
 
     render() {
-        const { isLogin, isEasyPinLogin } = this.props;
+        const { isLogin } = this.props;
         return (
             <NavigationContainer>
                 <Stack.Navigator>

@@ -8,6 +8,9 @@ import {
     GET_CUSTOMER_DATA_BEGIN,
     GET_CUSTOMER_DATA_SUCCESS,
     GET_CUSTOMER_DATA_FAILURE,
+    GET_TRANSACTION_RECOMMENDATION_BEGIN,
+    GET_TRANSACTION_RECOMMENDATION_SUCCESS,
+    GET_TRANSACTION_RECOMMENDATION_FAILURE
 } from '../index';
 
 export const getAccountAndBalanceBegin = () => ({
@@ -50,5 +53,19 @@ export const getCustomerDataSuccess = (gender, email) => ({
 
 export const getCustomerDataFailure = (error) => ({
     type: GET_CUSTOMER_DATA_FAILURE,
+    error
+})
+
+export const getTransactionRecommendationBegin = () => ({
+    type: GET_TRANSACTION_RECOMMENDATION_BEGIN
+})
+
+export const getTransactionRecommendationSuccess = (transactionRecommendation) => ({
+    type: GET_TRANSACTION_RECOMMENDATION_SUCCESS,
+    transactionRecommendation
+})
+
+export const getTransactionRecommendationFailure = (error) => ({
+    type: GET_TRANSACTION_RECOMMENDATION_FAILURE,
     error
 })

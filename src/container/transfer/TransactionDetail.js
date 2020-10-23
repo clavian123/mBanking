@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import { ScrollView } from 'react-native-gesture-handler';
 import { numberWithDot } from '../../generalFunction';
 import { getListDest } from '../../action/transfer/transferFunction';
-import { getBalance, getStatements } from '../../action/home/homeFunction';
+import { getBalance, getStatements,getTransactionRecommendation } from '../../action/home/homeFunction';
 
 class TransactionDetail extends Component{
     constructor(props){
@@ -32,7 +32,9 @@ class TransactionDetail extends Component{
     handleClose(){
         const { navigation, cif_code } = this.props;
         this.props.dispatch(getListDest(cif_code, "")).then(() => {
-            navigation.popToTop();
+            this.props.dispatch(getTransactionRecommendation(cif_code)).then(() => {
+                navigation.popToTop();
+            })
         })
         
     }

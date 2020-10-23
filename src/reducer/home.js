@@ -8,6 +8,9 @@ import {
     GET_CUSTOMER_DATA_BEGIN,
     GET_CUSTOMER_DATA_SUCCESS,
     GET_CUSTOMER_DATA_FAILURE,
+    GET_TRANSACTION_RECOMMENDATION_BEGIN,
+    GET_TRANSACTION_RECOMMENDATION_SUCCESS,
+    GET_TRANSACTION_RECOMMENDATION_FAILURE
 } from '../action/index';
 
 initialState = {
@@ -17,6 +20,7 @@ initialState = {
     error: null,
     gender: '',
     email:'',
+    transactionRecommendation: []
 };
 
 const home = (state = initialState, action) => {
@@ -81,6 +85,26 @@ const home = (state = initialState, action) => {
             };
 
         case GET_CUSTOMER_DATA_FAILURE:
+            return{
+                ...state,
+                loading: false,
+                error: action.error
+            };
+
+        case GET_TRANSACTION_RECOMMENDATION_BEGIN:
+            return{
+                ...state,
+                loading: true
+            };
+
+        case GET_TRANSACTION_RECOMMENDATION_SUCCESS:
+            return{
+                ...state,
+                loading: false,
+                transactionRecommendation: action.transactionRecommendation
+            };
+
+        case GET_TRANSACTION_RECOMMENDATION_FAILURE:
             return{
                 ...state,
                 loading: false,
