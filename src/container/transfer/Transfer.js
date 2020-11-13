@@ -33,7 +33,7 @@ class Transfer extends React.Component {
     this.props.dispatch(getListDest(cif_code, ""));
   }
 
-  componentWillMount(){
+  componentDidMount(){
     this.loadData();
   }
 

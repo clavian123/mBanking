@@ -162,6 +162,7 @@ class InputOTP extends React.Component{
                     keyboardType="number-pad"
                     onChangeText={(text) => this.setState({token: text})}
                     maxLength={6}
+                    // secureTextEntry={true}
                 />
                 <View style={styles.resendContainer}>
                     <Text style={styles.resendText}>

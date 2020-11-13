@@ -97,7 +97,7 @@ class ValidateEasyPin extends Component{
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#C10000',
+        backgroundColor: '#ff0066',
         alignItems: 'center'
     },
     header:{

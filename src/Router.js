@@ -1,8 +1,8 @@
 import React from 'react';
 import {
-    Image,
-    StyleSheet,
-    Text,
+  Image,
+  StyleSheet,
+  Text,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
@@ -51,524 +51,523 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 function RegisterStackScreen() {
-    return(
-        <Stack.Navigator
-            initialRouteName="Login"
-            screenOptions={{
-                headerStyle: {
-                    backgroundColor: 'white',
-                },
-                headerTintColor: '#C10000'
-            }}
-        >
-            <Stack.Screen
-                name="Login"
-                component={LoginScreen}
-                options={{headerShown:false}}
-            >               
-            </Stack.Screen>
-            <Stack.Screen
-                name="InputPAN"
-                component={InputPANScreen}
-                options={{
-                    title: "",
-                    headerStyle: {
-                        backgroundColor: 'white',
-                        shadowColor: 'transparent',
-                        elevation: 0,
-                        borderBottomWidth: 0  
-                    },
-                    headerTintColor: '#C10000'
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="InputOTP"
-                component={InputOTPScreen}
-                options={{
-                    title: "",
-                    headerStyle: {
-                        backgroundColor: "#21C275",
-                        shadowColor: 'transparent',
-                        elevation: 0,
-                        borderBottomWidth: 0    
-                    },
-                    headerTintColor: 'white'
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="InputPIN"
-                component={InputPINScreen}
-                options={{
-                    title: "",
-                    headerStyle: {
-                        backgroundColor: "white",
-                        shadowColor: 'transparent',
-                        elevation: 0,
-                        borderBottomWidth: 0    
-                    },
-                    headerTintColor: '#C10000'
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="CreateUser"
-                component={CreateUserScreen}
-                options={{
-                    title: "",
-                    headerStyle: {
-                        backgroundColor: "white",
-                        shadowColor: 'transparent',
-                        elevation: 0,
-                        borderBottomWidth: 0  
-                    },
-                    headerTintColor: '#C10000'
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="ResetPassword"
-                component={ResetPasswordScreen}
-                options={{
-                    title: "",
-                    headerStyle: {
-                        backgroundColor: "white",
-                        shadowColor: 'transparent',
-                        elevation: 0,
-                        borderBottomWidth: 0  
-                    },
-                    headerTintColor: '#C10000'
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="CreateEasyPin"
-                component={CreateEasyPinScreen}
-                options={{
-                    headerShown: false,
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="ConfirmEasyPin"
-                component={ConfirmEasyPinScreen}
-                options={{
-                    headerShown: false,
-                }}
-            >
-            </Stack.Screen>
-        </Stack.Navigator>
-    );
+  return (
+    <Stack.Navigator
+      initialRouteName="Login"
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: 'white',
+        },
+        headerTintColor: '#C10000'
+      }}
+    >
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ headerShown: false }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="InputPAN"
+        component={InputPANScreen}
+        options={{
+          title: "",
+          headerStyle: {
+            backgroundColor: 'white',
+            shadowColor: 'transparent',
+            elevation: 0,
+            borderBottomWidth: 0
+          },
+          headerTintColor: '#C10000'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="InputOTP"
+        component={InputOTPScreen}
+        options={{
+          title: "",
+          headerStyle: {
+            backgroundColor: "#21C275",
+            shadowColor: 'transparent',
+            elevation: 0,
+            borderBottomWidth: 0
+          },
+          headerTintColor: 'white'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="InputPIN"
+        component={InputPINScreen}
+        options={{
+          title: "",
+          headerStyle: {
+            backgroundColor: "white",
+            shadowColor: 'transparent',
+            elevation: 0,
+            borderBottomWidth: 0
+          },
+          headerTintColor: '#C10000'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="CreateUser"
+        component={CreateUserScreen}
+        options={{
+          title: "",
+          headerStyle: {
+            backgroundColor: "white",
+            shadowColor: 'transparent',
+            elevation: 0,
+            borderBottomWidth: 0
+          },
+          headerTintColor: '#C10000'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="ResetPassword"
+        component={ResetPasswordScreen}
+        options={{
+          title: "",
+          headerStyle: {
+            backgroundColor: "white",
+            shadowColor: 'transparent',
+            elevation: 0,
+            borderBottomWidth: 0
+          },
+          headerTintColor: '#C10000'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="CreateEasyPin"
+        component={CreateEasyPinScreen}
+        options={{
+          headerShown: false,
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="ConfirmEasyPin"
+        component={ConfirmEasyPinScreen}
+        options={{
+          headerShown: false,
+        }}
+      >
+      </Stack.Screen>
+    </Stack.Navigator>
+  );
 }
 
 function HomeStackScreen() {
-    return (
-        <Stack.Navigator
-            initialRouteName="Home"
-            screenOptions={{
-                headerStyle: {
-                    backgroundColor: '#c10000',
-                    elevation: 0
-                },
-                headerTintColor: 'white'
-            }}
-        >
-            {/* <Stack.Screen
+  return (
+    <Stack.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#c10000',
+          elevation: 0
+        },
+        headerTintColor: 'white'
+      }}
+    >
+      {/* <Stack.Screen
                 name="EasyPinLogin"
                 component={EasyPinLoginScreen}
                 options={{ headerShown: false }}
             >   
             </Stack.Screen> */}
-            <Stack.Screen
-                name="Home"
-                component={HomeScreen}
-                options={{ title: 'Home' }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="BalanceInquiry"
-                component={BalanceInquiryScreen}
-                options={{ title: 'Balance Inquiry' }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="AccountStatementPickDate"
-                component={AccountStatementPickDateScreen}
-                options={{ title: 'Pick Date' }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="AccountStatementDetail"
-                component={AccountStatementDetail}
-                options={{ title: 'Transaction Detail' }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="AccountStatementList"
-                component={AccountStatementList}
-                options={{ title: 'Last Transactions' }}
-            >
-            </Stack.Screen>
-        </Stack.Navigator>
-    );
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ title: 'Home' }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="BalanceInquiry"
+        component={BalanceInquiryScreen}
+        options={{ title: 'Balance Inquiry' }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="AccountStatementPickDate"
+        component={AccountStatementPickDateScreen}
+        options={{ title: 'Pick Date' }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="AccountStatementDetail"
+        component={AccountStatementDetail}
+        options={{ title: 'Transaction Detail' }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="AccountStatementList"
+        component={AccountStatementList}
+        options={{ title: 'Last Transactions' }}
+      >
+      </Stack.Screen>
+    </Stack.Navigator>
+  );
 }
 
 function TransferStackScreen() {
-    return (
-        <Stack.Navigator
-            initialRouteName="Transfer"
-        >
-            <Stack.Screen
-                name="Transfer"
-                component={TransferScreen}
-                options={{
-                    title: 'Transfer',
-                    headerStyle: {
-                        backgroundColor: '#c10000'
-                    },
-                    headerTintColor: '#fff',
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="SelectPayee"
-                component={SelectPayeeScreen}
-                options={{
-                    title: 'Select Payee',
-                    headerStyle: {
-                        backgroundColor: '#C10000'
-                    },
-                    headerTintColor: '#fff'
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="SelectBank"
-                component={SelectBankScreen}
-                options={{
-                    title: 'Select Bank',
-                    headerStyle: {
-                        backgroundColor: '#C10000'
-                    },
-                    headerTintColor: '#fff'
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="SetAmount"
-                component={SetAmountScreen}
-                options={{
-                    title: 'Transfer',
-                    headerStyle: {
-                        backgroundColor: '#C10000'
-                    },
-                    headerTintColor: '#fff'
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="SelectSource"
-                component={SelectSourceScreen}
-                options={{
-                    title: 'Transfer',
-                    headerStyle: {
-                        backgroundColor: '#C10000'
-                    },
-                    headerTintColor: '#fff'
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="SendMoneyMethod"
-                component={SendMoneyMethodScreen}
-                options={{
-                    title: 'Transfer',
-                    headerStyle: {
-                        backgroundColor: '#C10000'
-                    },
-                    headerTintColor: '#fff'
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="Confirmation"
-                component={ConfirmationScreen}
-                options={{
-                    title: 'Confirmation',
-                    headerStyle: {
-                        backgroundColor: '#C10000'
-                    },
-                    headerTintColor: '#fff'
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="TransactionDetail"
-                component={TransactionDetailScreen}
-                options={{
-                    headerShown: false
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="InputOTP"
-                component={InputOTPScreen}
-                options={{
-                    headerShown: true,
-                    headerStyle:{
-                        elevation: 0,
-                        backgroundColor: '#21C275',
-                    },
-                    headerTintColor: 'white',
-                    title:'',
-                }}
-            >
-            </Stack.Screen>
-        </Stack.Navigator>
-    );
+  return (
+    <Stack.Navigator
+      initialRouteName="Transfer"
+    >
+      <Stack.Screen
+        name="Transfer"
+        component={TransferScreen}
+        options={{
+          title: 'Transfer',
+          headerStyle: {
+            backgroundColor: '#c10000'
+          },
+          headerTintColor: '#fff',
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="SelectPayee"
+        component={SelectPayeeScreen}
+        options={{
+          title: 'Select Payee',
+          headerStyle: {
+            backgroundColor: '#C10000'
+          },
+          headerTintColor: '#fff'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="SelectBank"
+        component={SelectBankScreen}
+        options={{
+          title: 'Select Bank',
+          headerStyle: {
+            backgroundColor: '#C10000'
+          },
+          headerTintColor: '#fff'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="SetAmount"
+        component={SetAmountScreen}
+        options={{
+          title: 'Transfer',
+          headerStyle: {
+            backgroundColor: '#C10000'
+          },
+          headerTintColor: '#fff'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="SelectSource"
+        component={SelectSourceScreen}
+        options={{
+          title: 'Transfer',
+          headerStyle: {
+            backgroundColor: '#C10000'
+          },
+          headerTintColor: '#fff'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="SendMoneyMethod"
+        component={SendMoneyMethodScreen}
+        options={{
+          title: 'Transfer',
+          headerStyle: {
+            backgroundColor: '#C10000'
+          },
+          headerTintColor: '#fff'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="Confirmation"
+        component={ConfirmationScreen}
+        options={{
+          title: 'Confirmation',
+          headerStyle: {
+            backgroundColor: '#C10000'
+          },
+          headerTintColor: '#fff'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="TransactionDetail"
+        component={TransactionDetailScreen}
+        options={{
+          headerShown: false
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="InputOTP"
+        component={InputOTPScreen}
+        options={{
+          headerShown: true,
+          headerStyle: {
+            elevation: 0,
+            backgroundColor: '#21C275',
+          },
+          headerTintColor: 'white',
+          title: '',
+        }}
+      >
+      </Stack.Screen>
+    </Stack.Navigator>
+  );
 }
 
 function PaymentStackScreen() {
-    return (
-        <Stack.Navigator
-            initialRouteName="Payment"
-        >
-            <Stack.Screen
-                name="Payment"
-                component={PaymentScreen}
-                options={{
-                    title: 'Payment',
-                    headerStyle: {
-                        backgroundColor: '#c10000'
-                    },
-                    headerTintColor: '#fff'
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="SetPhoneNumber"
-                component={SetPhoneNumberScreen}
-                options={{
-                    title: 'Pay / Top Up',
-                    headerStyle: {
-                        backgroundColor: "#C10000"
-                    },
-                    headerTintColor: '#FFF'
-                }}
-            >    
-            </Stack.Screen>
-            <Stack.Screen
-                name="PaymentSetAmount"
-                component={PaymentSetAmountScreen}
-                options={{
-                    title: 'Pay / Top Up',
-                    headerStyle: {
-                        backgroundColor: "#C10000"
-                    },
-                    headerTintColor: '#FFF'
-                }}
-            >    
-            </Stack.Screen>
-            <Stack.Screen
-                name="SelectSource"
-                component={SelectSourceScreen}
-                options={{
-                    title: 'Bill Pay',
-                    headerStyle: {
-                        backgroundColor: "#C10000"
-                    },
-                    headerTintColor: '#FFF'
-                }}
-            >    
-            </Stack.Screen>
-            <Stack.Screen
-                name="PaymentConfirmation"
-                component={PaymentConfirmationScreen}
-                options={{
-                    title: 'Confirmation',
-                    headerStyle: {
-                        backgroundColor: "#C10000"
-                    },
-                    headerTintColor: '#FFF'
-                }}
-            >    
-            </Stack.Screen>
-            <Stack.Screen
-                name="PaymentDetail"
-                component={PaymentDetailScreen}
-                options={{
-                    headerShown: false
-                }}
-            >    
-            </Stack.Screen>
-            <Stack.Screen 
-                name="InputOTP"
-                component={InputOTPScreen}
-                options={{
-                    title: "",
-                    headerStyle: {
-                        backgroundColor: "#21C275",
-                        shadowColor: 'transparent',
-                        elevation: 0,
-                        borderBottomWidth: 0    
-                    },
-                    headerTintColor: 'white'
-                }}
-            ></Stack.Screen>
-        </Stack.Navigator>
-    );
+  return (
+    <Stack.Navigator
+      initialRouteName="Payment"
+    >
+      <Stack.Screen
+        name="Payment"
+        component={PaymentScreen}
+        options={{
+          title: 'Payment',
+          headerStyle: {
+            backgroundColor: '#c10000'
+          },
+          headerTintColor: '#fff'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="SetPhoneNumber"
+        component={SetPhoneNumberScreen}
+        options={{
+          title: 'Pay / Top Up',
+          headerStyle: {
+            backgroundColor: "#C10000"
+          },
+          headerTintColor: '#FFF'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="PaymentSetAmount"
+        component={PaymentSetAmountScreen}
+        options={{
+          title: 'Pay / Top Up',
+          headerStyle: {
+            backgroundColor: "#C10000"
+          },
+          headerTintColor: '#FFF'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="SelectSource"
+        component={SelectSourceScreen}
+        options={{
+          title: 'Bill Pay',
+          headerStyle: {
+            backgroundColor: "#C10000"
+          },
+          headerTintColor: '#FFF'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="PaymentConfirmation"
+        component={PaymentConfirmationScreen}
+        options={{
+          title: 'Confirmation',
+          headerStyle: {
+            backgroundColor: "#C10000"
+          },
+          headerTintColor: '#FFF'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="PaymentDetail"
+        component={PaymentDetailScreen}
+        options={{
+          headerShown: false
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="InputOTP"
+        component={InputOTPScreen}
+        options={{
+          title: "",
+          headerStyle: {
+            backgroundColor: "#21C275",
+            shadowColor: 'transparent',
+            elevation: 0,
+            borderBottomWidth: 0
+          },
+          headerTintColor: 'white'
+        }}
+      ></Stack.Screen>
+    </Stack.Navigator>
+  );
 }
 
 function AccountStackScreen() {
-    return (
-        <Stack.Navigator
-            initialRouteName="Account"
-        >
-            <Stack.Screen
-                name="Account"
-                component={AccountScreen}
-                options={{
-                    title: 'Account',
-                    headerStyle: {
-                        backgroundColor: '#c10000'
-                    },
-                    headerTintColor: '#fff'
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="ChangePIN"
-                component={ChangePINScreen}
-                options={{
-                    title: 'Change PIN',
-                    headerStyle: {
-                        backgroundColor: '#c10000'
-                    },
-                    headerTintColor: '#fff'
-                }}
-            >
-            </Stack.Screen>
-            <Stack.Screen
-                name="AboutUs"
-                component={AboutUsScreen}
-                options={{
-                    title: 'About Us',
-                    headerStyle: {
-                        backgroundColor: '#c10000'
-                    },
-                    headerTintColor: '#fff'
-                }}
-            >
-            </Stack.Screen>
-        </Stack.Navigator >
-    );
+  return (
+    <Stack.Navigator
+      initialRouteName="Account"
+    >
+      <Stack.Screen
+        name="Account"
+        component={AccountScreen}
+        options={{
+          title: 'Account',
+          headerStyle: {
+            backgroundColor: '#c10000'
+          },
+          headerTintColor: '#fff'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="ChangePIN"
+        component={ChangePINScreen}
+        options={{
+          title: 'Change PIN',
+          headerStyle: {
+            backgroundColor: '#c10000'
+          },
+          headerTintColor: '#fff'
+        }}
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="AboutUs"
+        component={AboutUsScreen}
+        options={{
+          title: 'About Us',
+          headerStyle: {
+            backgroundColor: '#c10000'
+          },
+          headerTintColor: '#fff'
+        }}
+      >
+      </Stack.Screen>
+    </Stack.Navigator >
+  );
 }
 
 function HomeTabScreen() {
-    const styles = StyleSheet.create({
-        imageIcon: {
-            width: 29,
-            height: 29,
+  const styles = StyleSheet.create({
+    imageIcon: {
+      width: 29,
+      height: 29,
+    },
+    label: {
+      fontSize: 12
+    }
+  })
+  return (
+    <Tab.Navigator
+      initialRouteName="Home"
+      lazy={false}
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconAddress;
+
+          if (route.name === 'Home') {
+            iconAddress = require('../assets/icon-home.png');
+          } else if (route.name === 'Transfer') {
+            iconAddress = require('../assets/icon-transfer.png');
+          } else if (route.name === 'Payment') {
+            iconAddress = require('../assets/icon-payment.png');
+          } else if (route.name === 'Account') {
+            iconAddress = require('../assets/icon-account.png');
+          }
+
+          return <Image
+            source={iconAddress}
+            style={{ ...styles.imageIcon, tintColor: focused ? 'white' : '#888888' }}
+          />;
         },
-        label: {
-            fontSize: 12
-        }
-    })
-    return (
-        <Tab.Navigator
-            initialRouteName="Home"
-            lazy={false}
-            screenOptions={({ route }) => ({
-                tabBarIcon: ({ focused, color, size }) => {
-                    let iconAddress;
-
-                    if (route.name === 'Home') {
-                        iconAddress = require('../assets/icon-home.png');
-                    } else if (route.name === 'Transfer') {
-                        iconAddress = require('../assets/icon-transfer.png');
-                    } else if (route.name === 'Payment') {
-                        iconAddress = require('../assets/icon-payment.png');
-                    } else if (route.name === 'Account') {
-                        iconAddress = require('../assets/icon-account.png');
-                    }
-
-                    return <Image
-                        source={iconAddress}
-                        style={{ ...styles.imageIcon, tintColor: focused ? 'white' : '#888888' }}
-                    />;
-                },
-                tabBarLabel: ({ focused }) => {
-                    return <Text style={[styles.label, focused ? {color: 'white'} : {color: '#888888'}]}>{route.name}</Text>
-                },
-            })}
-            tabBarOptions={{
-                activeTintColor: 'white',
-                activeBackgroundColor: '#c10000',
-                inactiveTintColor: 'white',
-                keyboardHidesTabBar: true
-            }}
-        >
-            <Tab.Screen name="Home" component={HomeStackScreen} options={{ title: 'Home' }} />
-            <Tab.Screen name="Transfer" component={TransferStackScreen} options={{ title: 'Transfer' }} />
-            <Tab.Screen name="Payment" component={PaymentStackScreen} options={{ title: 'Payment' }} />
-            <Tab.Screen name="Account" component={AccountStackScreen} options={{ title: 'Account' }} />
-        </Tab.Navigator>
-    )
+        tabBarLabel: ({ focused }) => {
+          return <Text style={[styles.label, focused ? { color: 'white' } : { color: '#888888' }]}>{route.name}</Text>
+        },
+      })}
+      tabBarOptions={{
+        activeTintColor: 'white',
+        activeBackgroundColor: '#c10000',
+        inactiveTintColor: 'white',
+        keyboardHidesTabBar: true
+      }}
+    >
+      <Tab.Screen name="Home" component={HomeStackScreen} options={{ title: 'Home' }} />
+      <Tab.Screen name="Transfer" component={TransferStackScreen} options={{ title: 'Transfer' }} />
+      <Tab.Screen name="Payment" component={PaymentStackScreen} options={{ title: 'Payment' }} />
+      <Tab.Screen name="Account" component={AccountStackScreen} options={{ title: 'Account' }} />
+    </Tab.Navigator>
+  )
 }
 
 class RootNavigator extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
+  constructor(props) {
+    super(props);
+  }
 
-    render() {
-        const { isLogin } = this.props;
-        return (
-            <NavigationContainer>
-                <Stack.Navigator>
-                    {isLogin ? (
-                        <>
-                            <Stack.Screen 
-                                options={{ headerShown: false }}
-                                name="EasyPinLogin"
-                                component={EasyPinLoginScreen} />
-                            <Stack.Screen
-                                options={{ headerShown: false }}
-                                name="HomeTab"
-                                component={HomeTabScreen} />
-                            <Stack.Screen
-                                options={{
-                                    headerShown: true,
-                                    title: '',
-                                    headerStyle: {
-                                        backgroundColor: '#c10000',
-                                        elevation: 0,
+  render() {
+    const { isLogin } = this.props;
+    return (
+      <NavigationContainer>
+        <Stack.Navigator>
+          {isLogin ? (
+            <>
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="EasyPinLogin"
+                component={EasyPinLoginScreen} />
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="HomeTab"
+                component={HomeTabScreen} />
+              <Stack.Screen
+                options={{
+                  headerShown: true,
+                  title: '',
+                  headerStyle: {
+                    backgroundColor: '#c10000',
+                    elevation: 0,
 
-                                    },
-                                    headerTintColor: 'white'
-                                }}
-                                name="ValidateEasyPin"
-                                component={ValidateEasyPinScreen} /> 
-                        </>
-                    ) 
-                    : 
-                    (
-                        <>
-                            <Stack.Screen options={{ headerShown: false }} name="Login" component={RegisterStackScreen} />
-                        </>
-                    )}
-                </Stack.Navigator>
-            </NavigationContainer>
-        );
-    }
+                  },
+                  headerTintColor: 'white'
+                }}
+                name="ValidateEasyPin"
+                component={ValidateEasyPinScreen} />
+            </>
+          )
+            :
+            (
+              <>
+                <Stack.Screen options={{ headerShown: false }} name="Login" component={RegisterStackScreen} />
+              </>
+            )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+  }
 }
 
 const mapStateToProps = state => ({
-    isLogin: state.login.isLogin,
-    isEasyPinLogin: state.login.isEasyPinLogin
+  isLogin: state.login.isLogin,
+  isEasyPinLogin: state.login.isEasyPinLogin
 })
 
 export default connect(mapStateToProps)(RootNavigator);
-

@@ -6,7 +6,11 @@ import {
   TouchableOpacity,
   View,
   KeyboardAvoidingView,
-  ToastAndroid
+  ToastAndroid,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Dimensions,
+  ScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -32,93 +36,90 @@ class Login extends Component {
     } else {
       this.props.dispatch(login(username, password)).then(() => {
         const { validateLogin, cif_code } = this.props;
-        if(validateLogin == true){
+        if (validateLogin == true) {
           this.props.dispatch(getLoginToken(cif_code))
-            navigation.navigate("InputOTP", {
-              type: "LOGIN"
-            });
-        }else{
-          ToastAndroid.show("Invalid username or password!", ToastAndroid.SHORT)
+          navigation.navigate("InputOTP", {
+            type: "LOGIN"
+          });
+        } else {
+          ToastAndroid.showWithGravity("Invalid username or password!", ToastAndroid.SHORT, ToastAndroid.CENTER)
         }
       });
     }
   }
 
   handleSecureText = () => {
-    if(this.state.secureText == true){
-        this.setState({ secureText: false })
-    }else{
-        this.setState({ secureText: true })
+    if (this.state.secureText == true) {
+      this.setState({ secureText: false })
+    } else {
+      this.setState({ secureText: true })
     }
   }
 
   render() {
     return (
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS == "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
-        enabled={Platform.OS === "ios" ? true : false}
-      >
-        <View style={styles.registerContainer}>
-          <Text>Don't have an account?</Text>
-          <TouchableOpacity
-            onPress={
-              () => this.props.navigation.navigate('InputPAN')
-            }  
-          >
-            <Text style={styles.registerText}> Register</Text>
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.welcomeText}>Welcome!</Text>
-        <Text style={styles.greet}>Great to see you</Text>
-        <View style={styles.usernameContainer}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <View style={styles.registerContainer}>
+            <Text>Don't have an account?</Text>
+            <TouchableOpacity
+              onPress={
+                () => this.props.navigation.navigate('InputPAN')
+              }
+            >
+              <Text style={styles.registerText}> Register</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.welcomeText}>Welcome!</Text>
+          <Text style={styles.greet}>Great to see you</Text>
+          <View style={styles.usernameContainer}>
             <Image style={styles.accountIcon} source={require('../../assets/icon-account.png')} />
             <View style={styles.usernameInputContainer}>
-            <FloatingInputLabel 
-              label={"User"}
-              hint="username"
-              value={this.state.username}
-              input={styles.input}
-              borderBottomColor={"#888888"}
-              borderBottomWidth={1}
-              onChangeText={(text) => this.setState({ username: text })}
-              autoCapitalize="none"
-            />
+              <FloatingInputLabel
+                label={"User"}
+                hint="username"
+                value={this.state.username}
+                input={styles.input}
+                borderBottomColor={"#888888"}
+                borderBottomWidth={1}
+                onChangeText={(text) => this.setState({ username: text })}
+                autoCapitalize="none"
+              />
             </View>
-        </View>
-        <View style={styles.usernameContainer}>
-          <Image style={styles.lockIcon} source={require('../../assets/icon-unlock.png')} />
-          <View style={styles.usernameInputContainer}>
-          <FloatingInputLabel 
-            label={"Password"}
-            secureTextEntry={this.state.secureText}
-            value={this.state.password}
-            input={styles.input}
-            borderBottomColor={"#888888"}
-            borderBottomWidth={1}
-            onChangeText={(text) => this.setState({ password: text })}
-            autoCapitalize="none"
-          />
           </View>
-          <TouchableOpacity style={styles.eyeIconContainer} onPress={this.handleSecureText}>
-            <Image style={styles.eyeIcon} source={require('../../assets/icon-eye.png')} />
+          <View style={styles.usernameContainer}>
+            <Image style={styles.lockIcon} source={require('../../assets/icon-password.png')} />
+            <View style={styles.usernameInputContainer}>
+              <FloatingInputLabel
+                label={"Password"}
+                secureTextEntry={this.state.secureText}
+                value={this.state.password}
+                input={styles.input}
+                borderBottomColor={"#888888"}
+                borderBottomWidth={1}
+                onChangeText={(text) => this.setState({ password: text })}
+                autoCapitalize="none"
+              />
+            </View>
+            <TouchableOpacity style={styles.eyeIconContainer} onPress={this.handleSecureText}>
+              <Image style={styles.eyeIcon} source={require('../../assets/icon-eye.png')} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.resetContainer}>
+            <Text>Have login problem?</Text>
+            <TouchableOpacity
+              onPress={
+                () => this.props.navigation.navigate('InputPAN')
+              }
+            >
+              <Text style={styles.resetText}> Reset password</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity onPress={this.handleLogin} style={styles.button}>
+            <Text style={styles.buttonText}>LOGIN</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.resetContainer}>
-          <Text>Have login problem?</Text>
-          <TouchableOpacity
-            onPress={
-              () => this.props.navigation.navigate('InputPAN')
-            }
-          >
-            <Text style={styles.resetText}> Reset password</Text>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity onPress={this.handleLogin} style={styles.button}>
-          <Text style={styles.buttonText}>LOG IN</Text>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
     );
   }
 };
@@ -127,14 +128,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
+  inner: {
+    flex: 1,
+    alignItems: "center",
+  },
   registerContainer: {
     flexDirection: 'row',
-    width: '90%',
+    justifyContent: "flex-end",
     marginVertical: 20,
-    justifyContent: 'flex-end'
+    marginRight: 35
   },
   registerText: {
-    color: "#C10000"
+    color: "#ff0066"
   },
   welcomeText: {
     fontWeight: 'bold',
@@ -146,31 +151,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginHorizontal: 30
   },
-  usernameContainer:{
+  usernameContainer: {
     flexDirection: 'row',
-    width: '90%',
-    marginHorizontal: 30,
+    marginHorizontal: 35,
     marginTop: 20,
     marginBottom: 10
   },
   usernameInputContainer: {
-    width: '85%'
+    flex: 1
   },
-  accountIcon:{
+  accountIcon: {
     width: 30,
     height: 30,
     marginVertical: 25,
     tintColor: 'gray'
   },
   lockIcon: {
-    width: 25,
-    height: 25,
-    marginVertical: 30,
+    width: 30,
+    height: 30,
+    marginVertical: 25,
     tintColor: 'gray'
   },
-  eyeIconContainer:{
+  eyeIconContainer: {
     position: 'absolute',
-    right: 30
+    right: 0
   },
   eyeIcon: {
     width: 25,
@@ -180,16 +184,16 @@ const styles = StyleSheet.create({
   },
   resetContainer: {
     flexDirection: 'row',
-    marginHorizontal: 50
+    justifyContent: "center"
   },
   resetText: {
-    color: "#C10000"
+    color: "#ff0066",
   },
   button: {
     width: '90%',
     position: 'absolute',
-    bottom : 20,
-    backgroundColor: "#C10000",
+    bottom: 20,
+    backgroundColor: "#ff0066",
     marginHorizontal: 20,
     borderRadius: 30
   },

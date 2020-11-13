@@ -1,9 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import RootNavigator from './Router';
+// import RootNavigator from './Router';
 import { handleSyncStorage } from './action/login/loginFunction'
 import Loading from './Loading';
+
+import RootNavigator from './NewRouter';
 
 class CounterApp extends React.Component {
 
@@ -29,4 +31,3 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps)(CounterApp);
-

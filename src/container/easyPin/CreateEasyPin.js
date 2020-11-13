@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         fontWeight: '500',
         flex: 1,
-        backgroundColor: '#C10000'
+        backgroundColor: '#ff0066'
     },
     labelContainer: {
         flexDirection: 'row',
