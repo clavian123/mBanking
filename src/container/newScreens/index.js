@@ -1,4 +1,5 @@
 import NewHome from "./NewHome";
 import NewBankAccount from "./NewBankAccount";
+import BankingSummary from "./BankingSummary";
 
-export { NewHome, NewBankAccount };
+export { NewHome, NewBankAccount, BankingSummary };

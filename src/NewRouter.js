@@ -12,6 +12,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   NewHome as NewHomeScreen,
   NewBankAccount as NewBankAccountScreen,
+  BankingSummary as BankingSummaryScreen,
+  BankingSummary
 } from "./container/newScreens";
 
 import LoginScreen from './container/Login';
@@ -169,6 +171,20 @@ class RootNavigator extends React.Component {
                         elevation: isEasyPinLogin ? 5 : 0
                       },
                       headerTintColor: "white"
+                    }}
+                  />
+
+
+                  
+                  {/* banking summary     */}
+                  <Stack.Screen
+                    component={isEasyPinLogin ?
+                      BankingSummaryScreen :
+                      EasyPinLoginScreen
+                    }
+                    name="BankingSummary"
+                    options={{
+                      headerTitle: "Banking Summary"
                     }}
                   />
 
