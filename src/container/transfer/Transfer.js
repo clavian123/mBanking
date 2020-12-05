@@ -12,29 +12,40 @@ import { TextInput, FlatList } from 'react-native-gesture-handler';
 
 import { connect } from 'react-redux';
 import AccountListItem from '../../component/AccountListItem';
-import { emptyAccountNumber, setDestinationAccountSuccess } from '../../action/transfer/transferAction';
-import {getListDest} from '../../action/transfer/transferFunction';
+
 import Loading from '../../Loading';
 
+import {
+  getTargetAccountList,
+  setTargetAccount
+} from '../../newFunction/transferFunction';
+
 class Transfer extends React.Component {
+
 
   constructor(props) {
     super(props);
     this.state = {
       accNumber: '',
       listDest: [],
+      searchList: [],
       buttonColor: '#FA8072',
       keyword: ''
     };
   }
 
-  loadData = () => {
-    const { cif_code } = this.props;
-    this.props.dispatch(getListDest(cif_code, ""));
+  async componentDidMount(){
+    const { navigation, deviceId } = this.props;
+    navigation.addListener('focus', async() => {
+      return this.setState({ listDest: await this.props.dispatch(getTargetAccountList(deviceId)), accNumber: '', buttonColor: '#FA8072' });
+    })
+    this.setState({ listDest: await this.props.dispatch(getTargetAccountList(deviceId)) })
   }
 
-  componentDidMount(){
-    this.loadData();
+  componentWillUnmount() {
+    this.setState = (listDest, callback)=>{
+      return;
+    };
   }
 
   handleChangeColor = () => {
@@ -46,26 +57,38 @@ class Transfer extends React.Component {
   }
 
   handleNextButton = () => {
-    const { navigation, listDest } = this.props;
+    const { navigation } = this.props;
+    const list = this.state.listDest;
     if(this.state.buttonColor == '#C10000'){
-      if(listDest.filter((item) => item.account_number == this.state.accNumber).length != 0) {
-        let acc = listDest.filter((item) => item.account_number == this.state.accNumber)[0];
-        this.props.dispatch(setDestinationAccountSuccess(acc.bank_detail.id, acc.bank_detail.network_code, acc.bank_detail.bank_name, acc.account_number, acc.name));
-        navigation.navigate('SetAmount');
+      if (list == undefined) {
+        if(list.filter((item) => item.account_number == this.state.accNumber).length != 0) {
+          let acc = listDest.filter((item) => item.account_number == this.state.accNumber)[0];
+          this.props.dispatch(setTargetAccount(acc.name, acc.account_number, acc.bank_name));
+          navigation.navigate('SetAmount', {
+            bankName: acc.bank_name
+          });
+        }
       } else {
-        this.props.dispatch(emptyAccountNumber());
         navigation.navigate('SelectPayee', {
           accNumber: this.state.accNumber,
           buttonColor: '#FA8072'
-        });
+        })
       }
     }
   }
 
-  handleSearch = () => {
-    const keyword = this.state.keyword;
-    const { cif_code } = this.props;
-    this.props.dispatch(getListDest(cif_code, keyword));
+  handleSearch = (text) => {
+      if(text != "") {
+        if( isNaN(text) ){
+          this.setState({ searchList: this.state.listDest.filter((item) => item.name.toUpperCase().includes(text.toUpperCase())) })
+        } else {
+          this.setState({ searchList: this.state.listDest.filter((item) => item.account_number.includes(text)) })
+        }
+      } 
+  }
+
+  refreshList = async(newList) => {
+    this.setState({ listDest: newList })
   }
 
   render() {
@@ -103,6 +126,7 @@ class Transfer extends React.Component {
             style={styles.textInputStyle}
             placeholder="Account number"
             keyboardType="numeric"
+            value={this.state.accNumber}
             onChangeText={(text) => this.setState({ accNumber: text }, this.handleChangeColor)}
           />
           <TouchableHighlight 
@@ -139,18 +163,22 @@ class Transfer extends React.Component {
           <TextInput 
             placeholder="Account number"
             style={styles.searchInput}
-            onChangeText={(text) => this.setState({ keyword: text }, this.handleSearch)}
+            onChangeText={(text) => { this.setState({ keyword: text }); this.handleSearch(text) } }
           />
         </View>
 
         <View style={styles.list}>
         <FlatList
-          data={this.props.listDest}
-          extraData={[this.props.listDest]}
+          data={this.state.keyword == '' ? this.state.listDest : this.state.searchList}
+          extraData={this.state}
+          onRefresh={true}
           renderItem={({item}) => (
-            <AccountListItem navigation={this.props.navigation} loadData={this.loadData} id={item.bank_detail.id} name={item.name} accNumber={item.account_number} bankCode={item.bank_detail.network_code} bankName={item.bank_detail.bank_name}/>
+            <AccountListItem navigation={this.props.navigation} refreshList={this.refreshList} name={item.name} accNumber={item.account_number} bankName={item.bank_name}/>
           )}
-          keyExtractor={item => item.id}
+          ListEmptyComponent={
+            <Text style={{ marginTop: 30, textAlign: 'center', color: 'grey' }}>Nothing to show</Text>
+          }
+          keyExtractor={item => item.account_number}
         />
         </View>
       </KeyboardAvoidingView>
@@ -235,11 +263,13 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
+  loading: state.loading.load,
+  deviceId: state.newLogin.deviceId,
+  
   cif_code: state.login.cif_code,
   easyPin: state.login.easyPin,
   listDest: state.transfer.listDest,
-  destAcc: state.transfer.destAcc,
-  loading: state.transfer.loading
+  destAcc: state.transfer.destAcc
 });
 
 export default connect(mapStateToProps)(Transfer);

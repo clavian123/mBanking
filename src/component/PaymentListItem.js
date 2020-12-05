@@ -5,12 +5,19 @@ import {
     Text,
     Image,
     TouchableOpacity,
-    ToastAndroid
+    ToastAndroid,
+    Animated
 } from 'react-native';
-import Swipeout from 'react-native-swipeout';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 import { connect } from 'react-redux';
-import { checkPaymentAccountNumber ,deleteTargetSubscriber, getTargetSubscriberList } from '../action/payment/paymentFunction';
+
+import {
+    setTargetSubscriber,
+    checkSubscriberExist,
+    inactiveTargetSubscriber,
+    getUserTargetSubscribers
+} from '../newFunction/paymentFunction'
 
 class PaymentListItem extends Component {
 
@@ -18,61 +25,66 @@ class PaymentListItem extends Component {
         super(props);
     }
 
-    handleClick = () => {
-        this.props.dispatch(checkPaymentAccountNumber(this.props.merchantCode, this.props.number)).then(() => {
-            this.props.navigation.navigate('PaymentSetAmount', {
-                phoneNumber: this.props.number,
-                merchant: this.props.merchantCode
-            });
+    handleClick = async() => {
+        if(this.props.merchant == "Tokopedia") {
+            let name = await this.props.dispatch(checkSubscriberExist(this.props.number));
+            if( name == "" ) {
+                ToastAndroid.show("This account didn't have bill", ToastAndroid.SHORT);
+            } else {
+                await this.props.dispatch(setTargetSubscriber(this.props.number, name, this.props.name));
+                this.props.navigation.navigate('PaymentSetAmount');
+            }
+        } else{
+            let name = await this.props.dispatch(checkSubscriberExist(this.props.number));
+            await this.props.dispatch(setTargetSubscriber(this.props.number, name, this.props.name));
+            this.props.navigation.navigate('PaymentSetAmount');
+        }
+    }
+
+    rightActions = (progress, dragX) => {
+        const scale = dragX.interpolate({
+            inputRange: [-100, 0],
+            outputRange: [1, 0]
         })
+        return (
+            <TouchableOpacity onPress={() => { this.handleDelete() } }>
+                <View style={styles.swipeContainer}>
+                    <Animated.Text style={{ ...styles.swipeText, transform: [{scale}] }}>
+                        Delete
+                    </Animated.Text>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+
+    handleDelete = async() => {
+        const { deviceId } = this.props;
+        await this.props.dispatch(inactiveTargetSubscriber(deviceId, this.props.number));
+        this.props.refreshList(await this.props.dispatch(getUserTargetSubscribers(deviceId, this.props.code)))
+        ToastAndroid.show("Target subscriber deleted", ToastAndroid.SHORT)
     }
 
     render(){
 
-        const swipeBtns = [
-            {
-                component: (
-                    <View style={styles.swipeContainer}>
-                        <Image style={{tintColor: 'white', height: 24, width: 24, resizeMode: 'stretch'}}source={require('../../assets/icon-trash.png')} />
-                    </View>
-                ),
-                marginVertical: 10,
-                backgroundColor: "red",
-                underlayColor: '#888888',
-                onPress: () => {
-                    const { cif_code } = this.props;
-                    this.props.dispatch(deleteTargetSubscriber(this.props.id)).then(() => {
-                        if( this.props.type == 'none'){
-                            this.props.dispatch(getTargetSubscriberList('', '', cif_code)).then(() => {
-                                ToastAndroid.show("Success", ToastAndroid.SHORT);
-                            })
-                        }else{
-                            this.props.dispatch(getTargetSubscriberList('', this.props.merchantCode, cif_code)).then(() => {
-                                ToastAndroid.show("Success", ToastAndroid.SHORT);
-                            })
-                        }
-                    })
-                }   
-            }
-        ]
-
         return(
-            <Swipeout 
-                style={{marginHorizontal: 0}}
-                right={swipeBtns}
-                autoClose={true}
-                backgroundColor="transparent"
-            >
-                <TouchableOpacity onPress={this.handleClick} style={styles.container}>
-                    <View style={styles.subscriberDetail}>
-                        <Text style={{fontSize: 15}}>{this.props.number}</Text>
+            <TouchableOpacity onPress={this.handleClick}>
+                <Swipeable renderRightActions={this.rightActions}>
+                    <View style={this.props.name != "" ? {...styles.container, paddingVertical: 10} : styles.container}>
+                        <View style={styles.subscriberDetail}>
+                            { this.props.name != "" ? 
+                            <Text style={{fontSize: 15}}>{this.props.name}</Text>
+                            :
+                            null
+                            }
+                            <Text style={this.props.name == "" ? {fontSize: 15} : {fontSize: 14}}>{this.props.number}</Text>
+                        </View>
+                        <View style={styles.merchantDetail}>
+                            <Text style={styles.textMerchant}>{this.props.merchant}</Text>
+                        </View>
+                        <Image style={styles.iconNext} source={require('../../assets/icon-next.png')}/>
                     </View>
-                    <View style={styles.merchantDetail}>
-                        <Text style={styles.textMerchant}>{this.props.merchant}</Text>
-                    </View>
-                    <Image style={styles.iconNext} source={require('../../assets/icon-next.png')}/>
-                </TouchableOpacity>
-            </Swipeout>
+                </Swipeable>
+            </TouchableOpacity>
         )
 
     }
@@ -85,12 +97,14 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: 'lightgrey',
         paddingVertical: 20,
+        justifyContent: 'center'
     },
     subscriberDetail: {
         width: '45%'
     },
     merchantDetail: {
-        width: '45%'
+        width: '45%',
+        justifyContent: 'center'
     },
     textMerchant: {
         fontSize: 14, 
@@ -108,15 +122,18 @@ const styles = StyleSheet.create({
     },
     swipeContainer: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
+        backgroundColor: 'red',
+        justifyContent: 'center'
+    },
+    swipeText: {
+        color: 'white',
+        paddingHorizontal: 10,
+        fontSize: 20
     }
 });
 
 const mapStateToProps = state => ({
-    cif_code: state.login.cif_code,
-    targetSubscriberList: state.payment.targetSubscriberList
+    deviceId: state.newLogin.deviceId
 })
 
 export default connect(mapStateToProps)(PaymentListItem);

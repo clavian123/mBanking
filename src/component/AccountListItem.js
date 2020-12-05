@@ -4,11 +4,20 @@ import {
     StyleSheet,
     Text,
     Image,
-    TouchableOpacity, ToastAndroid
+    TouchableOpacity, 
+    ToastAndroid,
+    Animated
 } from 'react-native'
-import Swipeout from 'react-native-swipeout'
-import { setDestinationAccount, deleteTargetAccount, getListDest } from '../action/transfer/transferFunction';
+
 import { connect } from 'react-redux';
+
+import {
+    setTargetAccount,
+    inactiveTargetAccount,
+    getTargetAccountList
+} from '../newFunction/transferFunction'
+
+import Swipeable from 'react-native-gesture-handler/Swipeable'
 
 class AccountListItem extends React.Component{
 
@@ -18,51 +27,52 @@ class AccountListItem extends React.Component{
 
     handleClick = () => {
         const { navigation } = this.props;
-        this.props.dispatch(setDestinationAccount(this.props.id, this.props.bankCode, this.props.bankName, this.props.accNumber, this.props.name));
-        navigation.navigate('SetAmount');
+        this.props.dispatch(setTargetAccount(this.props.name, this.props.accNumber, this.props.bankName));
+        navigation.navigate('SetAmount', {
+            bankName: this.props.bankName
+        });
+    }
+
+    rightActions = (progress, dragX) => {
+        const scale = dragX.interpolate({
+            inputRange: [-100, 0],
+            outputRange: [1, 0]
+        })
+        return (
+            <TouchableOpacity onPress={() => { this.handleDelete() } }>
+                <View style={styles.swipeContainer}>
+                    <Animated.Text style={{ ...styles.swipeText, transform: [{scale}] }}>
+                        Delete
+                    </Animated.Text>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+
+    handleDelete = async() => {
+        const { deviceId } = this.props;
+        await this.props.dispatch(inactiveTargetAccount(deviceId, this.props.bankName, this.props.accNumber));
+        this.props.refreshList(await this.props.dispatch(getTargetAccountList(deviceId)))
+        ToastAndroid.show('Target account deleted', ToastAndroid.SHORT)
     }
 
     render(){
 
-        const swipeBtns = [
-            {
-                component: (
-                    <View style={styles.swipeContainer}>
-                        <Image style={{tintColor: 'white', height: 25, width: 25, resizeMode: 'stretch'}}source={require('../../assets/icon-trash.png')} />
-                    </View>
-                ),
-                marginVertical: 10,
-                backgroundColor: "red",
-                underlayColor: '#888888',
-                onPress: () => {
-                    const { listDest, cif_code } = this.props;
-                    let acc = listDest.filter((item) => item.account_number == this.props.accNumber)[0];
-                    this.props.dispatch(deleteTargetAccount(acc.id)).then(() => {
-                        this.props.dispatch(getListDest(cif_code, ""));
-                        ToastAndroid.show('Success', ToastAndroid.SHORT);
-                    });
-                }   
-            }
-        ]
-
         return(
-            <Swipeout 
-                style={{marginHorizontal: 20}}
-                right={swipeBtns}
-                autoClose={true}
-                backgroundColor="transparent"
-            >
-                <TouchableOpacity onPress={this.handleClick} style={styles.container}>
-                    <View style={styles.accountDetail}>
-                        <Text style={{fontSize: 15}}>{this.props.name}</Text>
-                        <Text style={{fontSize: 14}}>{this.props.accNumber}</Text>
-                    </View>
-                    <View style={styles.bankDetail}>
-                        <Text style={styles.textBank} numberOfLines={2}>{this.props.bankName}</Text>
-                    </View>
-                    <Image style={styles.iconNext} source={require('../../assets/icon-next.png')}/>
-                </TouchableOpacity>
-            </Swipeout>
+            <TouchableOpacity onPress={this.handleClick}>
+                <Swipeable renderRightActions={this.rightActions}>
+                    <View style={styles.container} >
+                        <View style={styles.accountDetail}>
+                            <Text style={{fontSize: 15}}>{this.props.name}</Text>
+                            <Text style={{fontSize: 14}}>{this.props.accNumber}</Text>
+                        </View>
+                        <View style={styles.bankDetail}>
+                            <Text style={styles.textBank} numberOfLines={2}>{this.props.bankName}</Text>
+                        </View>
+                        <Image style={styles.iconNext} source={require('../../assets/icon-next.png')}/>
+                        </View>
+                </Swipeable>
+            </TouchableOpacity>
         )
     }
 
@@ -73,7 +83,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderBottomWidth: 1,
         borderBottomColor: 'lightgrey',
-        paddingVertical: 10
+        paddingVertical: 10,
+        marginHorizontal: 20
     },
     accountDetail: {
         width: '45%'
@@ -97,15 +108,18 @@ const styles = StyleSheet.create({
     },
     swipeContainer: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
+        backgroundColor: 'red',
+        justifyContent: 'center'
+    },
+    swipeText: {
+        color: 'white',
+        paddingHorizontal: 10,
+        fontSize: 20
     }
 });
 
 const mapStateToProps = state => ({
-    cif_code: state.login.cif_code,
-    listDest: state.transfer.listDest
+    deviceId: state.newLogin.deviceId
 });
 
 export default connect(mapStateToProps)(AccountListItem);

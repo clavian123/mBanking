@@ -10,27 +10,42 @@ import {
     ToastAndroid,
     Modal,
 } from 'react-native';
-import { numberWithDot } from '../../generalFunction';
+
 import { connect } from 'react-redux';
-import { setPaymentAmount } from '../../action/payment/paymentAction';
-import { getPaymentTransCharge } from '../../action/payment/paymentFunction';
+
+import {
+    formatCurrency
+} from '../../utils/index';
+
+import {
+    getBilledAmount,
+    setBillPaymentSourceAccount
+} from '../../newFunction/paymentFunction';
 
 class PaymentSetAmount extends Component {
 
     constructor(props){
         super(props)
         this.state={
-            amount: ''
+            amount: '',
+            billedAmount: '',
+            showingAmount: 0
         }
     }
 
-    componentDidMount(){
-        var billedAmount = this.props.amount;
-        if(billedAmount > 0) {
-            this.setState({
-                amount: billedAmount
-            })
+    async componentDidMount(){
+        let billed = await this.props.dispatch(getBilledAmount())
+        if( billed != 0 ) {
+            this.setState({ billedAmount: billed })
+            this.setState({ showingAmount: Number(billed).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")})
+            this.setState({ amount: billed })
         }
+    }
+
+    componentWillUnmount() {
+        this.setState = (billedAmount, callback)=>{
+            return;
+        };
     }
 
     handleSelectAccount = () => {
@@ -40,30 +55,30 @@ class PaymentSetAmount extends Component {
         });
     }
 
-    handleNext = () => {
-        const { route, navigation, sourceAcc, targetSubs} = this.props;
+    handleNext = async() => {
+        const { route, navigation } = this.props;
         const amount = this.state.amount;
         if(isNaN(amount)){
             ToastAndroid.show("Amount must be numeric", ToastAndroid.SHORT);
         }else if(amount < 20000){
             ToastAndroid.show("Amount must at least 20000", ToastAndroid.SHORT);
-        }else if(route.params.sourceAccBalance == null){
+        }else if(route.params == null){
             ToastAndroid.show("Please select your source account", ToastAndroid.SHORT);
-        }else if(parseInt(amount) > parseInt(sourceAcc.balance)){
+        }else if(amount > route.params.sourceAccBalance){
             ToastAndroid.show("Your balance is not enough", ToastAndroid.SHORT);
-        }else{                  
-            this.props.dispatch(getPaymentTransCharge(targetSubs.merchantCode, targetSubs.merchantName, targetSubs.accNumber, targetSubs.accName)).then((res) => {
-                navigation.navigate('PaymentConfirmation', {
-                    amount: amount
-                });
-            })
+        }else{ 
+            await this.props.dispatch(setBillPaymentSourceAccount(route.params.sourceAccNumber, route.params.sourceAccName, route.params.sourceAccBalance, amount));                 
+            navigation.navigate('PaymentConfirmation');
         }
+    }
+
+    handleAmount(target) {
+        this.setState({showingAmount: Number(target).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")})
     }
 
     render(){
 
-        const { params } = this.props.route;
-        var billedAmount = this.props.amount;   
+        const { params } = this.props.route; 
 
         return(
             <KeyboardAvoidingView style={styles.container} >
@@ -76,13 +91,16 @@ class PaymentSetAmount extends Component {
 
                 <View style={styles.amountInputContainer}>
                     <Text style={styles.rpInputText}>Rp</Text>
+                    <View style={styles.showingAmount}>
+                        <Text style={this.state.showingAmount == 0 ? {...styles.showingAmountText, color: "#888888"} : {...styles.showingAmountText, color: 'black'}}>{this.state.showingAmount}</Text> 
+                    </View>
                     <TextInput 
                         keyboardType={"numeric"}
                         style={styles.amountInput}
                         placeholder="0" 
-                        onChangeText={(amount) => this.setState({amount:amount})}
-                        defaultValue={billedAmount > 0 ? billedAmount.toString() : null}
-                        editable={billedAmount > 0 ? false : true}/>
+                        onChangeText={(amount) => this.setState({ amount: amount }, this.handleAmount(amount))}
+                        defaultValue={this.state.billedAmount > 0 ? this.state.billedAmount.toString() : null}
+                        editable={this.state.billedAmount > 0 ? false : true}/>
                     <Image style={styles.pencilIcon} source={require('../../../assets/icon-pencil.png')} />
                 </View>
 
@@ -101,12 +119,12 @@ class PaymentSetAmount extends Component {
                 </TouchableOpacity>
 
                 {
-                    params.sourceAccName ? 
-                    <View style={{...styles.sourceAccountDetailContainer, height: params ? null : 0}}>
+                    params ? 
+                    <View style={{...styles.sourceAccountDetailContainer, height: params.sourceAccName ? null : 0}}>
                         <Text style={styles.sourceAccountDetailTitle}>{params.sourceAccNumber}</Text>
                         <Text>{params.sourceAccName.toUpperCase()}</Text>
                         <Text>{params.sourceAccType}</Text>
-                        <Text style={{fontWeight: 'bold'}}>Balance: Rp {numberWithDot(params.sourceAccBalance)}</Text>
+                        <Text style={{fontWeight: 'bold'}}>Balance: {formatCurrency(params.sourceAccBalance)}</Text>
                     </View>
                     : null
                 }
@@ -166,7 +184,24 @@ const styles = StyleSheet.create({
         left: 10,
         alignSelf: 'center'
     },
+    showingAmount: {
+        position: 'absolute',
+        alignItems: 'center',
+        justifyContent: 'center',
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        borderWidth: 1,
+        borderColor: '#888888',
+        borderRadius: 5
+    },
+    showingAmountText: {
+        fontSize: 20,
+        fontWeight: 'bold'
+    },
     amountInput:{
+        opacity: 0,
         fontSize: 20,
         color: 'black',
         fontWeight: 'bold',
@@ -259,9 +294,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    sourceAcc: state.payment.sourceAcc,
-    amount: state.payment.amount,
-    targetSubs: state.payment.targetSubs,
+    
 })
 
 export default connect (mapStateToProps)(PaymentSetAmount);

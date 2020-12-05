@@ -3,19 +3,19 @@ export const merchants = [
     id: 1,
     iconSource: require("../../assets/icon-ovo.png"),
     label: "OVO",
-    code: "5374"
+    code: "1396"
   },
   {
     id: 2,
     iconSource: require("../../assets/icon-go-pay.jpg"),
-    label: "Go-Pay",
-    code: "2289"
+    label: "GO-PAY",
+    code: "5816"
   },
   {
     id: 3,
     iconSource: require("../../assets/icon-tokopedia.png"),
     label: "Tokopedia",
-    code: "4992"
+    code: "2136"
   },
   {
     id: 4,

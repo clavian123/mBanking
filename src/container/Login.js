@@ -5,16 +5,15 @@ import {
   Text,
   TouchableOpacity,
   View,
-  KeyboardAvoidingView,
   ToastAndroid,
   TouchableWithoutFeedback,
   Keyboard,
-  Dimensions,
-  ScrollView
+  Modal
 } from 'react-native';
+import Loading from '../Loading';
 import { connect } from 'react-redux';
 
-import { login, getLoginToken } from '../action/register/registerFunction';
+import { sendLoginOTP, usernameLogin } from '../newFunction/loginFunction';
 import FloatingInputLabel from '../component/FloatingInputLabel';
 
 class Login extends Component {
@@ -28,23 +27,20 @@ class Login extends Component {
     }
   }
 
-  handleLogin = () => {
+  handleLogin = async () => {
     const { navigation } = this.props;
     const { username, password } = this.state;
     if (username == '' || password == '') {
       alert("Please fill your Email and Password!");
     } else {
-      this.props.dispatch(login(username, password)).then(() => {
-        const { validateLogin, cif_code } = this.props;
-        if (validateLogin == true) {
-          this.props.dispatch(getLoginToken(cif_code))
-          navigation.navigate("InputOTP", {
-            type: "LOGIN"
-          });
-        } else {
-          ToastAndroid.showWithGravity("Invalid username or password!", ToastAndroid.SHORT, ToastAndroid.CENTER)
-        }
-      });
+      if(await this.props.dispatch(usernameLogin(username, password))) {
+        await this.props.dispatch(sendLoginOTP());
+        navigation.navigate('InputOTP', {
+          type: 'LOGIN'
+        });
+      } else {
+        ToastAndroid.showWithGravity("Invalid username or password!", ToastAndroid.SHORT, ToastAndroid.CENTER)
+      }
     }
   }
 
@@ -57,9 +53,20 @@ class Login extends Component {
   }
 
   render() {
+    const { loading } = this.props;
+
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
+
+          {
+            loading ?
+            <Modal transparent={true}>
+              <Loading transparent={true}/>
+            </Modal>
+            : null
+          }
+
           <View style={styles.registerContainer}>
             <Text>Don't have an account?</Text>
             <TouchableOpacity
@@ -126,7 +133,8 @@ class Login extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: 'white'
   },
   inner: {
     flex: 1,
@@ -206,6 +214,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
+  loading: state.loading.load,
   validateLogin: state.register.validateLogin,
   cif_code: state.register.cif_code
 });

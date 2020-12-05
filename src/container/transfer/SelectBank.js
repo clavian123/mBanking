@@ -10,7 +10,10 @@ import{
 import { TextInput, FlatList } from 'react-native-gesture-handler';
 import BankListItem from '../../component/BankListItem';
 import { connect } from 'react-redux';
-import { getBankList} from '../../action/transfer/transferFunction'
+
+import {
+    getBankList
+} from '../../newFunction/transferFunction';
 
 class SelectBank extends React.Component{
 
@@ -18,22 +21,22 @@ class SelectBank extends React.Component{
         super(props);
         this.state = {
             keyword: '',
-            bankList: []
-        };
+            bankList: [],
+            searchList: []
+        };    }
+
+    async componentDidMount(){
+        this.setState({ bankList : await this.props.dispatch(getBankList()) });
     }
 
-    componentDidMount(){
-        this.props.dispatch(getBankList(this.state.keyword)).then(() => {
-            const { bankList } = this.props;
-            this.setState({ bankList: bankList });
-        })
-    }
-
-    search = () => {
-        this.props.dispatch(getBankList(this.state.keyword)).then(() => {
-            const { bankList } = this.props;
-            this.setState({ bankList: bankList });
-        })
+    handleSearch = (text) => {
+        if(text != '') {
+            if(isNaN(text)) { 
+                this.setState({ searchList: this.state.bankList.filter((item) => item.bank_name.includes(text.toUpperCase())) })
+            } else {
+                this.setState({ searchList: this.state.bankList.filter((item) => item.bank_code.includes(text)) })
+            }
+        }
     }
 
     render(){
@@ -43,7 +46,7 @@ class SelectBank extends React.Component{
                     <TextInput
                         placeholder="Please input Bank name or code" 
                         style={styles.searchInput}
-                        onChangeText={(text) => this.setState({ keyword: text }, this.search)}
+                        onChangeText={(text) => { this.setState({ keyword: text }); this.handleSearch(text) }}
                     />
                     <Image style={styles.searchIcon} source={require('../../../assets/icon-search-headed-left.png')} />
                 </View>
@@ -55,15 +58,16 @@ class SelectBank extends React.Component{
                 </View>
 
                 <FlatList
-                    data={this.state.bankList}
+                    data={this.state.keyword == '' ? this.state.bankList : this.state.searchList}
+                    extraData={this.state}
                     renderItem={({item}) => (
-                        <BankListItem navigation={this.props.navigation} accNumber={this.props.route.params.accNumber} id={item.id} name={item.bank_name} code={item.network_code}/>
+                        <BankListItem navigation={this.props.navigation} accNumber={this.props.route.params.accNumber} name={item.bank_name} code={item.bank_code}/>
                     )}
+                    keyExtractor = {item => item.bank_name}
                 />
             </View>
         )
     }
-
 }
 
 const styles = StyleSheet.create({
@@ -108,6 +112,9 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
+    loading: state.loading.load,
+    deviceId: state.newLogin.deviceId,
+
     bankList: state.transfer.bankList,
     destAcc: state.transfer.destAcc
 });

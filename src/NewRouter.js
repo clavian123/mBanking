@@ -9,10 +9,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import {
-  NewHome as NewHomeScreen,
-  NewBankAccount as NewBankAccountScreen,
-} from "./container/newScreens";
+import NewHome2Screen from './container/newScreens/NewHome2/NewHome2Index'
+import NewBankAccount2Screen from './container/newScreens/NewBankAccount2/NewBankAccount2Index'
+import StatementScreen from './container/newScreens/Statement/StatementIndex'
+import StatementDetailScreen from './container/newScreens/StatementDetail/StatementDetailIndex'
 
 import LoginScreen from './container/Login';
 
@@ -98,12 +98,12 @@ const MainBottomTab = ({ isEasyPinLogin }) => {
               {route.name}
             </Text>
           );
-        },
+        }
       })}
     >
       <Tab.Screen
         name="Home"
-        component={NewHomeScreen}
+        component={NewHome2Screen}
       />
       <Tab.Screen
         name="Transfer"
@@ -157,7 +157,7 @@ class RootNavigator extends React.Component {
                   {/* bank account  */}
                   <Stack.Screen
                     component={isEasyPinLogin ?
-                      NewBankAccountScreen :
+                      NewBankAccount2Screen :
                       EasyPinLoginScreen
                     }
                     name="BankAccount"
@@ -171,8 +171,29 @@ class RootNavigator extends React.Component {
                       headerTintColor: "white"
                     }}
                   />
-
-
+                  <Stack.Screen
+                    component={StatementScreen}
+                    name={"Statement"}
+                    options={{
+                      headerTitle: "Last transaction",
+                      headerStyle: {
+                        backgroundColor: "#ff0066",
+                        elevation: 5
+                      },
+                      headerTintColor: "white"
+                    }}
+                  />
+                  <Stack.Screen
+                    component={StatementDetailScreen}
+                    name={"StatementDetail"}
+                    options={{
+                      headerTitle: "Last transaction",
+                      headerStyle: {
+                        backgroundColor: 'white',
+                        elevation: 5
+                      }
+                    }}
+                  />
 
                   {/* versatile screens   */}
                   <Stack.Screen
@@ -214,10 +235,15 @@ class RootNavigator extends React.Component {
 
                   {/* payment screen */}
                   <Stack.Screen
-                    component={SetPhoneNumberScreen}
+                    component={isEasyPinLogin ? SetPhoneNumberScreen : EasyPinLoginScreen}
                     name="SetPhoneNumber"
                     options={{
-                      headerTitle: "Pay / Top Up"
+                      headerTitle: isEasyPinLogin ? "Pay / Top Up" : "",
+                      headerStyle: {
+                        backgroundColor: isEasyPinLogin ?   "white" : "#ff0066",
+                        elevation: isEasyPinLogin ? 5 : 0
+                      },
+                      headerTintColor: isEasyPinLogin ? "black" : 'white'
                     }}
                   />
                   <Stack.Screen
@@ -392,8 +418,9 @@ class RootNavigator extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  isLogin: state.login.isLogin,
-  isEasyPinLogin: state.login.isEasyPinLogin
+  isLogin: state.newLogin.isLogin,
+  isEasyPinLogin: state.newLogin.isEasyPinLogin,
+  deviceId: state.newLogin.deviceId
 })
 
 export default connect(

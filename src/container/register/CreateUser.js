@@ -12,7 +12,11 @@ import {
 
 import { connect } from 'react-redux';
 import FloatingInputLabel from '../../component/FloatingInputLabel';
-import { checkUsername, createNewUser } from '../../action/register/registerFunction';
+
+import {
+    checkUsernameExist,
+    createNewUser
+} from '../../newFunction/registerFunction'
 
 class CreateUser extends Component{
 
@@ -31,24 +35,21 @@ class CreateUser extends Component{
         }
     }
 
-    validateUsername = () =>{
+    validateUsername = async() =>{
         const username = this.state.username;
-        this.props.dispatch(checkUsername(username)).then(() => {
-            const{ usernameExist } = this.props;
-            if( username.length < 8 ){
-                this.setState({ wrongUsername: "Username length must be longer than 8 characters" })
-                this.setState({ usernameBorderWidth: 2 })
-                this.setState({ usernameBorderColor: "#C10000" })
-            }else if( usernameExist == true ){
-                this.setState({ wrongUsername: "Username already taken" })
-                this.setState({ usernameBorderWidth: 2 })
-                this.setState({ usernameBorderColor: "#C10000" })
-            }else{
-                this.setState({ wrongUsername: "" })
-                this.setState({ usernameBorderWidth: 1 })
-                this.setState({ usernameBorderColor: "#888888" })
-            }
-        })
+        if( username.length < 8 ){
+            this.setState({ wrongUsername: "Username length must be longer than 8 characters" })
+            this.setState({ usernameBorderWidth: 2 })
+            this.setState({ usernameBorderColor: "#C10000" })
+        }else if( await this.props.dispatch(checkUsernameExist(username)) ){
+            this.setState({ wrongUsername: "Username already taken" })
+            this.setState({ usernameBorderWidth: 2 })
+            this.setState({ usernameBorderColor: "#C10000" })
+        }else{
+            this.setState({ wrongUsername: "" })
+            this.setState({ usernameBorderWidth: 1 })
+            this.setState({ usernameBorderColor: "#888888" })
+        }
     }
 
     validatePassword = () =>{
@@ -88,23 +89,20 @@ class CreateUser extends Component{
     handleContinue = () =>{
         if(this.state.wrongUsername == ""){
             if(this.state.wrongPassword == ""){
-                const { customerDummyId } = this.props;
                 const { navigation } = this.props;
-                this.props.dispatch(createNewUser(this.state.username, this.state.password, customerDummyId, "7")).then(() => {
-                    Alert.alert(
-                        "Your user is created",
-                        "One more step to go",
-                        [
-                            {
-                                text: "OK",
-                                onPress: () => {
-                                    navigation.navigate('CreateEasyPin');
-                                }
+                this.props.dispatch(createNewUser(this.state.username, this.state.password));
+                Alert.alert(
+                    "Your user is created",
+                    "One more step to go",
+                    [
+                        {
+                            text: "OK",
+                            onPress: () => {
+                                navigation.navigate('CreateEasyPin');
                             }
-                        ]
-                    );
-                })
-               
+                        }
+                    ]
+                );
             }else{
                 ToastAndroid.show(this.state.wrongPassword, ToastAndroid.SHORT);
             }

@@ -3,11 +3,15 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  Alert
 } from 'react-native';
+
 import { connect } from 'react-redux';
 
-import { handleLogout } from '../../action/login/loginFunction';
+import {
+  handleLogout
+} from '../../newFunction/loginFunction'
 
 class Account extends React.Component {
 
@@ -16,7 +20,21 @@ class Account extends React.Component {
   };
 
   handleLogout = () => {
-    this.props.dispatch(handleLogout());
+    const { deviceId } = this.props
+    Alert.alert(  
+      'Confirm Logout',  
+      'Are you sure ?',  
+      [  
+          {
+              text: 'Yes', 
+              onPress: () => this.props.dispatch(handleLogout(deviceId)) 
+          }, 
+          {  
+              text: 'No',  
+              style: 'cancel',  
+          }
+      ]  
+    );  
   }
 
   handleMenuClicked = (navigateTo) => {
@@ -67,4 +85,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect()(Account);
+const mapStateToProps = state => ({
+  deviceId: state.newLogin.deviceId
+})
+
+export default connect(mapStateToProps)(Account);

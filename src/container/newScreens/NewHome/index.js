@@ -6,7 +6,8 @@ import {
   Text,
   ToastAndroid,
   TouchableOpacity,
-  View
+  View,
+  Modal
 } from "react-native";
 import { connect } from "react-redux";
 
@@ -20,13 +21,22 @@ import * as payment from "../../../constants/payment";
 import iconStatistic from "../../../../assets/icon-statistic.png"
 
 import {
-  getBalance,
-  getStatements,
-  getCustomerData
-} from "../../../action/home/homeFunction";
+  linkUnlinkAccount,
+  getUserName
+} from "../../../newFunction/homeFunction";
+
 import {
   logoutEasyPin
-} from "../../../action/login/loginFunction";
+} from "../../../newFunction/loginFunction";
+
+import {
+  easyPinLogin
+} from "../../../newFunction/loginAction";
+
+import {
+  setMerchantCode
+} from "../../../newFunction/paymentFunction"
+
 import Loading from "../../../Loading";
 
 const flatListItem = [{ id: 1 }];
@@ -37,51 +47,44 @@ class NewHome extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      name: '',
       loading: false
     };
   };
 
 
-  componentDidMount = () => {
-    const { dispatch, cif_code } = this.props;
-
-    this.setLoading(true);
-
-    dispatch(getBalance(cif_code)).then(() => {
-      dispatch(getStatements(cif_code)).then(() => {
-        dispatch(getCustomerData(cif_code)).then(() => {
-          this.setLoading(false);
-        });
-      });
-    });
+  componentDidMount = async() => {
+    const { deviceId } = this.props;
+    this.props.dispatch(easyPinLogin(false));
+    this.props.dispatch(linkUnlinkAccount(deviceId));
+    this.setState({ name: await this.props.dispatch(getUserName(deviceId)) });
   };
+
+  componentWillUnmount() {
+    this.setState = (name, callback)=>{
+      return;
+    };
+  }
 
 
   handleLogoutEasyPin = () => {
     const { dispatch } = this.props;
-
     dispatch(logoutEasyPin());
   };
 
 
-  setLoading(status) {
-    this.setState({
-      loading: status
-    })
-  };
+  handleBankAccount = () => {
+    const { navigation } = this.props;
+    navigation.navigate("BankAccount");
+  }
 
 
-  navigateTo = (screen) => {
-    const { navigate } = this.props.navigation;
-    navigate(screen);
-  };
-
-
-  handlePayment = (merchant, code) => {
+  handlePayment = async(merchant, code) => {
     const { navigate } = this.props.navigation;
     if (code == "") {
       ToastAndroid.show("This service is unavailable right now", ToastAndroid.SHORT)
     } else {
+      await this.props.dispatch(setMerchantCode(code, merchant));
       navigate('SetPhoneNumber', {
         merchant: merchant,
         code: code
@@ -91,17 +94,20 @@ class NewHome extends React.Component {
 
 
   render() {
-    const { name, isEasyPinLogin } = this.props;
-    const { loading } = this.state;
-
-
-    if (loading || this.props.loading) {
-      return <Loading />;
-    };
-
+    const { loading, isEasyPinLogin } = this.props;
 
     return (
       <SafeAreaView style={styles.container}>
+
+        {
+          loading ?
+          <Modal transparent={true}>
+             <Loading transparent={true}/>
+          </Modal>
+          : null
+        }
+
+
         <FlatList
           data={flatListItem}
           keyExtractor={item => "key" + item.id}
@@ -110,7 +116,7 @@ class NewHome extends React.Component {
               <>
                 <View style={styles.header}>
                   <View style={styles.headerTitle}>
-                    <Text style={styles.headerTitleText}>RIAN KRISHANDI</Text>
+                    <Text style={styles.headerTitleText}>{this.state.name.toUpperCase()}</Text>
                     <View style={styles.headerTitleSub}>
                       <TouchableOpacity
                         activeOpacity={0.5}
@@ -157,7 +163,7 @@ class NewHome extends React.Component {
                     </TouchableOpacity>
                     <View style={styles.line} />
                     <TouchableOpacity
-                      onPress={() => this.navigateTo("BankAccount")}
+                      onPress={() => this.handleBankAccount()}
                       style={styles.headerCardMainButton}
                     >
                       <View style={styles.headerCardMainButtonSub}>
@@ -219,16 +225,10 @@ class NewHome extends React.Component {
 };
 
 const mapStateToProps = state => ({
-  isEasyPinLogin: state.login.isEasyPinLogin,
-  balance: state.home.balance,
-  statements: state.home.statements,
-  loading: state.home.loading,
-  name: state.login.name,
-  cif_code: state.login.cif_code,
-  isLogin: state.login.isLogin,
-  gender: state.home.gender,
-  email: state.home.email,
-  transactionRecommendation: state.home.transactionRecommendation
+  loading: state.loading.load,
+  isLogin: state.newLogin.isLogin,
+  isEasyPinLogin: state.newLogin.isEasyPinLogin,
+  deviceId: state.newLogin.deviceId
 })
 
 export default connect(mapStateToProps)(NewHome);

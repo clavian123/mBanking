@@ -7,33 +7,24 @@ import{
     Image
 } from 'react-native';
 
-import { setSendMethod } from '../action/transfer/transferAction';
 import { connect } from 'react-redux';
-import { numberWithDot } from '../generalFunction';
+
+import {
+    formatCurrency
+} from '../utils/index'
+
+import {
+    setTransferMethod
+} from '../newFunction/transferFunction'
 
 class MethodListItem extends React.Component{
 
     constructor(props){
         super(props);
         this.state = {
-            selected: false
-        }
-    }
-
-    renderRadioButton = () => {
-        const { sendMethod } = this.props;
-        if(sendMethod.id == this.props.id){
-            return(
-                <View>
-                    <Image style={styles.radioIcon} source={require('../../assets/icon-radio.png')}/>
-                </View>
-            ) 
-        }else{
-            return(
-                <View>
-                    <Image style={styles.dotIcon} source={require('../../assets/icon-dot.png')}/>
-                </View>
-            )
+            source: require('../../assets/icon-dot.png'),
+            style: styles.dotIcon,
+            key: '../../assets/icon-dot.png'
         }
     }
 
@@ -48,21 +39,40 @@ class MethodListItem extends React.Component{
             return (
                 <View style={styles.feeContainer}>
                     <Text style={styles.feeText}>Fee</Text>
-                    <Text>Rp {numberWithDot(this.props.fee)}</Text>
+                    <Text>{formatCurrency(this.props.fee)}</Text>
                 </View>
             )
         }
     }
 
-    onPress = () =>{
-        this.props.dispatch(setSendMethod(this.props.id, this.props.name, this.props.fee));
+    static getDerivedStateFromProps(props, state) {
+        if(props.selected === props.name) {
+            return {
+                source: require('../../assets/icon-radio.png'),
+                style: styles.radioIcon,
+                key: '../../assets/icon-radio.png'
+            }
+        } else {
+            return {
+                source: require('../../assets/icon-dot.png'),
+                style: styles.dotIcon,
+                key: '../../assets/icon-dot.png'
+            }
+        }
+    }
+
+    onPress = async(item) =>{
+        this.props.handleSelected(item);
+        await this.props.dispatch(setTransferMethod(this.props.name, this.props.fee));
     }
 
     render(){
         return(
-            <TouchableOpacity style={styles.container} onPress={this.onPress}>
-                {this.renderRadioButton()}
-                <Text style={styles.title}>{this.props.name}</Text>
+            <TouchableOpacity style={styles.container} onPress={() => this.onPress(this.props.name)}>
+                <View>
+                    <Image style={ this.state.style } source={this.state.source} key={this.state.key}/>
+                </View>
+                <Text numberOfLines={2} style={styles.title}>{this.props.description}</Text>
                 {this.renderFeeText(this.props.fee)}          
             </TouchableOpacity>
         )
@@ -92,7 +102,8 @@ const styles = StyleSheet.create({
     },  
     title:{
         fontSize: 17,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        width: '60%'
     },  
     feeContainer: {
         position: 'absolute',

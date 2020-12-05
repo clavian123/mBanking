@@ -5,15 +5,23 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  LayoutAnimation,
-  Modal,
+  LayoutAnimation
 } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { getPaymentToken, getTargetSubscriberList } from '../../action/payment/paymentFunction';
-import { numberWithDot } from '../../generalFunction';
-import { setPaymentAmount } from '../../action/payment/paymentAction';
-import moment from 'moment';
+
+import moment from 'moment'
+
 import { connect } from 'react-redux';
+
+import {
+  checkTargetSubscriberExist,
+  getBillPaymentConfirmation,
+  sendBillPaymentOtp
+} from '../../newFunction/paymentFunction';
+
+import {
+  formatCurrency
+} from '../../utils/index'
 
 class PaymentConfirmation extends Component {
 
@@ -21,12 +29,21 @@ class PaymentConfirmation extends Component {
     super(props)
     this.state = {
       isAmountDetailClicked: false,
+      confirmation: {
+        merchant_name: "",
+        amount: 0
+      }
     }
   }
 
-  componentDidMount() {
-    const { cif_code } = this.props;
-    this.props.dispatch(getTargetSubscriberList('', '', cif_code));
+  async componentDidMount() {
+    this.setState({ confirmation: await this.props.dispatch(getBillPaymentConfirmation()) })
+  }
+
+  componentWillUnmount() {
+    this.setState = (confirmation, callback)=>{
+      return;
+    };
   }
 
   handleAmountDetailClicked() {
@@ -40,13 +57,12 @@ class PaymentConfirmation extends Component {
     })
   }
 
-  handleConfirmPayment() {
-    const { navigation, cif_code, targetSubscriberList, targetSubs, route } = this.props;
-    this.props.dispatch(setPaymentAmount(route.params.amount));
-    if (targetSubscriberList.filter((item) => item.subscribernumber == targetSubs.accNumber && item.merchant_detail.code == targetSubs.merchantCode).length != 0) {
+  async handleConfirmPayment() {
+    const { navigation, deviceId } = this.props;
+    if( await this.props.dispatch(checkTargetSubscriberExist(deviceId)) ) {
       navigation.navigate('ValidateEasyPin', { flow: 'billpayment' });
     } else {
-      this.props.dispatch(getPaymentToken(cif_code, "BILLPAYMENT", route.params.amount, "IDR", targetSubs.accNumber, targetSubs.merchantName));
+      await this.props.dispatch(sendBillPaymentOtp(deviceId));
       navigation.navigate('InputTransactionOtp', {
         type: 'BILLPAYMENT'
       });
@@ -55,8 +71,7 @@ class PaymentConfirmation extends Component {
 
   render() {
     var date = moment().utcOffset('+07:00').format('dddd, DD MMM YYYY')
-    const { targetSubs, sourceAcc, route } = this.props
-    const { amount } = route.params
+
     return (
       <ScrollView style={styles.container}>
         <Text style={styles.header}>Pay / Purchase confirmation</Text>
@@ -64,7 +79,7 @@ class PaymentConfirmation extends Component {
         <View style={styles.amountContainer}>
           <View style={styles.amountTotalContainer}>
             <Text style={styles.currency}>Rp</Text>
-            <Text style={styles.amount}>{"Rp " + numberWithDot(parseInt(amount) + parseInt(targetSubs.bankCharge))}</Text>
+            <Text style={styles.amount}>{formatCurrency(this.state.confirmation.amount + this.state.confirmation.fee)}</Text>
             <TouchableOpacity style={styles.amountDetailButton} onPress={() => this.handleAmountDetailClicked()}>
               <Icon
                 name={this.state.isAmountDetailClicked ? "ios-remove-circle" : "ios-add-circle"}
@@ -80,11 +95,11 @@ class PaymentConfirmation extends Component {
           }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 5 }}>
               <Text>Amount</Text>
-              <Text>{"Rp " + numberWithDot(amount.toString())}</Text>
+              <Text>{formatCurrency(this.state.confirmation.amount)}</Text>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
               <Text>Fee</Text>
-              <Text>Rp {numberWithDot(targetSubs.bankCharge)}</Text>
+              <Text>{formatCurrency(this.state.confirmation.fee)}</Text>
             </View>
           </View>
         </View>
@@ -97,8 +112,8 @@ class PaymentConfirmation extends Component {
             type="entypo"
             iconStyle={styles.walletIcon}></Icon>
           <View>
-            <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{sourceAcc.accNumber}</Text>
-            <Text>{sourceAcc.fullName}</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{this.state.confirmation.source_account_number}</Text>
+            <Text>{this.state.confirmation.source_account_name}</Text>
             <Text>Tabunganku</Text>
           </View>
         </View>
@@ -115,8 +130,8 @@ class PaymentConfirmation extends Component {
             type="ionicon"
             iconStyle={styles.personIcon}></Icon>
           <View>
-            <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{targetSubs.accNumber}</Text>
-            <Text>{targetSubs.merchantName.toUpperCase()}</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{this.state.confirmation.target_subscriber_number}</Text>
+            <Text>{this.state.confirmation.merchant_name.toUpperCase()}</Text>
           </View>
         </View>
 
@@ -124,22 +139,22 @@ class PaymentConfirmation extends Component {
 
         <View style={styles.additionalInfo}>
           <Text style={styles.infoTitle}>Payment:</Text>
-          <Text style={styles.infoValue}>{targetSubs.merchantName}</Text>
+          <Text style={styles.infoValue}>{this.state.confirmation.merchant_name}</Text>
           <Text style={styles.infoTitle}>Payment Number:</Text>
-          <Text style={styles.infoValue}>{targetSubs.accNumber}</Text>
+          <Text style={styles.infoValue}>{this.state.confirmation.target_subscriber_number}</Text>
           <Text style={styles.infoTitle}>Name:</Text>
-          <Text style={styles.infoValue}>{targetSubs.merchantName + " " + targetSubs.accName}</Text>
+          <Text style={styles.infoValue}>{this.state.confirmation.target_subscriber_name}</Text>
           <Text style={styles.infoTitle}>Payment Amount:</Text>
-          <Text style={styles.infoValue}>Rp. {numberWithDot(targetSubs.bankCharge + parseInt(amount))}</Text>
+          <Text style={styles.infoValue}>{formatCurrency(this.state.confirmation.fee + this.state.confirmation.amount)}</Text>
           {
-            targetSubs.bankCharge > 0 ?
-              <Text style={styles.infoTitle}>Transaction fee Rp. {numberWithDot(targetSubs.bankCharge)} will be charged</Text>
+            this.state.confirmation.fee > 0 ?
+              <Text style={styles.infoTitle}>Transaction fee {formatCurrency(this.state.confirmation.fee)} will be charged</Text>
               : null
           }
 
 
           <Text style={styles.infoTitle}>Denomination Amount:</Text>
-          <Text style={styles.infoValue}>Rp. {numberWithDot(amount)}</Text>
+          <Text style={styles.infoValue}>{formatCurrency(this.state.confirmation.amount)}</Text>
         </View>
         <View style={styles.alertContainer}>
           <Icon
@@ -289,11 +304,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  cif_code: state.login.cif_code,
-  targetSubscriberList: state.payment.targetSubscriberList,
-  sourceAcc: state.payment.sourceAcc,
-  targetSubs: state.payment.targetSubs,
-  amount: state.payment.amount,
+  deviceId: state.newLogin.deviceId
 })
 
 export default connect(mapStateToProps)(PaymentConfirmation);

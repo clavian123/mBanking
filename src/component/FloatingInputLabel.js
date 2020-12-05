@@ -12,10 +12,10 @@ export default class FloatingInputLabel extends Component {
     };
   
     handleFocus = () => this.setState({ isFocused: true, placeholder: this.props.hint });
-    handleBlur = () => this.setState({ placeholder: "" }, this.handleNotNull);
+    handleBlur = () => { this.setState({ placeholder: "", isFocused: false }); this.handleNotNull(); }
 
     handleNotNull = () => {
-      if(this.props.value != null){
+      if(this.props.value != ""){
         this.setState({ isFocused: true })
       }else{
         this.setState({ isFocused: false })
@@ -29,7 +29,7 @@ export default class FloatingInputLabel extends Component {
         position: 'absolute',
         left: 0,
         top: !isFocused ? 27 : 0,
-        fontSize: !isFocused ? 14 : 14,
+        fontSize: !isFocused ? 15 : 14,
         color: !isFocused ? '#aaa' : '#000',
         paddingLeft: 5
       };
@@ -42,8 +42,8 @@ export default class FloatingInputLabel extends Component {
             {...props}
             placeholder={this.state.placeholder}
             style={{...this.props.input, borderBottomColor: this.props.borderBottomColor, borderBottomWidth: this.props.borderBottomWidth}}
-            onFocus={this.handleFocus}
-            onBlur={this.handleBlur}
+            onFocus={() => { this.handleFocus() }}
+            onBlur={() => { this.handleBlur() }}
           />
         </View>
       );

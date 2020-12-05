@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   TouchableOpacity,
@@ -23,6 +23,8 @@ const AccountTab = ({
         accounts={accounts}
         hideBalance={hideBalance}
         toggleHideBalance={toggleHideBalance}
+        showTransactions={showTransactions}
+        handleShowTransactions={handleShowTransactions}
       />
       <View style={styles.previousTransactions}>
         <View style={styles.previousTransactionsTitle}>
@@ -30,22 +32,24 @@ const AccountTab = ({
             Previous transactions
           </Text>
         </View>
+      </View>
+      <View>
         {
-          showTransactions ?
-            <View>
-              <TransactionList
-                transactions={transactions}
-              />
-              <TouchableOpacity style={styles.buttonSeeAllTransactions}>
-                <Text style={styles.buttonSeeAllTransactionsText}>See all transactions</Text>
+            showTransactions ?
+              <View>
+                <TransactionList
+                  transactions={transactions}
+                />
+                <TouchableOpacity style={styles.buttonSeeAllTransactions}>
+                  <Text style={styles.buttonSeeAllTransactionsText}>See all transactions</Text>
+                </TouchableOpacity>
+              </View> :
+              <TouchableOpacity
+                onPress={handleShowTransactions}
+                style={styles.buttonShowTransactions}
+              >
+                <Text style={styles.buttonShowTransactionsText}>Show transactions</Text>
               </TouchableOpacity>
-            </View> :
-            <TouchableOpacity
-              onPress={handleShowTransactions}
-              style={styles.buttonShowTransactions}
-            >
-              <Text style={styles.buttonShowTransactionsText}>Show transactions</Text>
-            </TouchableOpacity>
         }
       </View>
     </View>

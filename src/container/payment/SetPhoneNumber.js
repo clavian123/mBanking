@@ -8,12 +8,20 @@ import{
     TextInput, 
     TouchableOpacity,
     FlatList,
-    Modal
+    ToastAndroid
 } from 'react-native';
+
 import PaymentListItem from '../../component/PaymentListItem';
-import { checkPaymentAccountNumber, getTargetSubscriberList } from '../../action/payment/paymentFunction';
+
 import { connect } from 'react-redux';
-import Loading from '../../Loading';
+
+import { 
+    getUserTargetSubscribers,
+    checkSubscriberExist,
+    setTargetSubscriber
+} from '../../newFunction/paymentFunction'
+
+import FloatingInputLabel from '../../component/FloatingInputLabel';
 
 class SetPhoneNumber extends Component {
 
@@ -22,19 +30,23 @@ class SetPhoneNumber extends Component {
         this.state = {
           buttonColor: '#FA8072',
           phoneNumber: "",
+          alias: "",
           keyword: "",
+          subscriberList: [],
+          searchList: [],
           loading: false,
         };
     }
 
-    componentDidMount(){
-        const { cif_code, route } = this.props;
-        this.props.dispatch(getTargetSubscriberList("", route.params.code, cif_code));
+    async componentDidMount(){
+        const { deviceId, route } = this.props;
+        this.setState({ subscriberList: await this.props.dispatch(getUserTargetSubscribers(deviceId, route.params.code)) })
     }
 
     componentWillUnmount(){
-        const { cif_code } = this.props;
-        this.props.dispatch(getTargetSubscriberList("", "", cif_code));
+        this.setState = (subscriberList, callback)=>{
+            return;
+        };
     }
 
     handleChangeColor = () => {
@@ -45,41 +57,39 @@ class SetPhoneNumber extends Component {
         }
     }
 
-    handleNext = () => {
-        const { navigation, route } = this.props;
-        this.setState({loading: true})
+    handleNext = async() => {
+        const { navigation } = this.props;
+        let name = await this.props.dispatch(checkSubscriberExist(this.state.phoneNumber));
         if(this.state.phoneNumber.length >= 10){
-            this.props.dispatch(checkPaymentAccountNumber(route.params.code, this.state.phoneNumber)).then((res)=>{
-                this.setState({loading: false})
-                if(res){
-                    navigation.navigate('PaymentSetAmount', {
-                        phoneNumber: this.state.phoneNumber,
-                        merchant: route.params.merchant
-                    });
-                }
-            })
+            if( name != "" ) {
+                await this.props.dispatch(setTargetSubscriber(this.state.phoneNumber, name, this.state.alias));
+                navigation.navigate('PaymentSetAmount')
+            } else {
+                ToastAndroid.show('Phone number is not valid', ToastAndroid.SHORT)
+            }
         }
     }
 
-    handleSearch = () => {
-        const keyword = this.state.keyword;
-        const {cif_code, route} = this.props;
-        this.props.dispatch(getTargetSubscriberList(keyword, route.params.code, cif_code));
+    handleSearch = (text) => {
+        if(text != "") {
+            if(isNaN(text)) {
+                this.setState({ searchList: this.state.subscriberList.filter( (item) => item.name.toUpperCase().includes(text.toUpperCase()) ) })
+            } else {
+                this.setState({ searchList: this.state.subscriberList.filter( (item) => item.subscriber_number.includes(text) ) })
+            }
+        }
+    }
+
+    refreshList = (newList) => {
+        this.setState({ subscriberList: newList })
     }
 
     render(){
 
         const { route } = this.props;
-        const { loading } = this.state;
+
         return(
             <KeyboardAvoidingView style={styles.container} behavior={'height'}>
-                {
-                    loading ?
-                    <Modal transparent={true}>
-                        <Loading transparent={true}/>
-                    </Modal>
-                    : null
-                }
                 <View style={styles.labelContainer}>
                     <View style={styles.payIconContainer}>
                         <Image style={styles.payIcon} source={require('../../../assets/icon-pay.png')}/>
@@ -89,6 +99,7 @@ class SetPhoneNumber extends Component {
                         <Text style={styles.merchantText}>{route.params.merchant}</Text>
                     </View>
                 </View>
+
                 <View style={styles.phoneInputContainer}>
                     <View style={styles.phoneInputSubContainer}>
                         <TextInput 
@@ -103,6 +114,19 @@ class SetPhoneNumber extends Component {
                         <Image style={styles.nextIcon} source={require('../../../assets/icon-next.png')}/>
                     </TouchableOpacity>
                 </View>
+
+                <View style={styles.aliasInput}>
+                <FloatingInputLabel 
+                    label = {"Alias"}
+                    hint = {"Alias"}
+                    value = {this.state.alias}
+                    input = {{fontSize: 15}}
+                    borderBottomColor = {"#888888"}
+                    borderBottomWidth = {1}
+                    onChangeText = {(text) => this.setState({ alias: text })}
+                />
+                </View>
+
                 <View style={styles.viewOr}>
                     <View style={styles.viewLine} />
                     <Text style={{ color: 'grey', fontSize: 12, paddingHorizontal: 15 }}>OR</Text>
@@ -126,21 +150,21 @@ class SetPhoneNumber extends Component {
                     <TextInput 
                         placeholder="Biller name / Subscriber number"
                         style={styles.searchInput}
-                        onChangeText={(text) => this.setState({ keyword: text }, this.handleSearch)}
+                        onChangeText={(text) => { this.setState({ keyword: text }); this.handleSearch(text) } }
                     />
                 </View>
                 
                 <View style={styles.list}>
                     <FlatList
-                        data = {this.props.targetSubscriberList}
-                        extraData = {this.props.targetSubscriberList}
+                        data = { this.state.keyword == "" ? this.state.subscriberList : this.state.searchList }
+                        extraData = {this.state}
                         renderItem = {({item}) => (
-                            <PaymentListItem navigation={this.props.navigation} type={'byMerchant'} id={item.id} number={item.subscribernumber} merchant={item.merchant_detail.name} merchantCode={item.merchant_detail.code}/>
+                            <PaymentListItem navigation={this.props.navigation} refreshList={this.refreshList} code={route.params.code} name={item.name} number={item.subscriber_number} merchant={item.merchant_name}/>
                         )}
                         ListEmptyComponent={
                             <Text style={{ marginTop: 30, textAlign: 'center', color: 'grey' }}>Nothing to show</Text>
                         }
-                        keyExtractor={item => item.id}
+                        keyExtractor={item => item.subscriber_number}
                     />
                 </View>
 
@@ -223,6 +247,11 @@ const styles = StyleSheet.create({
         tintColor: 'white',
         alignSelf: 'center',
     },
+    aliasInput : {
+        marginHorizontal: 10,
+        width: "85%",
+        marginBottom: 20
+    },
     viewLine: {
         backgroundColor: 'grey',
         flex: 1,
@@ -265,10 +294,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    cif_code: state.login.cif_code,
-    targetSubscriberList: state.payment.targetSubscriberList,
-    loading: state.payment.loading,
-    amount: state.payment.amount,
+    deviceId: state.newLogin.deviceId
 })
 
 export default connect(mapStateToProps)(SetPhoneNumber);

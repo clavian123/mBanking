@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
 import {
   FlatList,
-  SafeAreaView,
-  Text,
-  View
+  SafeAreaView
 } from "react-native";
-import { connect } from "react-redux";
+import { 
+  connect
+} from "react-redux";
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
 
 import styles from "./style";
 import { getDeviceHeight, getDeviceWidth } from "../../../utils";
 import { Accordion, AccountTab, ComingSoon } from "../../../component/newComponents";
-import { accounts, transactions } from "../../../constants/bankAccountDummyData"
+
+import {
+  getAccountList, getAccountStatements
+} from '../../../newFunction/homeFunction';
 
 const deviceHeight = getDeviceHeight();
 const deviceWidth = getDeviceWidth();
@@ -20,18 +23,32 @@ const accountTabConstantHeight = 1 / 3 * deviceHeight + 2 * verticalSpace + 80;
 
 const flatListItem = [{ id: 1 }];
 
-const NewBankAccount = () => {
+const NewBankAccount = (props) => {
   const [focusTabIndex, setFocusTabIndex] = useState(0);
   const [showTransactions, setShowTransactions] = useState(false);
+  const [transactions, setTransactions] = useState([])
+  const [activeAccount, setActiveAccount] = useState('')
   const [countTransactions, setCountTransactions] = useState(transactions.length);
   const [tabViewHeight, setTabViewHeight] = useState(0);
   const [hideBalance, setHideBalance] = useState(false);
+  const [accountList, setAccountList] = useState([]);
 
   const handleShowTransactions = () => {
     setShowTransactions(true);
   }
 
+  async function getAccounts(deviceId) {
+    const accounts =  await props.dispatch(getAccountList(deviceId));
+    setActiveAccount(accounts[0].account_number)
+    const statement = await props.dispatch(getAccountStatements(activeAccount))
+    setTransactions(statement);
+    setAccountList(accounts);
+  }
+
   useEffect(() => {
+    const { deviceId } = props;
+    getAccounts(deviceId);
+    
     if (focusTabIndex == 0) {
       if (showTransactions) {
         setTabViewHeight(accountTabConstantHeight + 70 * countTransactions + verticalSpace / 2 + 19);
@@ -40,6 +57,11 @@ const NewBankAccount = () => {
       }
     } else {
       setTabViewHeight(251);
+    }
+
+    return function cleanup() {
+      setAccountList([])
+      setTransactions([])
     }
   }, [focusTabIndex, showTransactions, countTransactions, tabViewHeight]);
 
@@ -55,7 +77,7 @@ const NewBankAccount = () => {
         renderItem={({ item, index }) => {
           return (
             <>
-              <Accordion />
+              <Accordion accounts={accountList} />
               <ScrollableTabView
                 renderTabBar={() => <ScrollableTabBar />}
                 locked={true}
@@ -75,7 +97,7 @@ const NewBankAccount = () => {
               >
                 <AccountTab
                   tabLabel="Account"
-                  accounts={accounts}
+                  accounts={accountList}
                   transactions={transactions}
                   handleShowTransactions={handleShowTransactions}
                   showTransactions={showTransactions}
@@ -106,4 +128,8 @@ const NewBankAccount = () => {
   );
 };
 
-export default connect()(NewBankAccount);
+const mapStateToProps = state => ({
+  deviceId: state.newLogin.deviceId
+})
+
+export default connect(mapStateToProps)(NewBankAccount);

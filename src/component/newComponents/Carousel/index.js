@@ -6,7 +6,7 @@ import { getDeviceWidth } from "../../../utils";
 
 const width = getDeviceWidth();
 
-const Carousel = ({ accounts, hideBalance, toggleHideBalance }) => {
+const Carousel = ({ accounts, hideBalance, toggleHideBalance, showTransactions, handleShowTransactions }) => {
   const scrollX = new Animated.Value(0);
   let position = Animated.divide(scrollX, width);
 
@@ -27,6 +27,8 @@ const Carousel = ({ accounts, hideBalance, toggleHideBalance }) => {
             return (
               <CarouselItem
                 item={item}
+                showTransactions={showTransactions}
+                handleShowTransactions={handleShowTransactions}
                 hideBalance={hideBalance}
                 toggleHideBalance={toggleHideBalance}
               />

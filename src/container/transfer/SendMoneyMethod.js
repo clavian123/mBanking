@@ -8,38 +8,41 @@ import{
 }from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
-import { getMethodList } from '../../action/transfer/transferFunction';
+
 import MethodListItem from '../../component/MethodListItem';
+
+import {
+    setTransferMethod,
+    getTransferMethod
+} from '../../newFunction/transferFunction'
 
 class SendMoneyMethod extends Component{
 
     constructor(props){
         super(props);
         this.state = {
-            methodList: []
+            methodList: [],
+            selected: 'skn'
         }
     }
 
-    componentDidMount(){
-        this.props.dispatch(getMethodList()).then(() => {
-            const { methodList } = this.props;
-            for (let index = 0; index < methodList.length; index++) {
-                if(methodList[index].merchant_mode == "INBANK"){
-                    continue
-                }else{
-                    this.setState({methodList: [...this.state.methodList, methodList[index]]});
-                }
-            }
-        })
+    async componentDidMount(){
+        const { route } = this.props
+        this.setState({ methodList : await this.props.dispatch(getTransferMethod()) });
+        this.state.methodList.pop();
+        if(route.params.amount < 100000000) {
+            this.state.methodList.pop();
+        }
+        await this.props.dispatch(setTransferMethod('skn', 0));
+    }
+
+    handleSelected = (item) => {
+        this.setState({ selected: item })
     }
 
     handleNext = () => {
-        const { navigation, sendMethod } = this.props;
-        if(sendMethod == ''){
-            ToastAndroid.show("Please select a method", ToastAndroid.SHORT);
-        }else{
-            navigation.navigate('Confirmation');
-        }
+        const { navigation } = this.props;
+        navigation.navigate('Confirmation');
     }
 
     render(){
@@ -49,8 +52,9 @@ class SendMoneyMethod extends Component{
                 <FlatList 
                     data={this.state.methodList}
                     renderItem={({item}) => (
-                        <MethodListItem id={item.id} name={item.merchant_mode} fee={item.charge_amount} />
+                        <MethodListItem selected={this.state.selected} handleSelected={this.handleSelected} name={item.method_name} description={item.description} fee={item.fee} />
                     )}
+                    keyExtractor = { item => item.method_name }
                 />
                 <TouchableOpacity onPress={this.handleNext} style={styles.button}>
                     <Text style={styles.buttonText}>NEXT</Text>

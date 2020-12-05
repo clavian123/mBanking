@@ -11,37 +11,46 @@ import{
 import { Icon } from 'react-native-elements'
 import { connect } from 'react-redux';
 import { ScrollView } from 'react-native-gesture-handler';
-import { numberWithDot } from '../../generalFunction';
-import { getListDest } from '../../action/transfer/transferFunction';
-import { getBalance, getStatements,getTransactionRecommendation } from '../../action/home/homeFunction';
+
+import {
+    createFundTransfer
+} from '../../newFunction/transferFunction'
+
+import {
+    formatCurrency
+} from '../../utils/index'
 
 class TransactionDetail extends Component{
     constructor(props){
-        super(props)
+        super(props),
+        this.state = {
+            detail: {
+                total_amount_debited: 0,
+                amount: 0,
+                bank_charge: 0,
+                account_name: '',
+                account_number: '',
+                target_account_name: '',
+                target_bank_name: '',
+                target_account_number: '',
+                transfer_date: '',
+                transaction_reference_number: '',
+                message: ''
+            }
+        }
     }
 
-    componentDidMount(){
-        const { cif_code } = this.props;
-        this.props.dispatch(getBalance(cif_code)).then (() => {
-            this.props.dispatch(getStatements(cif_code)).then (() => {
-                console.log("Updated!");
-            })
-        })
+    async componentDidMount(){
+        const { deviceId } = this.props;
+        this.setState({ detail: await this.props.dispatch(createFundTransfer(deviceId)) })
     }
 
     handleClose(){
-        const { navigation, cif_code } = this.props;
-        this.props.dispatch(getListDest(cif_code, "")).then(() => {
-            this.props.dispatch(getTransactionRecommendation(cif_code)).then(() => {
-                navigation.popToTop();
-            })
-        })
-        
+        const { navigation } = this.props;
+        navigation.popToTop(); 
     }
 
-    render(){
-        const { transactionDetail, destAcc } = this.props
-        
+    render(){        
         var moment = require('moment');        
 
         return(
@@ -68,31 +77,31 @@ class TransactionDetail extends Component{
 
                 <View style={styles.amountContainer}>
                     <Text style={{color: 'grey'}}>TOTAL AMOUNT</Text>
-                    <Text style={styles.amount}>{"Rp. " + numberWithDot(transactionDetail.total_amount_debited)}</Text>
+                    <Text style={styles.amount}>{formatCurrency(this.state.detail.total_amount_debited)}</Text>
                 </View>
 
                 <View style={styles.paymentDetailContainer}>
                     <Text style={{color: 'grey'}}>PAYMENT DETAIL</Text>
                     <View style={styles.detailContainer}>
                         <Text>Amount</Text>
-                        <Text style={{fontWeight: 'bold'}}>{"Rp. " + numberWithDot(transactionDetail.amount)}</Text>
+                        <Text style={{fontWeight: 'bold'}}>{formatCurrency(this.state.detail.amount)}</Text>
                     </View>
                     <View style={styles.detailContainer}>
                         <Text>Fee (Skn)</Text>
-                        <Text style={{fontWeight: 'bold'}}>{"Rp. " + numberWithDot(transactionDetail.bank_charge)}</Text>
+                        <Text style={{fontWeight: 'bold'}}>{formatCurrency(this.state.detail.bank_charge)}</Text>
                     </View>
                 </View>
 
                 <View style={styles.fromContainer}>
                     <Text style={{color: 'grey'}}>FROM</Text>
-                    <Text style={{ marginTop: 5, fontWeight: 'bold' }}>{transactionDetail.account.account_name.toUpperCase()}</Text>
-                    <Text>{"SavingAccount " + transactionDetail.account.accountNumber}</Text>
+                    <Text style={{ marginTop: 5, fontWeight: 'bold' }}>{this.state.detail.account_name.toUpperCase()}</Text>
+                    <Text>{"SavingAccount " + this.state.detail.account_number}</Text>
                 </View>
 
                 <View style={styles.sentToContainer}>
                     <Text style={{color: 'grey'}}>TO</Text>
-                    <Text style={{marginTop: 5, fontWeight: 'bold'}}>{transactionDetail.target_account.name.toUpperCase()}</Text>
-                    <Text>{transactionDetail.target_bank.bank_name + " " + transactionDetail.target_account.account_number}</Text>
+                    <Text style={{marginTop: 5, fontWeight: 'bold'}}>{this.state.detail.target_account_name.toUpperCase()}</Text>
+                    <Text>{this.state.detail.target_bank_name + " " + this.state.detail.target_account_number}</Text>
                 </View>
 
                 <View style={styles.divider}></View>
@@ -101,15 +110,15 @@ class TransactionDetail extends Component{
                     <Text style={{color: 'grey'}}>TRANSACTION DETAIL</Text>
                     <View style={styles.transactionDetail}>
                         <Text>Date and Time</Text>
-                        <Text>{moment(transactionDetail.transfer_date).format('DD MMM YYYY, hh:mm A')}</Text>
+                        <Text>{moment(this.state.detail.transfer_date).format('DD MMM YYYY, hh:mm A')}</Text>
                     </View>
                     <View style={styles.transactionDetail}>
                         <Text>Transaction ID</Text>
-                        <Text>{transactionDetail.transaction_reference_number}</Text>
+                        <Text>{this.state.detail.transaction_reference_number}</Text>
                     </View>
                     <View style={styles.transactionDetail}>
                         <Text>Notes</Text>
-                        <Text>{transactionDetail.message}</Text>
+                        <Text>{this.state.detail.message==='' ? "-" : this.state.detail.message}</Text>
                     </View>
                 </View>
 
@@ -220,6 +229,8 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
+    deviceId: state.newLogin.deviceId,
+
     cif_code: state.login.cif_code,
     transactionDetail: state.transfer.transactionDetail,
     destAcc: state.transfer.destAcc,

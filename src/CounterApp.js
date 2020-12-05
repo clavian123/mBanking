@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 // import RootNavigator from './Router';
-import { handleSyncStorage } from './action/login/loginFunction'
+import { handleSyncStorage } from './newFunction/loginFunction'
 import Loading from './Loading';
 
 import RootNavigator from './NewRouter';
