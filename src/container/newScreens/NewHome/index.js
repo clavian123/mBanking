@@ -203,15 +203,22 @@ class NewHome extends React.Component {
                     }
                   </View>
                 </View>
-                <TouchableOpacity style={styles.bankingSummaryButton}>
+                <TouchableOpacity
+                  onPress={() => this.navigateTo("BankingSummary")}
+                  style={styles.bankingSummaryButton}
+                >
                   <View style={styles.bankingSummaryButtonSub}>
                     <Image
                       source={iconStatistic}
                       style={styles.bankingSummaryButtonImage}
                     />
                     <View style={styles.bankingSummaryButtonSub2}>
-                      <Text style={styles.bankingSummaryButtonTitleText}>Banking Summary</Text>
-                      <Text style={styles.bankingSummaryButtonDetailText}>Keep track of your financial activities</Text>
+                      <Text style={styles.bankingSummaryButtonTitleText}>
+                        Banking Summary
+                      </Text>
+                      <Text style={styles.bankingSummaryButtonDetailText}>
+                        Keep track of your financial activities
+                      </Text>
                     </View>
                   </View>
                 </TouchableOpacity>

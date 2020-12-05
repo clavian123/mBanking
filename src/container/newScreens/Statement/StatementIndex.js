@@ -168,6 +168,9 @@ class Statement extends React.Component {
                         renderItem = {({item}) => (
                             this.statementItem(item)
                         )}
+                        ListEmptyComponent = {
+                            <Text style={{ marginVertical: 30, textAlign: 'center', color: '#2F4F4F', fontSize: 15 }}>- Nothing to Show -</Text>
+                        }
                     />
                 </View>
                 <TouchableOpacity onPress={() => {this.displayFilterModal(true)}} style={styles.filterContainer}>

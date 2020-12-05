@@ -95,6 +95,9 @@ class LastTransaction extends React.Component {
                             renderItem={({item}) => (
                                 this.lastTransaction(item)
                             )}
+                            ListEmptyComponent={
+                                <Text style={{ marginVertical: 30, textAlign: 'center', color: '#2F4F4F', fontSize: 15 }}>- Nothing to Show -</Text>
+                            }
                         />
                         <TouchableOpacity onPress={() => {this.handleStatement()}} style={{marginBottom: 20}}>
                             <Text style={styles.buttonText}>See all transactions</Text>

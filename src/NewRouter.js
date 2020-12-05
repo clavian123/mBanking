@@ -13,6 +13,12 @@ import NewHome2Screen from './container/newScreens/NewHome2/NewHome2Index'
 import NewBankAccount2Screen from './container/newScreens/NewBankAccount2/NewBankAccount2Index'
 import StatementScreen from './container/newScreens/Statement/StatementIndex'
 import StatementDetailScreen from './container/newScreens/StatementDetail/StatementDetailIndex'
+import {
+  NewHome as NewHomeScreen,
+  NewBankAccount as NewBankAccountScreen,
+  BankingSummary as BankingSummaryScreen,
+  BankingSummary
+} from "./container/newScreens";
 
 import LoginScreen from './container/Login';
 
@@ -194,6 +200,28 @@ class RootNavigator extends React.Component {
                       }
                     }}
                   />
+
+
+                  
+                  {/* banking summary     */}
+                  <Stack.Screen
+                    component={isEasyPinLogin ?
+                      BankingSummaryScreen :
+                      EasyPinLoginScreen
+                    }
+                    name="BankingSummary"
+                    options={{
+                      headerTitle: isEasyPinLogin ?
+                        "Banking Summary" : "",
+                      headerStyle: {
+                        backgroundColor: "#ff0066",
+                        elevation: isEasyPinLogin ? 5 : 0
+                      },
+                      headerTintColor: "white"
+                    }}
+                  />
+
+
 
                   {/* versatile screens   */}
                   <Stack.Screen

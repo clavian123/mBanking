@@ -181,13 +181,15 @@ export default (
             backgroundColor: "red",
             paddingVertical: 10,
             alignItems: 'center',
-            borderRadius: 10
+            borderTopLeftRadius: 0,
+            borderTopRightRadius: 0,
+            borderBottomLeftRadius: 10,
+            borderBottomRightRadius: 10
         },
         cancelText: {
             fontSize: 16,
             color: 'white',
             fontWeight: 'bold',
-            
         }
     })
 )

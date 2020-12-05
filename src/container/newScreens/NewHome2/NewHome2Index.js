@@ -74,6 +74,11 @@ class NewHome2 extends React.Component {
         this.props.dispatch(logoutEasyPin());
     };    
 
+    handleBankSummary = () => {
+        const { navigation } = this.props
+        navigation.navigate("BankingSummary") 
+    }
+
     render() {
         const { loading, isEasyPinLogin } = this.props
 
@@ -120,7 +125,7 @@ class NewHome2 extends React.Component {
                         )}
                     />
                 </View>
-                <TouchableOpacity style={styles.bankingSummaryButton}>
+                <TouchableOpacity onPress={() => {this.handleBankSummary()}} style={styles.bankingSummaryButton}>
                   <View style={styles.bankingSummaryButtonSub}>
                     <Image
                       source={iconStatistic}

@@ -49,11 +49,15 @@ class EasyPinLogin extends Component {
           if(navigation.canGoBack()) {
             navigation.navigate("Home")
           }
+        } else if(this.props.route.name == 'BankingSummary') {
+          if(navigation.canGoBack()) {
+            navigation.navigate("Home")
+          }
         }
         Alert.alert("Your session has ended!", "Session ended", )
         clearInterval(activeInterval);
       } else {
-        
+
       }
     }, 60000)
   }
