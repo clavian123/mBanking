@@ -11,7 +11,6 @@ import {
 
 initialState = {
   isLogin: false,
-  easyPin: '',
   isEasyPinLogin: false,
   loading: false,
   error: null,

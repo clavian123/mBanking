@@ -5,12 +5,21 @@ import {
   View,
   Image,
   TouchableOpacity,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Modal
 } from 'react-native';
 
-import { checkPan, getRegisterToken } from '../../action/register/registerFunction';
 import { connect } from 'react-redux';
+
 import FloatingInputLabel from '../../component/FloatingInputLabel';
+
+import Loading from '../../Loading'
+
+import {
+  checkPanExist,
+  checkPanExistWithLoading,
+  sendRegisterOtp
+} from '../../newFunction/registerFunction'
 
 class InputPAN extends React.Component {
 
@@ -25,39 +34,37 @@ class InputPAN extends React.Component {
     };
   }
 
-  checkPan = () => {
-    this.props.dispatch(checkPan(this.state.pan)).then(()=>{
-      const { customerDummyId, cif_code } = this.props;
-      if(customerDummyId != null){
+  checkPan = async() => {
+    if(await this.props.dispatch(checkPanExist(this.state.pan))) {
         this.setState({isWrong : false})
         this.setState({buttonColor : '#C10000'})
         this.setState({borderColor : "#888888"})
         this.setState({borderWidth : 1})
-      }else{
+    } else {
         this.setState({borderWidth : 3})
         this.setState({buttonColor : '#FF6347'})
         this.setState({borderColor : "red"})
-      }
-    });
+    }
   }
 
-  handleContinue = () => {
-    const { customerDummyId, cif_code } = this.props;
-    if(customerDummyId != null){
-      this.setState({isWrong : false});
-      const { navigation } = this.props;
-      this.props.dispatch(getRegisterToken(cif_code));
-      navigation.navigate('InputOTP', {
-        type: "REGISTER"
-      });
-    }else{
-      this.setState({isWrong : true})
-      this.setState({borderColor : "#888888"})
-      this.setState({borderWidth : 1})
+  handleContinue = async() => {
+    if(await this.props.dispatch(checkPanExistWithLoading(this.state.pan))) {
+        this.setState({isWrong : false});
+        const { navigation } = this.props;
+        await this.props.dispatch(sendRegisterOtp());
+        navigation.navigate('InputOTP', {
+          type: "REGISTER"
+        });
+    } else{
+        this.setState({isWrong : true})
+        this.setState({borderColor : "#888888"})
+        this.setState({borderWidth : 1})
     }
   }
 
   render() {
+    const { loading } = this.props
+
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -65,6 +72,15 @@ class InputPAN extends React.Component {
         enabled={Platform.OS === "ios" ? true : false}
         style={styles.container}
       >
+
+        {
+            loading ?
+            <Modal transparent={true}>
+                <Loading transparent={true}/>
+            </Modal>
+            : null
+        }
+
         <Text style={styles.label}>
           {`As a start, help us to identify you`}
         </Text>
@@ -164,8 +180,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  customerDummyId: state.register.customerDummyId,
-  cif_code: state.register.cif_code
+  loading: state.loading.load
 });
 
 export default connect(mapStateToProps)(InputPAN);

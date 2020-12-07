@@ -11,9 +11,16 @@ import{
     KeyboardAvoidingView
 }from 'react-native';
 
-import { numberWithDot } from '../../generalFunction';
+import {
+    formatCurrency
+} from '../../utils/index';
+
 import { connect } from 'react-redux';
-import { setTransferAmount, setTransferNote, clearSendMethod } from '../../action/transfer/transferAction';
+
+import {
+    setTransferSourceAccount,
+    setTransferMethod
+} from '../../newFunction/transferFunction';
 
 class SetAmount extends React.Component{
 
@@ -21,6 +28,7 @@ class SetAmount extends React.Component{
         super(props)
         this.state={
             amount: '',
+            showingAmount: 0,
             description: ''
         }
     }
@@ -32,32 +40,40 @@ class SetAmount extends React.Component{
         });
     }
 
-    handleNext = () => {
-        this.props.dispatch(clearSendMethod());
-        const { navigation, destAcc, sourceAcc, route, note } = this.props;
+    handleNext = async() => {
+        const { navigation, route } = this.props;
         const amount = this.state.amount;
         if(isNaN(amount)){
             ToastAndroid.show("Amount must be numeric", ToastAndroid.SHORT);
         }else if(amount < 1000){
             ToastAndroid.show("Amount must more than 1000", ToastAndroid.SHORT);
-        }else if(route.params == null){
+        }else if(route.params.sourceAccName == null){
             ToastAndroid.show("Please select your source account", ToastAndroid.SHORT);
-        }else if(parseInt(amount) > parseInt(sourceAcc.balance)){
+        }else if(parseInt(amount) > parseInt(route.params.sourceAccountBalance)){
             ToastAndroid.show("Your balance is not enough", ToastAndroid.SHORT);
         }else{
-            this.props.dispatch(setTransferAmount(parseFloat(this.state.amount)));
-            this.props.dispatch(setTransferNote(this.state.description));
-            if(destAcc.bankCode == '153'){    
+            await this.props.dispatch(setTransferSourceAccount(
+                route.params.sourceAccNumber, route.params.sourceAccName, 
+                route.params.sourceAccBalance, amount, this.state.description
+                ));
+            if(route.params.bankName === 'PT. BANK SINARMAS, TBK.' || route.params.bankName === 'PT. BANK SINARMAS, TBK. UUS'){ 
+                await this.props.dispatch(setTransferMethod("inbank", 0));
                 navigation.navigate('Confirmation');
             }else{
-                navigation.navigate('SendMoneyMethod');
+                navigation.navigate('SendMoneyMethod', {
+                    amount: this.state.amount
+                });
             }
         }
     }
 
+    handleAmount(target) {
+        this.setState({showingAmount: Number(target).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")})
+    }
+
     render(){
 
-        const { params } = this.props.route
+        const { route } = this.props
 
         return(
             <ScrollView style={styles.container}>
@@ -75,11 +91,13 @@ class SetAmount extends React.Component{
 
                 <View style={styles.amountInputContainer}>
                     <Text style={styles.rpInputText}>Rp</Text>
+                    <View style={styles.showingAmount}>
+                        <Text style={this.state.showingAmount == 0 ? {...styles.showingAmountText, color: "#888888"} : {...styles.showingAmountText, color: 'black'}}>{this.state.showingAmount}</Text> 
+                    </View>
                     <TextInput 
                         keyboardType={"numeric"}
                         style={styles.amountInput}
-                        placeholder="0" 
-                        onChangeText={(amount) => this.setState({amount:amount})}/>
+                        onChangeText={(amount) => this.setState({ amount: amount }, this.handleAmount(amount))}/>
                     <Image style={styles.pencilIcon} source={require('../../../assets/icon-pencil.png')} />
                 </View>
 
@@ -98,12 +116,12 @@ class SetAmount extends React.Component{
                 </TouchableOpacity>
 
                 {
-                    params ? 
-                    <View style={{...styles.sourceAccountDetailContainer, height: params ? null : 0}}>
-                        <Text style={styles.sourceAccountDetailTitle}>{params.sourceAccNumber}</Text>
-                        <Text>{params.sourceAccName.toUpperCase()}</Text>
-                        <Text>{params.sourceAccType}</Text>
-                        <Text style={{fontWeight: 'bold'}}>Balance: Rp {numberWithDot(params.sourceAccBalance)}</Text>
+                    route.params.sourceAccName ? 
+                    <View style={{...styles.sourceAccountDetailContainer, height: route.params.sourceAccName ? null : 0}}>
+                        <Text style={styles.sourceAccountDetailTitle}>{route.params.sourceAccNumber}</Text>
+                        <Text>{route.params.sourceAccName.toUpperCase()}</Text>
+                        <Text>{route.params.sourceAccType}</Text>
+                        <Text style={{fontWeight: 'bold'}}>Balance: {formatCurrency(route.params.sourceAccBalance)}</Text>
                     </View>
                     : null
                 }
@@ -170,8 +188,25 @@ const styles = StyleSheet.create({
         left: 10,
         alignSelf: 'center'
     },
+    showingAmount: {
+        position: 'absolute',
+        alignItems: 'center',
+        justifyContent: 'center',
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        borderWidth: 1,
+        borderColor: '#888888',
+        borderRadius: 5
+    },
+    showingAmountText: {
+        fontSize: 20,
+        fontWeight: 'bold'
+    },
     amountInput:{
         fontSize: 20,
+        opacity: 0,
         fontWeight: 'bold',
         textAlign: 'center',
         width: '100%',
@@ -269,8 +304,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    sourceAcc: state.transfer.sourceAcc,
-    destAcc: state.transfer.destAcc
+    
 })
 
 export default connect(mapStateToProps)(SetAmount);

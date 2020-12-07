@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import {
   View,
   Text,
@@ -7,12 +8,22 @@ import {
   Image,
   TextInput,
   ToastAndroid,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Modal
 } from 'react-native';
 
+import DeviceInfo from 'react-native-device-info';
+
+import Loading from '../../Loading';
+
 import { connect } from 'react-redux';
-import { skipEasypinLogin } from '../../action/register/registerAction'
-import { handleLogin, loginEasyPin } from '../../action/login/loginFunction'
+
+import { 
+  checkUserLogin,
+  createUserLogin,
+  handleLogin,
+  loginEasyPin
+} from '../../newFunction/loginFunction';
 
 class ConfirmEasyPin extends Component {
 
@@ -23,20 +34,26 @@ class ConfirmEasyPin extends Component {
     }
   }
 
-  handleContinue = () => {
+  handleContinue = async() => {
     const confirmEasyPin = this.state.confirmEasyPin;
-    const { route, cif_code, name, email } = this.props;
+    const { route } = this.props;
     const { easyPin } = route.params;
+    const deviceId = DeviceInfo.getUniqueId();
     if (confirmEasyPin != easyPin) {
-      ToastAndroid.show("Please enter a valid EasyPIN", ToastAndroid.SHORT);
+      ToastAndroid.showWithGravity("Please enter a valid EasyPIN", ToastAndroid.SHORT, ToastAndroid.CENTER);
     } else {
-      this.props.dispatch(handleLogin(name, cif_code, confirmEasyPin, email));
-      // this.props.dispatch(skipEasypinLogin(true));
-      this.props.dispatch(loginEasyPin());
+      if(await this.props.dispatch(checkUserLogin())) {
+        ToastAndroid.showWithGravity("This username has logged in other device", ToastAndroid.SHORT, ToastAndroid.CENTER);
+      } else {
+        await this.props.dispatch(createUserLogin(deviceId, easyPin));
+        await this.props.dispatch(handleLogin(deviceId));
+      }
     }
   }
 
   render() {
+    const { loading } = this.props;
+
     return (
       <KeyboardAvoidingView
         style={styles.container}
@@ -44,6 +61,15 @@ class ConfirmEasyPin extends Component {
         keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
         enabled={Platform.OS === "ios" ? true : false}
       >
+
+        {
+            loading ? 
+            <Modal transparent={true}>
+                <Loading transparent={true}/>
+            </Modal>
+            : null
+        }
+
         <View style={styles.labelContainer}>
           <Text style={styles.labelText}>
             <Text>Confirm </Text>
@@ -134,6 +160,8 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
+  loading: state.loading.load,
+
   cif_code: state.register.cif_code,
   name: state.register.name,
   email: state.register.email

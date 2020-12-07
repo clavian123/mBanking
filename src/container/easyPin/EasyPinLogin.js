@@ -12,7 +12,12 @@ import {
 } from 'react-native';
 
 import { connect } from 'react-redux';
-import { handleLogout, loginEasyPin } from '../../action/login/loginFunction';
+
+import { 
+  validateEasyPinLogin, 
+  loginEasyPin, 
+  handleLogout 
+} from '../../newFunction/loginFunction';
 
 class EasyPinLogin extends Component {
 
@@ -23,20 +28,55 @@ class EasyPinLogin extends Component {
     }
   }
 
-  handleContinue = () => {
-    const { easyPin } = this.props;
-    if (this.state.pin != easyPin) {
+  intervalValidate = () => {
+    const{ deviceId } = this.props;
+    const activeInterval = setInterval(async() => {
+      if(!await this.props.dispatch(validateEasyPinLogin(deviceId))){
+        const { navigation } = this.props;
+        if(this.props.route.name == 'Transfer'){
+          if(navigation.canGoBack()) {
+            navigation.navigate("Home")
+          }
+        } else if(this.props.route.name == 'Account') {
+          if(navigation.canGoBack()) {
+            navigation.navigate("Home")
+          }
+        } else if(this.props.route.name == "BankAccount") {
+          if(navigation.canGoBack()) {
+            navigation.navigate("Home")
+          }
+        }else if(this.props.route.name == 'SetPhoneNumber') {
+          if(navigation.canGoBack()) {
+            navigation.navigate("Home")
+          }
+        } else if(this.props.route.name == 'BankingSummary') {
+          if(navigation.canGoBack()) {
+            navigation.navigate("Home")
+          }
+        }
+        Alert.alert("Your session has ended!", "Session ended", )
+        clearInterval(activeInterval);
+      } else {
+
+      }
+    }, 60000)
+  }
+
+  handleContinue = async() => {
+    const { deviceId } = this.props;
+    if(!await this.props.dispatch(loginEasyPin(deviceId, this.state.pin))){
       ToastAndroid.showWithGravity(
         "Please enter a valid EasyPIN",
         ToastAndroid.SHORT,
         ToastAndroid.CENTER
       );
     } else {
-      this.props.dispatch(loginEasyPin());
+      this.intervalValidate();
     }
   }
 
   resetEasyPin = () => {
+    const { deviceId } = this.props;
     Alert.alert(
       "Clear Mobile Banking Data",
       "Thiw will clear Mobile Banking data on your device, are you sure?",
@@ -44,7 +84,7 @@ class EasyPinLogin extends Component {
         {
           text: "YES, CLEAR NOW",
           onPress: () => {
-            this.props.dispatch(handleLogout());
+            this.props.dispatch(handleLogout(deviceId));
           }
         },
         {
@@ -159,6 +199,10 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
+  loading: state.loading.load,
+  deviceId: state.newLogin.deviceId,
+  isEasyPinLogin: state.newLogin.isEasyPinLogin,
+
   easyPin: state.login.easyPin,
   skip: state.register.skip
 });

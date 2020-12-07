@@ -9,9 +9,16 @@ import{
 }from 'react-native';
 
 import { numberWithDot } from '../generalFunction';
-import { setSourceAccount } from '../action/transfer/transferFunction';
-import { setPaymentSourceAccount } from '../action/payment/paymentAction';
+
+import {
+    formatCurrency
+} from '../utils/index';
+
 import { connect } from 'react-redux';
+
+import {
+    getTargetAccount
+} from '../newFunction/transferFunction';
 
 class SourceAccountListItem extends React.Component{
 
@@ -19,11 +26,10 @@ class SourceAccountListItem extends React.Component{
         super(props);
     }
 
-    handleAccountClicked(){
-        const { navigation, destAcc } = this.props
+    async handleAccountClicked(){
+        const { navigation } = this.props
 
         if(this.props.transactionType === "Billpayment"){
-            this.props.dispatch(setPaymentSourceAccount(this.props.number, this.props.name, this.props.balance))
             navigation.navigate("PaymentSetAmount", {
                 sourceAccNumber: this.props.number,
                 sourceAccName: this.props.name,
@@ -31,10 +37,9 @@ class SourceAccountListItem extends React.Component{
                 sourceAccBalance: this.props.balance
             });
         }else{
-            if(destAcc.accNumber == this.props.number){
+            if(await this.props.dispatch(getTargetAccount()) == this.props.number){
                 ToastAndroid.show("You can't transfer to the same account", ToastAndroid.SHORT);
             } else {
-                this.props.dispatch(setSourceAccount(this.props.number, this.props.name, this.props.balance))
                 navigation.navigate("SetAmount", {
                     sourceAccNumber: this.props.number,
                     sourceAccName: this.props.name,
@@ -54,7 +59,8 @@ class SourceAccountListItem extends React.Component{
                     <Text sytle={styles.numberText}>{this.props.number}</Text>
                     <Text style={styles.typeText}>{this.props.type}</Text>
                     <Text style={styles.nameText}>{this.props.name}</Text>
-                    <Text style={styles.balanceText}>Available balance Rp {numberWithDot(this.props.balance)}</Text>
+                    <Text style={styles.balanceText}>Available balance</Text>
+                    <Text style={styles.balanceText}>{formatCurrency(this.props.balance)}</Text>
                 </View> 
                 <Image style={styles.nextIcon} source={require('../../assets/icon-next.png')}/>
             </TouchableOpacity>
@@ -104,8 +110,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    sourceAcc: state.transfer.sourceAcc,
-    destAcc: state.transfer.destAcc
+    
 })
 
 export default connect(mapStateToProps)(SourceAccountListItem);

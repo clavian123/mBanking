@@ -2,49 +2,48 @@ import React, { Component } from 'react';
 import{
     View,
     Text,
-    TouchableOpacity,
-    StyleSheet,
-    Image,
-    TextInput,
-    ToastAndroid
+    StyleSheet
 }from 'react-native';
 import { Icon } from 'react-native-elements'
 import { connect } from 'react-redux';
 import { ScrollView } from 'react-native-gesture-handler';
-import { numberWithDot } from '../../generalFunction';
-import { getListDest } from '../../action/transfer/transferFunction';
-import { getBalance, getStatements, getTransactionRecommendation } from '../../action/home/homeFunction';
-import { getTargetSubscriberList } from '../../action/payment/paymentFunction';
+
+import {
+    formatCurrency
+} from '../../utils/index'
+
+import {
+    createBillPaymentTransaction,
+    inactiveAccount
+} from '../../newFunction/paymentFunction'
 
 class PaymentDetail extends Component{
     constructor(props){
         super(props)
+        this.state = {
+            detail: {
+                debited_account_name: ''
+            }
+        }
     }
 
-    componentDidMount(){
-        const { cif_code } = this.props;
-        this.props.dispatch(getBalance(cif_code)).then (() => {
-            this.props.dispatch(getStatements(cif_code)).then (() => {
-                console.log("Updated!");
-            })
-        })
+    async componentDidMount(){
+        const { deviceId } = this.props;
+        this.setState({ detail: await this.props.dispatch(createBillPaymentTransaction(deviceId)) })
+    }
+    
+    componentWillUnmount() {
+        this.setState = (detail, callback)=>{
+            return;
+        };
     }
 
     handleClose(){
-        const { navigation, cif_code } = this.props;
-        this.props.dispatch(getListDest(cif_code, "")).then(() => {
-            this.props.dispatch(getTargetSubscriberList("", "", cif_code)).then(() => {
-                this.props.dispatch(getTransactionRecommendation(cif_code)).then(() => {
-                    navigation.popToTop();
-                })
-            })
-        })
-        
+        const { navigation } = this.props;
+        navigation.popToTop();
     }
 
     render(){
-        const { transactionDetail, destAcc } = this.props
-        
         var moment = require('moment');        
 
         return(
@@ -69,31 +68,31 @@ class PaymentDetail extends Component{
 
                 <View style={styles.amountContainer}>
                     <Text style={{color: 'grey'}}>TOTAL AMOUNT</Text>
-                    <Text style={styles.amount}>{"Rp. " + numberWithDot(transactionDetail.total_amount_debited)}</Text>
+                    <Text style={styles.amount}>{formatCurrency(this.state.detail.total_amount_debited)}</Text>
                 </View>
 
                 <View style={styles.paymentDetailContainer}>
                     <Text style={{color: 'grey'}}>PAYMENT DETAIL</Text>
                     <View style={styles.detailContainer}>
                         <Text>Amount</Text>
-                        <Text style={{fontWeight: 'bold'}}>{"Rp. " + numberWithDot(transactionDetail.payment_amount)}</Text>
+                        <Text style={{fontWeight: 'bold'}}>{formatCurrency(this.state.detail.amount)}</Text>
                     </View>
                     <View style={styles.detailContainer}>
                         <Text>Fee</Text>
-                        <Text style={{fontWeight: 'bold'}}>{"Rp. " + numberWithDot(transactionDetail.bank_charge)}</Text>
+                        <Text style={{fontWeight: 'bold'}}>{formatCurrency(this.state.detail.fee)}</Text>
                     </View>
                 </View>
 
                 <View style={styles.fromContainer}>
                     <Text style={{color: 'grey'}}>FROM</Text>
-                    <Text style={{ marginTop: 5, fontWeight: 'bold' }}>{transactionDetail.debit_account.account_name.toUpperCase()}</Text>
-                    <Text>{"SavingAccount " + transactionDetail.debit_account.accountNumber}</Text>
+                    <Text style={{ marginTop: 5, fontWeight: 'bold' }}>{this.state.detail.debited_account_name.toUpperCase()}</Text>
+                    <Text>{"SavingAccount " + this.state.detail.debited_account_number}</Text>
                 </View>
 
                 <View style={styles.sentToContainer}>
                     <Text style={{color: 'grey'}}>SENT TO</Text>
-                    <Text style={{marginTop: 5, fontWeight: 'bold'}}>{transactionDetail.merchant.name + " Payment"}</Text>
-                    <Text>{transactionDetail.customer_number}</Text>
+                    <Text style={{marginTop: 5, fontWeight: 'bold'}}>{this.state.detail.merchant_name + " Payment"}</Text>
+                    <Text>{this.state.detail.subscriber_number}</Text>
                 </View>
 
                 <View style={styles.divider}></View>
@@ -102,11 +101,11 @@ class PaymentDetail extends Component{
                     <Text style={{color: 'grey'}}>TRANSACTION DETAIL</Text>
                     <View style={styles.transactionDetail}>
                         <Text>Date and Time</Text>
-                        <Text>{moment(transactionDetail.transaction_date).format('DD MMM YYYY, hh:mm A')}</Text>
+                        <Text>{moment(this.state.detail.transaction_date).format('DD MMM YYYY, hh:mm A')}</Text>
                     </View>
                     <View style={styles.transactionDetail}>
                         <Text>Transaction ID</Text>
-                        <Text>{transactionDetail.transaction_reference_number}</Text>
+                        <Text>{this.state.detail.transaction_reference_number}</Text>
                     </View>
                 </View>
 
@@ -127,7 +126,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white',
-        // alignItems: 'center',
         padding: 10,
         overflow: 'visible'
     },
@@ -217,8 +215,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    cif_code: state.login.cif_code,
-    transactionDetail: state.payment.transactionDetail,
+    deviceId: state.newLogin.deviceId
 });
 
 export default connect(mapStateToProps)(PaymentDetail)

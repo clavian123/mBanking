@@ -4,8 +4,12 @@ import login from './login';
 import home from './home';
 import transfer from './transfer';
 import payment from './payment';
+import loading from './loading';
+import newLogin from './newLogin'
 
 export default combineReducers({
+    loading,
+    newLogin,
     register,
     login, 
     home, 

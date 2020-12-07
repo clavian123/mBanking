@@ -40,6 +40,7 @@ export default (
     },
     buttonSeeAllTransactions: {
       marginTop: verticalSpace / 2,
+      marginBottom: 20,
       height: 19,
       justifyContent: "center",
       alignItems: "center"

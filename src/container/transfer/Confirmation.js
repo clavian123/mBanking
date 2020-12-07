@@ -10,10 +10,18 @@ import {
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-import { numberWithDot } from '../../generalFunction';
-import { getListDest, getTransferToken } from '../../action/transfer/transferFunction'
 import moment from 'moment';
 import Loading from '../../Loading';
+
+import {
+    transferConfirmation,
+    checkTargetAccountExist,
+    sendTransferOtp
+} from '../../newFunction/transferFunction'
+
+import {
+    formatCurrency
+} from '../../utils/index'
 
 
 class Confirmation extends React.Component {
@@ -21,11 +29,14 @@ class Confirmation extends React.Component {
         super(props)
         this.state = {
             isAmountDetailClicked: false,
+            confirmation: {
+                target_account_name: ''
+            }
         }
     }
 
-    componentDidMount(){
-        this.props.dispatch(getListDest(this.props.cif_code, ""))
+    async componentDidMount(){
+        this.setState({ confirmation: await this.props.dispatch(transferConfirmation()) })
     }
 
     handleAmountDetailClicked(){
@@ -39,15 +50,15 @@ class Confirmation extends React.Component {
         })
     }
 
-    handleTransferClicked(){
-        const { listDest, destAcc, navigation, cif_code, amount, sendMethod } = this.props
-        
-        if (listDest.filter((item) => item.account_number == destAcc.accNumber && item.bank_detail.id == destAcc.bankId).length != 0) {
+    async handleTransferClicked(){
+        const { deviceId, navigation } = this.props;
+
+        if(await this.props.dispatch(checkTargetAccountExist(deviceId))) {
             navigation.navigate('ValidateEasyPin', {
                 flow: 'transfer'
             })
         } else {
-            this.props.dispatch(getTransferToken(cif_code, amount + sendMethod.fee, destAcc.accNumber, destAcc.fullName, destAcc.bankName))
+            await this.props.dispatch(sendTransferOtp(deviceId));
             navigation.navigate('InputTransactionOtp', {
                 type: 'FUNDTRANSFER'
             })
@@ -57,11 +68,6 @@ class Confirmation extends React.Component {
     render() {
         
         var date = moment().utcOffset('+07:00').format('dddd, DD MMM YYYY')
-        const {sourceAcc, destAcc, amount, note, sendMethod, loading} = this.props
-
-        if(loading){
-            return(<Loading></Loading>)
-        }
 
         return (
             <ScrollView style={styles.container}>
@@ -71,7 +77,7 @@ class Confirmation extends React.Component {
                 <View style={styles.amountContainer}>
                     <View style={styles.amountTotalContainer}>
                         <Text style={styles.currency}>Rp</Text>
-                        <Text style={styles.amount}>{"Rp " + numberWithDot(amount + sendMethod.fee)}</Text>
+                        <Text style={styles.amount}>{formatCurrency(this.state.confirmation.amount + this.state.confirmation.fee)}</Text>
                         <TouchableOpacity style={styles.amountDetailButton} onPress={() => this.handleAmountDetailClicked()}>
                             <Icon
                                 name={this.state.isAmountDetailClicked ? "ios-remove-circle" : "ios-add-circle"}
@@ -87,11 +93,11 @@ class Confirmation extends React.Component {
                     }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 5 }}>
                             <Text>Amount</Text>
-                            <Text>{"Rp " + numberWithDot(amount.toString())}</Text>
+                            <Text>{formatCurrency(this.state.confirmation.amount)}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
                             <Text>Fee</Text>
-                            <Text>{sendMethod.fee ? 'Rp ' + numberWithDot(sendMethod.fee) : 'Rp 0'}</Text>
+                            <Text>{formatCurrency(this.state.confirmation.fee)}</Text>
                         </View>
                     </View>
                 </View>
@@ -105,8 +111,8 @@ class Confirmation extends React.Component {
                         type="entypo"
                         iconStyle={styles.walletIcon}></Icon>
                     <View>
-                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{sourceAcc.accNumber}</Text>
-                        <Text>{sourceAcc.fullName}</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{this.state.confirmation.source_account_number}</Text>
+                        <Text>{this.state.confirmation.source_account_name}</Text>
                         <Text>Tabunganku</Text>
                     </View>
                 </View>
@@ -122,9 +128,9 @@ class Confirmation extends React.Component {
                         type="ionicon"
                         iconStyle={styles.personIcon}></Icon>
                     <View>
-                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{destAcc.accNumber}</Text>
-                        <Text>{destAcc.fullName.toUpperCase()}</Text>
-                        <Text>{destAcc.bankName}</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{this.state.confirmation.target_account_number}</Text>
+                        <Text>{this.state.confirmation.target_account_name.toUpperCase()}</Text>
+                        <Text>{this.state.confirmation.target_bank_name}</Text>
                     </View>
                 </View>
 
@@ -132,7 +138,7 @@ class Confirmation extends React.Component {
 
                 <View style={styles.noteContainer}>
                     <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Notes</Text>
-                    <Text>{note ? note : "-"}</Text>
+                    <Text>{this.state.confirmation.customer_note == "" ? "-" : this.state.confirmation.customer_note }</Text>
                 </View>
 
                 <View style={styles.alertContainer}>
@@ -155,6 +161,7 @@ class Confirmation extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: 'white'
     },
     header: {
         fontSize: 20,
@@ -276,6 +283,9 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
+    loading: state.loading.load,
+    deviceId: state.newLogin.deviceId,
+
     sourceAcc: state.transfer.sourceAcc,
     destAcc: state.transfer.destAcc,
     amount: state.transfer.amount,
@@ -283,7 +293,6 @@ const mapStateToProps = state => ({
     sendMethod: state.transfer.sendMethod,
     listDest: state.transfer.listDest,
     cif_code: state.login.cif_code,
-    loading: state.transfer.loading
 })
 
 export default connect(mapStateToProps)(Confirmation)

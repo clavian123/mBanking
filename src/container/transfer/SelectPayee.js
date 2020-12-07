@@ -10,14 +10,20 @@ import{
 }from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
-import { emptyAccountNumber } from '../../action/transfer/transferAction';
+
+import {
+    setTargetAccount,
+    getTargetAccount
+} from '../../newFunction/transferFunction';
 
 class SelectPayee extends React.Component{
 
     constructor(props) {
         super(props);
         this.state = {
-            buttonColor: '#FA8072'
+            accName: '',
+            buttonColor: '#FA8072',
+            bankName: 'Bank Name or Code'
         }
     }
 
@@ -33,18 +39,20 @@ class SelectPayee extends React.Component{
         });
     }
 
-    handleNext = () => {
-        const{ navigation, destAcc } = this.props;
-        if(destAcc.accNumber == ""){
+    handleNext = async() => {
+        const{ navigation, route } = this.props;
+        if(route.params.accName == null){
             ToastAndroid.show("Enter a valid destination account", ToastAndroid.SHORT)
         }else{
-            navigation.navigate('SetAmount');
+            await this.props.dispatch(setTargetAccount(route.params.accName, route.params.accNumber, route.params.bankName));
+            navigation.navigate('SetAmount', {
+                bankName: route.params.bankName
+            });
         }
     }
 
     handleButtonColor = () => {
-        const{ destAcc } = this.props;
-        if(destAcc.fullName == ""){
+        if(this.state.accName == ""){
             this.setState({buttonColor: '#FA8072'})
         }else{
             this.setState({buttonColor: '#C10000'})
@@ -53,7 +61,7 @@ class SelectPayee extends React.Component{
 
     render(){
 
-        const { destAcc, route } = this.props;
+        const { route } = this.props;
 
         return(
             <KeyboardAvoidingView
@@ -88,7 +96,8 @@ class SelectPayee extends React.Component{
                     onPress={this.handleBankCode}
                 >
                     <View style={styles.bankInputContainer}>
-                        <TextInput style={styles.bankCodeInput} editable={false} value={destAcc.bankName} />
+                        <TextInput style={styles.bankCodeInput} editable={false} 
+                        value={route.params.bankName ? route.params.bankName : this.state.bankName} />
                         <Image style={styles.nextIcon} source={require('../../../assets/icon-next.png')} />
                     </View>
                 </TouchableOpacity>
@@ -96,7 +105,7 @@ class SelectPayee extends React.Component{
                 <TextInput 
                     style={styles.accNameInput}
                     placeholder="Account Name"
-                    value={destAcc.fullName}
+                    value={route.params.accName ? route.params.accName : ''}
                     onChange={this.handleButtonColor}
                 />
 
@@ -238,7 +247,8 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    destAcc: state.transfer.destAcc
+    loading: state.loading.load,
+    deviceId: state.newLogin.deviceId
 });
 
 export default connect(mapStateToProps)(SelectPayee);

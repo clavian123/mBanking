@@ -11,8 +11,12 @@ import {
 } from 'react-native';
 
 import { connect } from 'react-redux';
-import { getUser, resetUserPassword } from '../../action/register/registerFunction';
 import FloatingInputLabel from '../../component/FloatingInputLabel';
+
+import {
+    getUsername,
+    resetUserPassword
+} from '../../newFunction/registerFunction'
 
 class ResetPassword extends Component {
 
@@ -21,6 +25,7 @@ class ResetPassword extends Component {
         this.state = {
             password: '',
             confirmPassword: '',
+            username: '',
             wrongPassword: "Password length must be longer than 8 characters",
             wrongConfirmPassword: "You must confirm your password",
             passwordBorderColor: '#888888',
@@ -32,9 +37,12 @@ class ResetPassword extends Component {
         }
     }
 
-    componentDidMount() {
-        const { customerId } = this.props;
-        this.props.dispatch(getUser(customerId));
+    async componentDidMount() {
+        this.setState({ username: await this.props.dispatch(getUsername()) });
+    }
+
+    componentWillUnmount() {
+        this.setState({ username: '' });
     }
 
     handlePasswordText = () => {
@@ -55,7 +63,6 @@ class ResetPassword extends Component {
 
     validatePassword = () => {
         const password = this.state.password;
-        const { username } = this.props;
         if( password.length < 8 ){
             this.setState({ wrongPassword: "Password length must be longer than 8 characters" })
             this.setState({ passwordBorderWidth: 2 })
@@ -68,7 +75,7 @@ class ResetPassword extends Component {
             this.setState({ wrongPassword: "Password must be alphanumeric" })
             this.setState({ passwordBorderWidth: 2 })
             this.setState({ passwordBorderColor: "#C10000" })
-        }else if( password.includes(username) ){
+        }else if( password.includes(this.state.username) ){
             this.setState({ wrongPassword: "Password must not contain username" })
             this.setState({ passwordBorderWidth: 2 })
             this.setState({ passwordBorderColor: "#C10000" })
@@ -93,25 +100,23 @@ class ResetPassword extends Component {
         }
     }
 
-    handleContinue = () => {
-        const { username } = this.props;
+    handleContinue = async() => {
         const { navigation } = this.props;
         if(this.state.wrongPassword == ""){
             if(this.state.wrongConfirmPassword == ""){
-                this.props.dispatch(resetUserPassword(username, this.state.password)).then(() => {
-                    Alert.alert(
-                        "Your password is changed",
-                        "One more step to go",
-                        [
-                            {
-                                text: 'OK',
-                                onPress: () => { 
-                                    navigation.navigate('CreateEasyPin');
-                                }
+                this.props.dispatch(resetUserPassword(this.state.password));
+                Alert.alert(
+                    "Your password is changed",
+                    "One more step to go",
+                    [
+                        {
+                            text: 'OK',
+                            onPress: () => { 
+                                navigation.navigate('CreateEasyPin');
                             }
-                        ]
-                    );
-                })
+                        }
+                    ]
+                );
             }else{
                 ToastAndroid.show(this.state.wrongConfirmPassword, ToastAndroid.SHORT)
             }
@@ -121,7 +126,6 @@ class ResetPassword extends Component {
     }
 
     render() {
-        const { username } = this.props;
         return (
             <KeyboardAvoidingView
                 style={styles.container}
@@ -134,7 +138,7 @@ class ResetPassword extends Component {
                 </Text>
                 <Text style={styles.description}>
                     <Text>Set new password for </Text>
-                    <Text style={styles.username}>{username}</Text>
+                    <Text style={styles.username}>{this.state.username}</Text>
                     <Text>'s{'\n'}Mobile Banking</Text>
                 </Text>
                 <View style={styles.inputContainer}>

@@ -8,10 +8,22 @@ import {
 import SourceAccountListItem from '../../component/SourceAccountListItem';
 import { connect } from 'react-redux';
 
+import {
+  getAccountList
+} from '../../newFunction/homeFunction';
+
 class SelectSourceAccount extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      accountList: []
+    }
+  }
+
+  async componentDidMount() {
+    const { deviceId } = this.props;
+    this.setState({ accountList: await this.props.dispatch(getAccountList(deviceId)) });
   }
 
   render() {
@@ -23,17 +35,18 @@ class SelectSourceAccount extends React.Component {
 
         <FlatList
           style={styles.list}
-          data={this.props.balance}
+          data={this.state.accountList}
           renderItem={({ item }) => (
             <SourceAccountListItem
               transactionType={this.props.route.params.type}
-              number={item.accountNumber}
+              number={item.account_number}
               type={item.type ? item.type : "Saving Account"}
-              name={this.props.name.toUpperCase()}
+              name={item.account_name.toUpperCase()}
               balance={item.balance}
               navigation={this.props.navigation}
               dispatch={this.props.dispatch} />
           )}
+          keyExtractor = { item => item.account_number }
         />
       </View>
     )
@@ -45,11 +58,9 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
-    // backgroundColor: '#DCDCDC',
     backgroundColor: 'white',
   },
   selectLabel: {
-    // color: '#696969',
     marginHorizontal: 20,
     fontSize: 20,
     fontWeight: 'bold',
@@ -57,7 +68,6 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   savingLabel: {
-    // color: '#696969',
     marginHorizontal: 20,
     fontWeight: 'bold',
     fontSize: 16,
@@ -65,15 +75,12 @@ const styles = StyleSheet.create({
   },
   list: {
     width: '100%',
-    paddingHorizontal: 20,
-
+    paddingHorizontal: 20
   }
 })
 
 const mapStateToProps = state => ({
-  balance: state.home.balance,
-  loading: state.home.loading,
-  name: state.login.name,
+  deviceId: state.newLogin.deviceId
 })
 
 export default connect(mapStateToProps)(SelectSourceAccount);

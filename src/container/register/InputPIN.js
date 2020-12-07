@@ -9,8 +9,13 @@ import{
 } from 'react-native';
 
 import { connect } from 'react-redux';
+
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
-import { validatePin, checkCustomer } from '../../action/register/registerFunction';
+
+import {
+    validatePin,
+    checkCustomerExist
+} from '../../newFunction/registerFunction'
 
 class InputPIN extends Component{
 
@@ -21,26 +26,17 @@ class InputPIN extends Component{
         }
     }
 
-    handleContinue = () => {
-        const { customerDummyId, cif_code } = this.props;
-        
-        this.props.dispatch(validatePin(customerDummyId, this.state.pin)).then(() => {
-            const { checkPin } = this.props;
-            if(checkPin == true){
-                this.props.dispatch(checkCustomer(cif_code)).then(() => {
-                    const{ customerId } = this.props;
-                    const{ navigation } = this.props;
-                    if(customerId == null){
-                        navigation.navigate('CreateUser')
-                    }else{
-                        navigation.navigate('ResetPassword')
-                    }
-                });
-            }else{
-                ToastAndroid.show("Please enter a valid PIN", ToastAndroid.SHORT);
+    handleContinue = async() => {
+        const { navigation } = this.props
+        if(await this.props.dispatch(validatePin(this.state.pin))) {
+            if(await this.props.dispatch(checkCustomerExist())) {
+                navigation.navigate('ResetPassword')
+            } else {
+                navigation.navigate('CreateUser')
             }
-        })
-        
+        } else {
+            ToastAndroid.showWithGravity("Please enter a valid PIN", ToastAndroid.SHORT, ToastAndroid.CENTER)
+        }
     }
 
     render(){
@@ -121,10 +117,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    customerDummyId: state.register.customerDummyId,
-    cif_code: state.register.cif_code,
-    checkPin: state.register.checkPin,
-    customerId: state.register.customerId
+    
 });
   
 export default connect(mapStateToProps)(InputPIN);

@@ -12,10 +12,11 @@ import {
 } from 'react-native';
 
 import styles from "./style";
+import {formatCurrency} from "../../../utils/index";
 import iconBankAccount from "../../../../assets/icon-bank-account.png";
 import iconArrowDown from "../../../../assets/icon-arrow-down.png";
 
-const Accordion = () => {
+const Accordion = ({accounts}) => {
   const [open, setOpen] = useState(false);
   const animatedController = useRef(new Animated.Value(0)).current;
 
@@ -26,6 +27,14 @@ const Accordion = () => {
 
   if (Platform.OS === 'android') {
     UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+
+  const savingsSum = () => {
+    let sum = 0;
+    accounts.map(account => {
+      sum = sum + account.balance
+    })
+    return sum;
   }
 
   const toggleBody = () => {
@@ -86,15 +95,15 @@ const Accordion = () => {
           <View style={styles.bodyContent}>
             <View style={styles.bodyContentSub}>
               <Text style={styles.bodyContentText1}>Savings</Text>
-              <Text style={styles.bodyContentText2}>Rp 500.000</Text>
+              <Text style={styles.bodyContentText2}>{formatCurrency(savingsSum())}</Text>
             </View>
             <View style={styles.bodyContentSub}>
               <Text style={styles.bodyContentText1}>Current</Text>
-              <Text style={styles.bodyContentText2}>Rp 20.000</Text>
+              <Text style={styles.bodyContentText2}>Rp 0</Text>
             </View>
             <View style={styles.bodyContentSub}>
               <Text style={styles.bodyContentText1}>Time Deposit</Text>
-              <Text style={styles.bodyContentText2}>Rp 200.000.000</Text>
+              <Text style={styles.bodyContentText2}>Rp 0</Text>
             </View>
             <View style={styles.bodyContentSub}>
               <Text style={styles.bodyContentText1}>Rekening Dana Nasabah</Text>

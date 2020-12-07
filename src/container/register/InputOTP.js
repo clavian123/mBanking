@@ -12,9 +12,32 @@ import{
 
 import { connect } from 'react-redux';
 import { TextInput } from 'react-native-gesture-handler';
-import { getLoginToken, validateLoginToken, getRegisterToken, validateRegisterToken } from '../../action/register/registerFunction';
+
 import { getPaymentToken, validatePaymentToken, billPayment, saveNewTargetSubscriber } from '../../action/payment/paymentFunction';
-import { transfer, validateTransferToken, saveNewTargetAccount, getTransferToken } from '../../action/transfer/transferFunction';
+
+import {
+    sendLoginOTP, 
+    getUserEmail,
+    validateLoginOTP,
+    refreshEasyPinLogin
+} from '../../newFunction/loginFunction';
+
+import {
+    sendTransferOtp,
+    transferGetUserEmail,
+    validateTransferOtp
+} from '../../newFunction/transferFunction';
+
+import {
+    sendBillPaymentOtp,
+    validateBillPaymentOtp
+} from '../../newFunction/paymentFunction';
+
+import {
+    getEmail,
+    sendRegisterOtp,
+    validateRegisterOtp
+} from '../../newFunction/registerFunction'
 
 import Loading from '../../Loading';
 
@@ -23,113 +46,72 @@ class InputOTP extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+            email: "",
             token: "",
             loading: false,
         }
     }
 
+    componentDidMount = async() => {
+        const { deviceId, route } = this.props;
+        if( route.params.type === "FUNDTRANSFER" || route.params.type === "BILLPAYMENT" ) {
+            this.setState({ email: await this.props.dispatch(transferGetUserEmail(deviceId)) });
+        } else if ( route.params.type === "REGISTER") {
+            this.setState({ email: await this.props.dispatch(getEmail()) });
+        } else {
+            this.setState({ email: await this.props.dispatch(getUserEmail()) });
+        }
+    }
+
     handleResend = () => {
-        const { registercif_code, cif_code, route } = this.props;
+        const { route, deviceId } = this.props;
         if(route.params.type === "LOGIN"){
-            this.props.dispatch(getLoginToken(registercif_code));
+            this.props.dispatch(sendLoginOTP());
         }else if(route.params.type === "REGISTER"){
-            this.props.dispatch(getRegisterToken(registercif_code));
+            this.props.dispatch(sendRegisterOtp())
         }else if(route.params.type === "BILLPAYMENT"){
-            const { paymentAmount, targetSubs } = this.props;
-            this.props.dispatch(getPaymentToken(cif_code, "BILLPAYMENT", paymentAmount, "IDR", targetSubs.accNumber, targetSubs.merchantName));
+            this.props.dispatch(sendBillPaymentOtp(deviceId))
         }else if(route.params.type === "FUNDTRANSFER"){
-            const { destAcc, transferAmount, sendMethod } = this.props;
-            this.props.dispatch(getTransferToken(cif_code, transferAmount + sendMethod.fee, destAcc.accNumber, destAcc.fullName, destAcc.bankName))
+            this.props.dispatch(sendTransferOtp(deviceId))
         }
         ToastAndroid.show("E-mail has been sent", ToastAndroid.SHORT)
     }
 
-    handleContinue = () => {
-        const { registercif_code, cif_code, route } = this.props;
+    handleContinue = async() => {
+        const { route, navigation, deviceId } = this.props;
         this.setState({loading: true})
         if(route.params.type === "LOGIN"){
-            this.props.dispatch(validateLoginToken(registercif_code, this.state.token)).then(() => {
-                const { validateLoginToken } = this.props;
-                if(validateLoginToken == false){
-                    this.setState({loading: false})
-                    ToastAndroid.show("Please enter a valid OTP token", ToastAndroid.SHORT);
-                }else{
-                    const { navigation } = this.props;
-                    this.setState({loading: false})
-                    navigation.navigate('CreateEasyPin');
-                }
-            });
+            if(await this.props.dispatch(validateLoginOTP(this.state.token))){
+                navigation.navigate('CreateEasyPin');
+            } else {
+                ToastAndroid.showWithGravity("Please enter a valid OTP token", ToastAndroid.SHORT, ToastAndroid.CENTER);
+            }
         }else if(route.params.type === "REGISTER"){
-            this.props.dispatch(validateRegisterToken(registercif_code, this.state.token)).then(() => {
-                const { validateRegisterToken } = this.props;
-                if(validateRegisterToken == false){
-                    this.setState({loading: false})
-                    ToastAndroid.show("Please enter a valid OTP token", ToastAndroid.SHORT);
-                }else{
-                    const { navigation } = this.props;
-                    this.setState({loading: false})
-                    navigation.navigate('InputPIN');
-                }
-            })
+            if(await this.props.dispatch(validateRegisterOtp(this.state.token))) {
+                navigation.navigate('InputPIN');
+            } else {
+                ToastAndroid.showWithGravity("Please enter a valid OTP token", ToastAndroid.SHORT, ToastAndroid.CENTER)
+            }
         }else if(route.params.type === "BILLPAYMENT"){
-            this.props.dispatch(validatePaymentToken("BILLPAYMENT", cif_code, this.state.token)).then(() => {
-                const { validatePaymentToken } = this.props;
-                if(validatePaymentToken == false){
-                    this.setState({loading: false})
-                    ToastAndroid.show("Please enter a valid OTP token", ToastAndroid.SHORT);
-                }else {
-                    const { navigation, paymentAmount, paymentSourceAcc, targetSubs } = this.props;
-                    this.props.dispatch(saveNewTargetSubscriber(targetSubs.merchantCode, targetSubs.accNumber, cif_code)).then((res) => {
-                        if(res){
-                            this.props.dispatch(billPayment(targetSubs.accNumber, targetSubs.accName, paymentSourceAcc.accNumber, paymentAmount, targetSubs.bankCharge, targetSubs.merchantCode)).then((res)=>{
-                                if(res){
-                                    this.setState({loading: false})
-                                    navigation.navigate('PaymentDetail')
-                                }
-                            })
-                        }else{
-                            ToastAndroid.show("Failed to register new Subscriber Account!", ToastAndroid.SHORT)
-                        }
-                    });
-                }
-                
-            })
+            if( await this.props.dispatch(validateBillPaymentOtp(this.state.token)) ) {
+                await this.props.dispatch(refreshEasyPinLogin(deviceId))
+                navigation.navigate('PaymentDetail')
+            } else {
+                ToastAndroid.show("Please enter a valid OTP token", ToastAndroid.SHORT);
+            }
         }else if(route.params.type === "FUNDTRANSFER"){
-            const { destAcc, transferSourceAcc, transferAmount, sendMethod, note, cif_code, navigation } = this.props
-            this.props.dispatch(validateTransferToken(cif_code, this.state.token)).then(() => {
-                const { validateTransferToken } = this.props;
-                if(validateTransferToken == false) {
-                    this.setState({loading: false})
-                    ToastAndroid.show("Please enter a valid OTP token", ToastAndroid.SHORT);
-                }else{
-                    this.props.dispatch(saveNewTargetAccount(cif_code, destAcc.accNumber, destAcc.bankId)).then(()=>{
-                        const { saveNewTargetAccount } = this.props
-                        if(saveNewTargetAccount){
-                            this.props.dispatch(transfer(transferSourceAcc.accNumber, destAcc.accNumber, transferAmount, sendMethod.fee, note, destAcc.bankId)).then(() => {
-                                this.setState({loading: false})
-                                navigation.navigate('TransactionDetail')
-                            })
-                        }
-                        else{
-                            ToastAndroid.show("Failed to register new Target Account!", ToastAndroid.SHORT)
-                        }
-                    })
-                }
-            })
+            if( await this.props.dispatch(validateTransferOtp(this.state.token)) ) {
+                await this.props.dispatch(refreshEasyPinLogin(deviceId))
+                navigation.navigate('TransactionDetail')
+            } else {
+                ToastAndroid.show("Please enter a valid OTP token", ToastAndroid.SHORT);
+            }
         }
     }
 
     render(){
-        const { route } = this.props;
-        const { loading } = this.state;
-        let email;
-        if(route.params.type === "REGISTER"){
-            email = this.props.registerEmail
-        }else if(route.params.type === "LOGIN") {
-            email = this.props.registerEmail
-        }else {
-            email = this.props.email
-        }
+        const { loading } = this.props;
+
         return(
             <KeyboardAvoidingView behavior={'height'} style={styles.container}>
 
@@ -155,14 +137,13 @@ class InputOTP extends React.Component{
                 <Text style={styles.messageText}>
                     We just sent 6 digit token to
                     {'\n'}
-                    {email}
+                    {this.state.email}
                 </Text>
                 <TextInput 
                     style={styles.input} 
                     keyboardType="number-pad"
                     onChangeText={(text) => this.setState({token: text})}
                     maxLength={6}
-                    // secureTextEntry={true}
                 />
                 <View style={styles.resendContainer}>
                     <Text style={styles.resendText}>
@@ -282,26 +263,8 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    registerEmail: state.register.email,
-    email: state.home.email,
-    customerDummyId: state.register.customerDummyId,
-    registercif_code: state.register.cif_code,
-    cif_code: state.login.cif_code,
-    validateRegisterToken: state.register.validateRegisterToken,
-    validateLoginToken: state.register.validateLoginToken,
-    
-    targetSubs: state.payment.targetSubs,
-    validatePaymentToken: state.payment.validateOtp,
-    paymentAmount: state.payment.amount,
-    paymentSourceAcc: state.payment.sourceAcc,
-
-    destAcc: state.transfer.destAcc,
-    validateTransferToken: state.transfer.validateOtp,
-    transferAmount: state.transfer.amount,
-    transferSourceAcc: state.transfer.sourceAcc,
-    sendMethod: state.transfer.sendMethod,
-    note: state.transfer.note,
-    saveNewTargetAccount: state.transfer.saveNewTargetAccount
+    loading: state.loading.load,
+    deviceId: state.newLogin.deviceId,
 });
   
 export default connect(mapStateToProps)(InputOTP);

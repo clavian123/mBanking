@@ -6,54 +6,33 @@ import{
     StyleSheet,
     Image,
     TextInput,
-    ToastAndroid,
-    Modal
+    ToastAndroid
 }from 'react-native';
 
 import { connect } from 'react-redux';
-import { transfer } from '../../action/transfer/transferFunction';
-import { billPayment } from '../../action/payment/paymentFunction';
-import Loading from '../../Loading'
+
+import { 
+    loginEasyPin
+} from '../../newFunction/loginFunction'
 
 class ValidateEasyPin extends Component{
 
     constructor(props) {
         super(props);
         this.state = {
-            easyPin: '',
-            loading: false
+            easyPin: ''
         }
     }
 
-    handleContinue = () => {
-        const { easyPin } = this.props
+    handleContinue = async() => {
+        const { deviceId, navigation } = this.props;
         const { flow } = this.props.route.params
-        const { navigation } = this.props
-        if(easyPin == this.state.easyPin){
+
+        if( await this.props.dispatch(loginEasyPin(deviceId, this.state.easyPin)) ) {
             if(flow == 'transfer'){
-                const { destAcc, sourceAcc, amount, sendMethod, note } = this.props
-                this.setState({
-                    loading: true,
-                })
-                this.props.dispatch(transfer(sourceAcc.accNumber, destAcc.accNumber, amount, sendMethod.fee, note, destAcc.bankId)).then(()=> {
-                    this.setState({
-                        loading: false,
-                    })
-                    navigation.navigate('TransactionDetail')
-                })
+                navigation.navigate('TransactionDetail')
             }else if(flow == 'billpayment'){
-                const { paymentAmount, paymentSourceAcc, targetSubs } = this.props
-                this.setState({
-                    loading: true,
-                })
-                this.props.dispatch(billPayment(targetSubs.accNumber, targetSubs.accName, paymentSourceAcc.accNumber, paymentAmount, targetSubs.bankCharge, targetSubs.merchantCode)).then((res)=>{
-                    if(res){
-                        this.setState({
-                            loading: false,
-                        })
-                        navigation.navigate('PaymentDetail')
-                    }
-                })
+                navigation.navigate('PaymentDetail')
             }
         }else{
             ToastAndroid.show("Please enter a valid EasyPIN", ToastAndroid.SHORT);
@@ -61,16 +40,8 @@ class ValidateEasyPin extends Component{
     }
 
     render(){
-        const { loading } = this.state
         return(
             <View style={styles.container}>
-                {
-                    loading ?
-                    <Modal transparent={true}> 
-                        <Loading transparent={true}/>
-                    </Modal>
-                    : null
-                }
                 <View style={styles.header}>
                     <Text style={styles.title}>Enter EasyPIN</Text>
                     <Image style={styles.keyboardIcon} source={require('../../../assets/icon-keyboard.png')}/>
@@ -145,6 +116,8 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
+    deviceId: state.newLogin.deviceId,
+
     easyPin: state.login.easyPin,
     destAcc: state.transfer.destAcc,
     sourceAcc: state.transfer.sourceAcc,

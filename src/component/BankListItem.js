@@ -7,9 +7,13 @@ import {
     TouchableOpacity,
     ToastAndroid
 }from 'react-native';
-import { emptyAccountNumber } from '../action/transfer/transferAction'
-import { checkAccountNumber } from '../action/transfer/transferFunction';
+import { acc } from 'react-native-reanimated';
+
 import { connect } from 'react-redux';
+
+import {
+    checkAccountExist
+} from '../newFunction/transferFunction';
 
 class BankListItem extends React.Component{
 
@@ -17,19 +21,21 @@ class BankListItem extends React.Component{
         super(props);
     }
 
-    handlePress = () => {
+    handlePress = async() => {
         const{ navigation } = this.props;
-        console.log(this.props.id);
-        this.props.dispatch(checkAccountNumber(this.props.code, this.props.id,  this.props.name, this.props.accNumber)).then(() => {
-            const{ destAcc } = this.props;
-            if(destAcc.accNumber == null){
-                this.props.dispatch(emptyAccountNumber());
-                ToastAndroid.show('Fail: Add Transfer List Fail', ToastAndroid.SHORT)
-                navigation.navigate('SelectPayee', {buttonColor: '#FA8072'});
-            }else{
-                navigation.navigate('SelectPayee', {buttonColor: '#C10000'});
-            }
-        })
+        const accName = await this.props.dispatch(checkAccountExist(this.props.accNumber));
+        if (await accName != "") {
+            navigation.navigate('SelectPayee', {
+                buttonColor: '#C10000',
+                accName: accName,
+                bankName: this.props.name
+            });
+        } else {
+            ToastAndroid.show('Fail: Add Transfer List Fail', ToastAndroid.SHORT);
+            navigation.navigate('SelectPayee', {
+                buttonColor: '#FA8072'
+            });
+        }
     }
 
     render(){

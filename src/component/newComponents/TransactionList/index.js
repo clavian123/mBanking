@@ -35,7 +35,7 @@ const TransactionItem = ({ transaction }) => {
           {transaction.amount > 0 ? "Transfer" : "TD Debit"}
         </Text>
         <Text style={styles.transactionTextDate}>
-          {moment(transaction.date).format('DD MMM YYYY')}
+          {moment(transaction.posting_date).format('DD MMM YYYY')}
         </Text>
       </View>
       <View style={styles.transactionSub2}>
@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
   transaction: {
     flexDirection: "row",
     alignItems: "center",
+    marginHorizontal: 20,
     height: 70,
     borderBottomWidth: 1,
     borderColor: "#bfbfbf"
