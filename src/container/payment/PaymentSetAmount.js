@@ -64,7 +64,7 @@ class PaymentSetAmount extends Component {
             ToastAndroid.show("Amount must at least 20000", ToastAndroid.SHORT);
         }else if(route.params == null){
             ToastAndroid.show("Please select your source account", ToastAndroid.SHORT);
-        }else if(amount > route.params.sourceAccBalance){
+        }else if(amount > parseInt(route.params.sourceAccBalance)){
             ToastAndroid.show("Your balance is not enough", ToastAndroid.SHORT);
         }else{ 
             await this.props.dispatch(setBillPaymentSourceAccount(route.params.sourceAccNumber, route.params.sourceAccName, route.params.sourceAccBalance, amount));                 

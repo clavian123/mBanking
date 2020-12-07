@@ -30,7 +30,7 @@ class EasyPinLogin extends Component {
 
   intervalValidate = () => {
     const{ deviceId } = this.props;
-    const activeInterval = setInterval(async() => {
+    window.activeInterval = setInterval(async() => {
       if(!await this.props.dispatch(validateEasyPinLogin(deviceId))){
         const { navigation } = this.props;
         if(this.props.route.name == 'Transfer'){
@@ -55,9 +55,9 @@ class EasyPinLogin extends Component {
           }
         }
         Alert.alert("Your session has ended!", "Session ended", )
-        clearInterval(activeInterval);
+        clearInterval(window.activeInterval);
       } else {
-
+        
       }
     }, 60000)
   }

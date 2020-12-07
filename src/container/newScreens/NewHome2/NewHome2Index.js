@@ -71,6 +71,7 @@ class NewHome2 extends React.Component {
     }
 
     handleLogoutEasyPin = () => {
+        clearInterval(window.activeInterval)
         this.props.dispatch(logoutEasyPin());
     };    
 
