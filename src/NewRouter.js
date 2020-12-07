@@ -202,7 +202,7 @@ class RootNavigator extends React.Component {
                   />
 
 
-                  
+
                   {/* banking summary     */}
                   <Stack.Screen
                     component={isEasyPinLogin ?
