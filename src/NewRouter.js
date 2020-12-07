@@ -175,7 +175,7 @@ class RootNavigator extends React.Component {
                   />
 
 
-                  
+
                   {/* banking summary     */}
                   <Stack.Screen
                     component={isEasyPinLogin ?
@@ -184,7 +184,13 @@ class RootNavigator extends React.Component {
                     }
                     name="BankingSummary"
                     options={{
-                      headerTitle: "Banking Summary"
+                      headerTitle: isEasyPinLogin ?
+                        "Banking Summary" : "",
+                      headerStyle: {
+                        backgroundColor: "#ff0066",
+                        elevation: isEasyPinLogin ? 5 : 0
+                      },
+                      headerTintColor: "white"
                     }}
                   />
 

@@ -22,3 +22,26 @@ export const formatCurrency = (x) => {
 
   return prefix + currency;
 };
+
+export const getAxisTickFormat = (t) => {
+  let num = t;
+  let unit = null;
+
+  if (num >= 1000000) {
+    num = num / 1000000;
+    unit = "M";
+  } else if (num >= 1000) {
+    num = num / 1000;
+    unit = "K";
+  };
+
+  if (num % 1 !== 0) {
+    num = Math.round(num);
+  };
+
+  if (unit) {
+    return num + unit;
+  };
+
+  return num;
+};
