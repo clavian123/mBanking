@@ -13,10 +13,10 @@ import {
 
 import { connect } from 'react-redux';
 
-import { 
-  validateEasyPinLogin, 
-  loginEasyPin, 
-  handleLogout 
+import {
+  validateEasyPinLogin,
+  loginEasyPin,
+  handleLogout
 } from '../../newFunction/loginFunction';
 
 class EasyPinLogin extends Component {
@@ -28,43 +28,43 @@ class EasyPinLogin extends Component {
     }
   }
 
-  // intervalValidate = () => {
-  //   const{ deviceId } = this.props;
-  //   const activeInterval = setInterval(async() => {
-  //     if(!await this.props.dispatch(validateEasyPinLogin(deviceId))){
-  //       const { navigation } = this.props;
-  //       if(this.props.route.name == 'Transfer'){
-  //         if(navigation.canGoBack()) {
-  //           navigation.navigate("Home")
-  //         }
-  //       } else if(this.props.route.name == 'Account') {
-  //         if(navigation.canGoBack()) {
-  //           navigation.navigate("Home")
-  //         }
-  //       } else if(this.props.route.name == "BankAccount") {
-  //         if(navigation.canGoBack()) {
-  //           navigation.navigate("Home")
-  //         }
-  //       }else if(this.props.route.name == 'SetPhoneNumber') {
-  //         if(navigation.canGoBack()) {
-  //           navigation.navigate("Home")
-  //         }
-  //       } else if(this.props.route.name == 'BankingSummary') {
-  //         if(navigation.canGoBack()) {
-  //           navigation.navigate("Home")
-  //         }
-  //       }
-  //       Alert.alert("Your session has ended!", "Session ended", )
-  //       clearInterval(activeInterval);
-  //     } else {
-
-  //     }
-  //   }, 60000)
-  // }
-
-  handleContinue = async() => {
+  intervalValidate = () => {
     const { deviceId } = this.props;
-    if(!await this.props.dispatch(loginEasyPin(deviceId, this.state.pin))){
+    window.activeInterval = setInterval(async () => {
+      if (!await this.props.dispatch(validateEasyPinLogin(deviceId))) {
+        const { navigation } = this.props;
+        if (this.props.route.name == 'Transfer') {
+          if (navigation.canGoBack()) {
+            navigation.navigate("Home")
+          }
+        } else if (this.props.route.name == 'Account') {
+          if (navigation.canGoBack()) {
+            navigation.navigate("Home")
+          }
+        } else if (this.props.route.name == "BankAccount") {
+          if (navigation.canGoBack()) {
+            navigation.navigate("Home")
+          }
+        } else if (this.props.route.name == 'SetPhoneNumber') {
+          if (navigation.canGoBack()) {
+            navigation.navigate("Home")
+          }
+        } else if (this.props.route.name == 'BankingSummary') {
+          if (navigation.canGoBack()) {
+            navigation.navigate("Home")
+          }
+        }
+        Alert.alert("Your session has ended!", "Session ended",)
+        clearInterval(window.activeInterval);
+      } else {
+
+      }
+    }, 60000)
+  }
+
+  handleContinue = async () => {
+    const { deviceId } = this.props;
+    if (!await this.props.dispatch(loginEasyPin(deviceId, this.state.pin))) {
       ToastAndroid.showWithGravity(
         "Please enter a valid EasyPIN",
         ToastAndroid.SHORT,

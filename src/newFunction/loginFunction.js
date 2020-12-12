@@ -139,14 +139,11 @@ export const validateEasyPinLogin = (device_id) => {
     }
     let address = "http://localhost:8080/validateEasyPinLogin";
     return async dispatch => {
-        dispatch(setLoading(true));
         try { 
             const res = await axios.post(address, req);
-            dispatch(setLoading(false));
             dispatch(easyPinLogin(await res.data));
             return await res.data;
         } catch {
-            dispatch(setLoading(false))
         }
     }
 }
