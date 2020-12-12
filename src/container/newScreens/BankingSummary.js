@@ -4,202 +4,307 @@ import {
   Image,
   SafeAreaView,
   Text,
-  ToastAndroid,
   TouchableOpacity,
   View,
   StyleSheet
 } from "react-native";
 import { connect } from "react-redux";
+import { getBankingSummary } from "../../action/bankingSummary/bankingSummaryFunction";
 import { VictoryBar, VictoryChart, VictoryGroup, VictoryAxis } from "victory-native";
 import { Picker } from '@react-native-picker/picker';
-
 import { getAxisTickFormat } from "../../utils";
+import iconGopay from "../../../assets/icon-go-pay.jpg";
+import iconOvo from "../../../assets/icon-ovo.png";
 import iconTokopedia from "../../../assets/icon-tokopedia.png";
 import iconBank from "../../../assets/icon-bank.jpg";
 import iconCount from "../../../assets/icon-count.png";
 import iconTotal from "../../../assets/icon-total.png";
+import Loading from "../../Loading";
+import { formatCurrency } from "../../utils";
 
 const flatListItem = [{ id: 1 }];
 
 class BankingSummary extends React.Component {
+  state = {
+    radioButtonFocus: "weekly",
+    weeklyPickerFocus: "This week",
+    monthlyPickerFocus: ""
+  };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      radioButtonFocus: "weekly",
-      pickerFocus: "48"
+  componentDidMount = () => {
+    const { deviceId, getBankingSummary } = this.props;
+    getBankingSummary(deviceId);
+  };
+
+  componentDidUpdate = (prevProps) => {
+    const { monthlyPickerFocus } = this.state;
+    const { monthlyDebitCreditTotal } = this.props;
+
+    if (monthlyPickerFocus == "") {
+      this.setState({
+        monthlyPickerFocus: monthlyDebitCreditTotal.debits[3].month
+      });
     };
   };
 
   handlePressRadioButton = (key) => {
-    this.setState({ radioButtonFocus: key });
-  }
+    this.setState({
+      radioButtonFocus: key,
+    });
+  };
+
+  getTickValues = (highestY) => {
+    if (highestY < 1) {
+      return [0];
+    };
+
+    let adder = highestY / 4;
+    let tickValues = [0, adder, adder * 2, adder * 3, highestY];
+
+    return tickValues;
+  };
+
+  getTotalDebitDetail = () => {
+    const { radioButtonFocus, weeklyPickerFocus, monthlyPickerFocus } = this.state;
+    const { weeklyDebitCreditTotal, monthlyDebitCreditTotal } = this.props;
+    let amount = 0;
+
+    if (Array.isArray(weeklyDebitCreditTotal.debits) && Array.isArray(monthlyDebitCreditTotal.debits)) {
+      if (radioButtonFocus === "weekly") {
+        amount = weeklyDebitCreditTotal.debits.find(item => item.week === weeklyPickerFocus).y;
+      } else {
+        amount = monthlyDebitCreditTotal.debits.find(item => item.month === monthlyPickerFocus).y;
+      };
+    }
+
+    return amount;
+  };
+
+  getTotalCreditDetail = () => {
+    const { radioButtonFocus, weeklyPickerFocus, monthlyPickerFocus } = this.state;
+    const { weeklyDebitCreditTotal, monthlyDebitCreditTotal } = this.props;
+    let amount = 0;
+
+    if (Array.isArray(weeklyDebitCreditTotal.credits) && Array.isArray(monthlyDebitCreditTotal.credits)) {
+      if (radioButtonFocus === "weekly") {
+        amount = weeklyDebitCreditTotal.credits.find(item => item.week === weeklyPickerFocus).y;
+      } else {
+        amount = monthlyDebitCreditTotal.credits.find(item => item.month === monthlyPickerFocus).y;
+      };
+    }
+
+    return amount;
+  };
 
   render() {
-    return (
-      <SafeAreaView style={styles.container}>
-        <FlatList
-          data={flatListItem}
-          keyExtractor={item => "key" + item.id}
-          renderItem={({ item, index }) => {
-            return (
-              <View style={styles.flatList}>
-                <Text style={styles.textTitle}>Total Debit Credit</Text>
-                <View style={styles.periodical}>
-                  <Text style={styles.textSubtitle}>Periodical</Text>
-                  <View style={styles.radioButton}>
+    const {
+      loading,
+      transactionOut,
+      weeklyHighestY,
+      weeklyDebitCreditTotal,
+      monthlyHighestY,
+      monthlyDebitCreditTotal
+    } = this.props;
+    const {
+      radioButtonFocus,
+      monthlyPickerFocus
+    } = this.state;
+
+    if (loading) {
+      return <Loading />;
+    } else {
+      return (
+        <SafeAreaView style={styles.container}>
+          <FlatList
+            data={flatListItem}
+            keyExtractor={item => "key" + item.id}
+            renderItem={({ item, index }) => {
+              return (
+                <View key={"key" + item.id} style={styles.flatList}>
+                  <Text style={styles.textTitle}>Total Debit Credit</Text>
+                  <View style={styles.periodical}>
+                    <Text style={styles.textSubtitle}>Periodical</Text>
+                    <View style={styles.radioButton}>
+                      {
+                        radioButtonOptions.map(item => {
+                          const { radioButtonFocus } = this.state;
+
+                          return (
+                            <View key={item.key} style={styles.radioButtonItem}>
+                              <TouchableOpacity
+                                style={styles.circle}
+                                onPress={() => this.handlePressRadioButton(item.key)}
+                              >
+                                {radioButtonFocus === item.key && (<View style={styles.checkedCircle} />)}
+                              </TouchableOpacity>
+                              <Text>{item.text}</Text>
+                            </View>
+                          );
+                        })
+                      }
+                    </View>
+                  </View>
+                  <VictoryChart
+                    padding={{
+                      left: 50, right: 20, top: 15, bottom: 30
+                    }}
+                    domainPadding={{ x: 30 }}
+                  >
+                    <VictoryAxis />
+                    <VictoryAxis
+                      dependentAxis
+                      tickValues={this.getTickValues(
+                        radioButtonFocus == "weekly" ?
+                          weeklyHighestY :
+                          monthlyHighestY
+                      )}
+                      tickFormat={(t) => getAxisTickFormat(t)}
+                    />
+                    <VictoryGroup
+                      offset={20}
+                      colorScale={["#ff0066", "#009900"]}
+                      animate={{
+                        duration: 500,
+                        onLoad: { duration: 250 }
+                      }}
+                      style={{
+                        data: {
+                          stroke: "black", strokeWidth: 3
+                        }
+                      }}
+                    >
+                      <VictoryBar
+                        data={
+                          radioButtonFocus === "weekly" ?
+                            weeklyDebitCreditTotal.debits :
+                            monthlyDebitCreditTotal.debits
+                        }
+                      />
+                      <VictoryBar
+                        data={
+                          radioButtonFocus === "weekly" ?
+                            weeklyDebitCreditTotal.credits :
+                            monthlyDebitCreditTotal.credits
+                        }
+                      />
+                    </VictoryGroup>
+                  </VictoryChart>
+                  <View style={styles.detail}>
+                    <Text style={styles.textSubtitle}>Detail</Text>
+                    <View style={styles.pickerView}>
+                      {
+                        radioButtonFocus == "weekly" &&
+                        weeklyDebitCreditTotal.debits != undefined &&
+                        weeklyDebitCreditTotal.debits.length > 0 &&
+                        <Picker
+                          dropdownIconColor="black"
+                          selectedValue={this.state.weeklyPickerFocus}
+                          style={styles.picker}
+                          onValueChange={(itemValue, itemIndex) =>
+                            this.setState({ weeklyPickerFocus: itemValue })
+                          }>
+                          {
+                            weeklyDebitCreditTotal.debits.map(item =>
+                              <Picker.Item key={item.week} label={item.week} value={item.week} />
+                            )
+                          }
+                        </Picker>
+                      }
+                      {
+                        radioButtonFocus == "monthly" &&
+                        monthlyDebitCreditTotal.debits != undefined &&
+                        monthlyDebitCreditTotal.debits.length > 0 &&
+                        <Picker
+                          dropdownIconColor="black"
+                          selectedValue={this.state.monthlyPickerFocus}
+                          style={styles.picker}
+                          onValueChange={(itemValue, itemIndex) =>
+                            this.setState({ monthlyPickerFocus: itemValue })
+                          }>
+                          {
+                            monthlyDebitCreditTotal.debits.map(item =>
+                              <Picker.Item key={item.month} label={item.month} value={item.month} />
+                            )
+                          }
+                        </Picker>
+                      }
+                    </View>
+                    <View style={styles.detailSub}>
+                      <View style={styles.detailSub2}>
+                        <View style={styles.debitLegend} />
+                        <Text>Total Debit</Text>
+                      </View>
+                      <Text style={styles.textDebit}>{formatCurrency(this.getTotalDebitDetail())}</Text>
+                    </View>
+                    <View style={styles.detailSub}>
+                      <View style={styles.detailSub2}>
+                        <View style={styles.creditLegend} />
+                        <Text>Total Credit</Text>
+                      </View>
+                      <Text style={styles.textCredit}>{formatCurrency(this.getTotalCreditDetail())}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.line} />
+                  <Text style={styles.textTitle}>Top Transactions</Text>
+                  <View style={styles.transactionList}>
                     {
-                      radioButtonOptions.map(item => {
-                        const { radioButtonFocus } = this.state;
+                      Array.isArray(transactionOut) && transactionOut.map(item => {
+                        let merchant = item.merchant;
+                        let transactionType = merchant == 0 ? 0 : 1;
+                        let imgSource = transactionType == 0 ?
+                          iconBank :
+                          merchant == 1 ?
+                            iconGopay :
+                            merchant == 2 ?
+                              iconOvo :
+                              iconTokopedia;
+                        let mainText = item.mainText;
+                        let subText1 = item.subText1;
+                        let subText2 = item.subText2 || "-";
+                        let count = item.count;
+                        let totalAmount = formatCurrency(item.totalAmount);
 
                         return (
-                          <View key={item.key} style={styles.radioButtonItem}>
-                            <TouchableOpacity
-                              style={styles.circle}
-                              onPress={() => this.handlePressRadioButton(item.key)}
-                            >
-                              {radioButtonFocus === item.key && (<View style={styles.checkedCircle} />)}
-                            </TouchableOpacity>
-                            <Text>{item.text}</Text>
+                          < View style={styles.transactionItem} >
+                            <View style={styles.transactionItemSub}>
+                              <Image
+                                source={imgSource}
+                                style={styles.transactionItemMainImage}
+                              />
+                              <View>
+                                <Text style={styles.transactionItemMainText}>{mainText}</Text>
+                                <Text style={styles.transactionItemSubText}>{subText1}</Text>
+                                <Text style={styles.transactionItemSubText}>{subText2}</Text>
+                              </View>
+                            </View>
+                            <View>
+                              <View style={styles.transactionItemSub2}>
+                                <Image
+                                  source={iconCount}
+                                  style={styles.transactionItemCountImage}
+                                />
+                                <Text style={styles.transactionItemCountText}>{count}</Text>
+                              </View>
+                              <View style={styles.transactionItemSub2}>
+                                <Image
+                                  source={iconTotal}
+                                  style={styles.transactionItemTotalImage}
+                                />
+                                <Text style={styles.transactionItemTotalText}>{totalAmount}</Text>
+                              </View>
+                            </View>
                           </View>
                         );
                       })
                     }
                   </View>
                 </View>
-                <VictoryChart
-                  padding={{
-                    left: 50, right: 20, top: 15, bottom: 30
-                  }}
-                  domainPadding={{ x: 30 }}
-                >
-                  <VictoryAxis />
-                  <VictoryAxis
-                    dependentAxis
-                    tickValues={[0, 250000, 500000, 750000, 1000000]}
-                    tickFormat={(t) => getAxisTickFormat(t)}
-                  />
-                  <VictoryGroup
-                    offset={20}
-                    categories={{
-                      x: ["Week 45", "Week 46", "Last Week", "This Week"]
-                    }}
-                    colorScale={["#ff0066", "#009900"]}
-                    animate={{
-                      duration: 500,
-                      onLoad: { duration: 250 }
-                    }}
-                    style={{
-                      data: {
-                        stroke: "black", strokeWidth: 3
-                      }
-                    }}
-                  >
-                    <VictoryBar
-                      data={[{ x: "Week 45", y: 700000 }, { x: "Week 46", y: 690000 }, { x: "Last Week", y: 700000 }, { x: "This Week", y: 200000 }]}
-                    />
-                    <VictoryBar
-                      data={[{ x: "Week 45", y: 545000 }, { x: "Week 46", y: 800000 }, { x: "Last Week", y: 400000 }, { x: "This Week", y: 500000 }]}
-                    />
-                  </VictoryGroup>
-                </VictoryChart>
-                <View style={styles.detail}>
-                  <Text style={styles.textSubtitle}>Detail</Text>
-                  <View style={styles.pickerView}>
-                    <Picker
-                      dropdownIconColor="black"
-                      selectedValue={this.state.pickerFocus}
-                      style={styles.picker}
-                      onValueChange={(itemValue, itemIndex) =>
-                        this.setState({ pickerFocus: itemValue })
-                      }>
-                      <Picker.Item label="Last week" value="47" />
-                      <Picker.Item label="This week" value="48" />
-                    </Picker>
-                  </View>
-                  <View style={styles.detailSub}>
-                    <View style={styles.detailSub2}>
-                      <View style={styles.debitLegend} />
-                      <Text>Total Debit</Text>
-                    </View>
-                    <Text style={styles.textDebit}>Rp 560.000</Text>
-                  </View>
-                  <View style={styles.detailSub}>
-                    <View style={styles.detailSub2}>
-                      <View style={styles.creditLegend} />
-                      <Text>Total Credit</Text>
-                    </View>
-                    <Text style={styles.textCredit}>Rp 100.000.000</Text>
-                  </View>
-                </View>
-                <View style={styles.line} />
-                <Text style={styles.textTitle}>Favorite Transactions</Text>
-                <View style={styles.transactionList}>
-                  <View style={styles.transactionItem}>
-                    <View style={styles.transactionItemSub}>
-                      <Image
-                        source={iconBank}
-                        style={styles.transactionItemMainImage}
-                      />
-                      <View>
-                        <Text style={styles.transactionItemMainText}>RICO KRISHANDI</Text>
-                        <Text style={styles.transactionItemSubText}>Bank Sinarmas</Text>
-                        <Text style={styles.transactionItemSubText}>052995205</Text>
-                      </View>
-                    </View>
-                    <View>
-                      <View style={styles.transactionItemSub2}>
-                        <Image
-                          source={iconCount}
-                          style={styles.transactionItemCountImage}
-                        />
-                        <Text style={styles.transactionItemCountText}>3</Text>
-                      </View>
-                      <View style={styles.transactionItemSub2}>
-                        <Image
-                          source={iconTotal}
-                          style={styles.transactionItemTotalImage}
-                        />
-                        <Text style={styles.transactionItemTotalText}>Rp 50.000</Text>
-                      </View>
-                    </View>
-                  </View>
-                  <View style={styles.transactionItem}>
-                    <View style={styles.transactionItemSub}>
-                      <Image
-                        source={iconTokopedia}
-                        style={styles.transactionItemMainImage}
-                      />
-                      <View>
-                        <Text style={styles.transactionItemMainText}>TOKOPEDIA</Text>
-                        <Text style={styles.transactionItemSubText}>81099</Text>
-                        <Text style={styles.transactionItemSubText}>Rian Krishandi</Text>
-                      </View>
-                    </View>
-                    <View>
-                      <View style={styles.transactionItemSub2}>
-                        <Image
-                          source={iconCount}
-                          style={styles.transactionItemCountImage}
-                        />
-                        <Text style={styles.transactionItemCountText}>3</Text>
-                      </View>
-                      <View style={styles.transactionItemSub2}>
-                        <Image
-                          source={iconTotal}
-                          style={styles.transactionItemTotalImage}
-                        />
-                        <Text style={styles.transactionItemTotalText}>Rp 50.000</Text>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            )
-          }}
-        />
-      </SafeAreaView>
-    );
+              )
+            }}
+          />
+        </SafeAreaView>
+      );
+    };
   };
 };
 
@@ -334,6 +439,7 @@ const styles = StyleSheet.create({
     color: "#666666"
   },
   transactionItemSub2: {
+    width: 140,
     flexDirection: "row",
     alignItems: "center"
   },
@@ -370,4 +476,17 @@ const radioButtonOptions = [
   }
 ];
 
-export default BankingSummary;
+const mapStateToProps = state => ({
+  deviceId: state.newLogin.deviceId,
+  loading: state.bankingSummary.loading,
+  monthlyDebitCreditTotal: state.bankingSummary.monthlyDebitCreditTotal,
+  monthlyHighestY: state.bankingSummary.monthlyHighestY,
+  transactionOut: state.bankingSummary.transactionOut,
+  weeklyDebitCreditTotal: state.bankingSummary.weeklyDebitCreditTotal,
+  weeklyHighestY: state.bankingSummary.weeklyHighestY
+});
+
+export default connect(
+  mapStateToProps,
+  { getBankingSummary }
+)(BankingSummary);

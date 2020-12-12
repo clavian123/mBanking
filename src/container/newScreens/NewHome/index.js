@@ -53,7 +53,7 @@ class NewHome extends React.Component {
   };
 
 
-  componentDidMount = async() => {
+  componentDidMount = async () => {
     const { deviceId } = this.props;
     this.props.dispatch(easyPinLogin(false));
     this.props.dispatch(linkUnlinkAccount(deviceId));
@@ -61,7 +61,7 @@ class NewHome extends React.Component {
   };
 
   componentWillUnmount() {
-    this.setState = (name, callback)=>{
+    this.setState = (name, callback) => {
       return;
     };
   }
@@ -79,7 +79,7 @@ class NewHome extends React.Component {
   }
 
 
-  handlePayment = async(merchant, code) => {
+  handlePayment = async (merchant, code) => {
     const { navigate } = this.props.navigation;
     if (code == "") {
       ToastAndroid.show("This service is unavailable right now", ToastAndroid.SHORT)
@@ -101,10 +101,10 @@ class NewHome extends React.Component {
 
         {
           loading ?
-          <Modal transparent={true}>
-             <Loading transparent={true}/>
-          </Modal>
-          : null
+            <Modal transparent={true}>
+              <Loading transparent={true} />
+            </Modal>
+            : null
         }
 
 

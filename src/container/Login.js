@@ -33,7 +33,7 @@ class Login extends Component {
     if (username == '' || password == '') {
       alert("Please fill your Email and Password!");
     } else {
-      if(await this.props.dispatch(usernameLogin(username, password))) {
+      if (await this.props.dispatch(usernameLogin(username, password))) {
         await this.props.dispatch(sendLoginOTP());
         navigation.navigate('InputOTP', {
           type: 'LOGIN'
@@ -61,10 +61,10 @@ class Login extends Component {
 
           {
             loading ?
-            <Modal transparent={true}>
-              <Loading transparent={true}/>
-            </Modal>
-            : null
+              <Modal transparent={true}>
+                <Loading transparent={true} />
+              </Modal>
+              : null
           }
 
           <View style={styles.registerContainer}>

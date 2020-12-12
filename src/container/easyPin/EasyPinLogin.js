@@ -28,39 +28,39 @@ class EasyPinLogin extends Component {
     }
   }
 
-  intervalValidate = () => {
-    const{ deviceId } = this.props;
-    const activeInterval = setInterval(async() => {
-      if(!await this.props.dispatch(validateEasyPinLogin(deviceId))){
-        const { navigation } = this.props;
-        if(this.props.route.name == 'Transfer'){
-          if(navigation.canGoBack()) {
-            navigation.navigate("Home")
-          }
-        } else if(this.props.route.name == 'Account') {
-          if(navigation.canGoBack()) {
-            navigation.navigate("Home")
-          }
-        } else if(this.props.route.name == "BankAccount") {
-          if(navigation.canGoBack()) {
-            navigation.navigate("Home")
-          }
-        }else if(this.props.route.name == 'SetPhoneNumber') {
-          if(navigation.canGoBack()) {
-            navigation.navigate("Home")
-          }
-        } else if(this.props.route.name == 'BankingSummary') {
-          if(navigation.canGoBack()) {
-            navigation.navigate("Home")
-          }
-        }
-        Alert.alert("Your session has ended!", "Session ended", )
-        clearInterval(activeInterval);
-      } else {
+  // intervalValidate = () => {
+  //   const{ deviceId } = this.props;
+  //   const activeInterval = setInterval(async() => {
+  //     if(!await this.props.dispatch(validateEasyPinLogin(deviceId))){
+  //       const { navigation } = this.props;
+  //       if(this.props.route.name == 'Transfer'){
+  //         if(navigation.canGoBack()) {
+  //           navigation.navigate("Home")
+  //         }
+  //       } else if(this.props.route.name == 'Account') {
+  //         if(navigation.canGoBack()) {
+  //           navigation.navigate("Home")
+  //         }
+  //       } else if(this.props.route.name == "BankAccount") {
+  //         if(navigation.canGoBack()) {
+  //           navigation.navigate("Home")
+  //         }
+  //       }else if(this.props.route.name == 'SetPhoneNumber') {
+  //         if(navigation.canGoBack()) {
+  //           navigation.navigate("Home")
+  //         }
+  //       } else if(this.props.route.name == 'BankingSummary') {
+  //         if(navigation.canGoBack()) {
+  //           navigation.navigate("Home")
+  //         }
+  //       }
+  //       Alert.alert("Your session has ended!", "Session ended", )
+  //       clearInterval(activeInterval);
+  //     } else {
 
-      }
-    }, 60000)
-  }
+  //     }
+  //   }, 60000)
+  // }
 
   handleContinue = async() => {
     const { deviceId } = this.props;
@@ -71,7 +71,7 @@ class EasyPinLogin extends Component {
         ToastAndroid.CENTER
       );
     } else {
-      this.intervalValidate();
+      // this.intervalValidate();
     }
   }
 

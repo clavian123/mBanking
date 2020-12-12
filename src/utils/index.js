@@ -12,7 +12,7 @@ export const getDeviceHeight = () => {
 export const formatCurrency = (x) => {
   var prefix;
 
-  if (x > 0) {
+  if (x >= 0) {
     prefix = "Rp ";
   } else {
     prefix = "- Rp ";
@@ -35,9 +35,15 @@ export const getAxisTickFormat = (t) => {
     unit = "K";
   };
 
-  if (num % 1 !== 0) {
+  if (unit == "M" && num % 1 !== 0){
+    num = num.toFixed(1);
+  } else {
     num = Math.round(num);
-  };
+  }
+
+  // if (num % 1 !== 0 && unit == "K") {
+  //   num = Math.round(num);
+  // }
 
   if (unit) {
     return num + unit;
