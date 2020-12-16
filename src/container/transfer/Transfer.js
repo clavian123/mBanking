@@ -15,6 +15,10 @@ import AccountListItem from '../../component/AccountListItem';
 
 import Loading from '../../Loading';
 
+import { 
+  refreshEasyPinLogin
+} from '../../newFunction/loginFunction'
+
 import {
   getTargetAccountList,
   setTargetAccount
@@ -57,7 +61,8 @@ class Transfer extends React.Component {
   }
 
   handleNextButton = () => {
-    const { navigation } = this.props;
+    const { deviceId, navigation } = this.props;
+    this.props.dispatch(refreshEasyPinLogin(deviceId))
     const list = this.state.listDest;
     if(this.state.buttonColor == '#C10000'){
       if (list == undefined) {
@@ -78,6 +83,8 @@ class Transfer extends React.Component {
   }
 
   handleSearch = (text) => {
+    const { deviceId } = this.props
+    this.props.dispatch(refreshEasyPinLogin(deviceId))
       if(text != "") {
         if( isNaN(text) ){
           this.setState({ searchList: this.state.listDest.filter((item) => item.name.toUpperCase().includes(text.toUpperCase())) })
@@ -88,6 +95,8 @@ class Transfer extends React.Component {
   }
 
   refreshList = async(newList) => {
+    const { deviceId } = this.props
+    this.props.dispatch(refreshEasyPinLogin(deviceId))
     this.setState({ listDest: newList })
   }
 

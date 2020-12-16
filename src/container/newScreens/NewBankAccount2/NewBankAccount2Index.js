@@ -19,6 +19,10 @@ import iconBankAccount from "../../../../assets/icon-bank-account.png"
 import iconArrowDown from "../../../../assets/icon-arrow-down.png"
 
 import {
+    refreshEasyPinLogin
+} from '../../../newFunction/loginFunction'
+
+import {
     getAccountList
 } from '../../../newFunction/homeFunction'
 
@@ -55,6 +59,7 @@ class NewBankAccount2 extends React.Component {
     async componentDidMount() {
         const { deviceId } = this.props
         this.setState({ accounts: await this.props.dispatch(getAccountList(deviceId)) })
+        this.props.dispatch(refreshEasyPinLogin(deviceId));
     }
 
     componentWillUnmount() {

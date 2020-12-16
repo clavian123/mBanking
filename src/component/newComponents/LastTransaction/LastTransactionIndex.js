@@ -15,6 +15,10 @@ import styles from './LastTransactionStyle'
 import { connect } from 'react-redux'
 
 import {
+    refreshEasyPinLogin
+} from '../../../newFunction/loginFunction'
+
+import {
     getLastTransactions
 } from '../../../newFunction/homeFunction'
 
@@ -43,9 +47,12 @@ class LastTransaction extends React.Component {
     }
 
     setShowLastTransaction = () => {
+        const { deviceId } = this.props
         if(this.state.showLastTransaction) {
+            this.props.dispatch(refreshEasyPinLogin(deviceId))
             this.setState({ showLastTransaction: false })
         } else {
+            this.props.dispatch(refreshEasyPinLogin(deviceId))
             this.setState({ showLastTransaction: true })
         }
     }
@@ -117,7 +124,7 @@ class LastTransaction extends React.Component {
 }
 
 const mapStateToProps = state => ({
-
+    deviceId: state.newLogin.deviceId
 })
 
 export default connect(mapStateToProps)(LastTransaction)

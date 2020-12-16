@@ -22,6 +22,19 @@ import iconTotal from "../../../assets/icon-total.png";
 import Loading from "../../Loading";
 import { formatCurrency } from "../../utils";
 
+import {
+  refreshEasyPinLogin
+} from '../../newFunction/loginFunction'
+
+import {
+  setTargetAccount
+} from '../../newFunction/transferFunction'
+
+import {
+  setMerchantCode,
+  setTargetSubscriber
+} from '../../newFunction/paymentFunction'
+
 const flatListItem = [{ id: 1 }];
 
 class BankingSummary extends React.Component {
@@ -33,6 +46,7 @@ class BankingSummary extends React.Component {
 
   componentDidMount = () => {
     const { deviceId, getBankingSummary } = this.props;
+    refreshEasyPinLogin(deviceId)
     getBankingSummary(deviceId);
   };
 
@@ -48,6 +62,8 @@ class BankingSummary extends React.Component {
   };
 
   handlePressRadioButton = (key) => {
+    const { deviceId, refreshEasyPinLogin } = this.props
+    refreshEasyPinLogin(deviceId)
     this.setState({
       radioButtonFocus: key,
     });
@@ -96,6 +112,21 @@ class BankingSummary extends React.Component {
     return amount;
   };
 
+  handlePress = async (item) => {
+    const { navigation, deviceId, refreshEasyPinLogin, setTargetAccount, setMerchantCode, setTargetSubscriber } = this.props
+    refreshEasyPinLogin(deviceId)
+    if (item.merchant == 0) {
+      setTargetAccount(item.targetName, item.subText2, item.bankName)
+      navigation.navigate('SetAmount', {
+        bankName: item.bankName
+      })
+    } else {
+      setMerchantCode(item.merchantCode, item.merchantName)
+      setTargetSubscriber(item.subText1, item.subText2, "")
+      navigation.navigate('PaymentSetAmount')
+    }
+  }
+
   render() {
     const {
       loading,
@@ -109,6 +140,7 @@ class BankingSummary extends React.Component {
       radioButtonFocus,
       monthlyPickerFocus
     } = this.state;
+    const { deviceId } = this.props
 
     if (loading) {
       return <Loading />;
@@ -120,185 +152,190 @@ class BankingSummary extends React.Component {
             keyExtractor={item => "key" + item.id}
             renderItem={({ item, index }) => {
               return (
-                <View key={"key" + item.id} style={styles.flatList}>
-                  <Text style={styles.textTitle}>Total Debit Credit</Text>
-                  <View style={styles.periodical}>
-                    <Text style={styles.textSubtitle}>Periodical</Text>
-                    <View style={styles.radioButton}>
+                <>
+                  <View style={styles.flatList}>
+                    <Text style={styles.textTitle}>Total Debit Credit</Text>
+                    <View style={styles.periodical}>
+                      <Text style={styles.textSubtitle}>Periodical</Text>
+                      <View style={styles.radioButton}>
+                        {
+                          radioButtonOptions.map(item => {
+                            const { radioButtonFocus } = this.state;
+
+                            return (
+                              <View key={item.key} style={styles.radioButtonItem}>
+                                <TouchableOpacity
+                                  style={styles.circle}
+                                  onPress={() => this.handlePressRadioButton(item.key)}
+                                >
+                                  {radioButtonFocus === item.key && (<View style={styles.checkedCircle} />)}
+                                </TouchableOpacity>
+                                <Text>{item.text}</Text>
+                              </View>
+                            );
+                          })
+                        }
+                      </View>
+                    </View>
+                    <VictoryChart
+                      padding={{
+                        left: 50, right: 20, top: 15, bottom: 30
+                      }}
+                      domainPadding={{ x: 30 }}
+                    >
+                      <VictoryAxis />
+                      <VictoryAxis
+                        dependentAxis
+                        tickValues={this.getTickValues(
+                          radioButtonFocus == "weekly" ?
+                            weeklyHighestY :
+                            monthlyHighestY
+                        )}
+                        tickFormat={(t) => getAxisTickFormat(t)}
+                      />
+                      <VictoryGroup
+                        offset={20}
+                        colorScale={["#ff0066", "#009900"]}
+                        animate={{
+                          duration: 500,
+                          onLoad: { duration: 250 }
+                        }}
+                        style={{
+                          data: {
+                            stroke: "black", strokeWidth: 3
+                          }
+                        }}
+                      >
+                        <VictoryBar
+                          data={
+                            radioButtonFocus === "weekly" ?
+                              weeklyDebitCreditTotal.debits :
+                              monthlyDebitCreditTotal.debits
+                          }
+                        />
+                        <VictoryBar
+                          data={
+                            radioButtonFocus === "weekly" ?
+                              weeklyDebitCreditTotal.credits :
+                              monthlyDebitCreditTotal.credits
+                          }
+                        />
+                      </VictoryGroup>
+                    </VictoryChart>
+                    <View style={styles.detail}>
+                      <Text style={styles.textSubtitle}>Detail</Text>
+                      <View style={styles.pickerView}>
+                        {
+                          radioButtonFocus == "weekly" &&
+                          weeklyDebitCreditTotal.debits != undefined &&
+                          weeklyDebitCreditTotal.debits.length > 0 &&
+                          <Picker
+                            dropdownIconColor="black"
+                            selectedValue={this.state.weeklyPickerFocus}
+                            style={styles.picker}
+                            onValueChange={(itemValue, itemIndex) =>
+                              this.setState({ weeklyPickerFocus: itemValue }, refreshEasyPinLogin(deviceId))
+                            }>
+                            {
+                              weeklyDebitCreditTotal.debits.map(item =>
+                                <Picker.Item key={item.week} label={item.week} value={item.week} />
+                              )
+                            }
+                          </Picker>
+                        }
+                        {
+                          radioButtonFocus == "monthly" &&
+                          monthlyDebitCreditTotal.debits != undefined &&
+                          monthlyDebitCreditTotal.debits.length > 0 &&
+                          <Picker
+                            dropdownIconColor="black"
+                            selectedValue={this.state.monthlyPickerFocus}
+                            style={styles.picker}
+                            onValueChange={(itemValue, itemIndex) =>
+                              this.setState({ monthlyPickerFocus: itemValue })
+                            }>
+                            {
+                              monthlyDebitCreditTotal.debits.map(item =>
+                                <Picker.Item key={item.month} label={item.month} value={item.month} />
+                              )
+                            }
+                          </Picker>
+                        }
+                      </View>
+                      <View style={styles.detailSub}>
+                        <View style={styles.detailSub2}>
+                          <View style={styles.debitLegend} />
+                          <Text>Total Debit</Text>
+                        </View>
+                        <Text style={styles.textDebit}>{formatCurrency(this.getTotalDebitDetail())}</Text>
+                      </View>
+                      <View style={styles.detailSub}>
+                        <View style={styles.detailSub2}>
+                          <View style={styles.creditLegend} />
+                          <Text>Total Credit</Text>
+                        </View>
+                        <Text style={styles.textCredit}>{formatCurrency(this.getTotalCreditDetail())}</Text>
+                      </View>
+                    </View>
+                    <View style={styles.line} />
+                    <Text style={styles.textTitle}>Top Transactions</Text>
+                    <View style={styles.transactionList}>
                       {
-                        radioButtonOptions.map(item => {
-                          const { radioButtonFocus } = this.state;
+                        Array.isArray(transactionOut) && transactionOut.map(item => {
+                          let merchant = item.merchant;
+                          let transactionType = merchant == 0 ? 0 : 1;
+                          let imgSource = transactionType == 0 ?
+                            iconBank :
+                            merchant == 1 ?
+                              iconGopay :
+                              merchant == 2 ?
+                                iconOvo :
+                                iconTokopedia;
+                          let mainText = item.mainText;
+                          let subText1 = item.subText1;
+                          let subText2 = item.subText2 || "-";
+                          let count = item.count;
+                          let totalAmount = formatCurrency(item.totalAmount);
 
                           return (
-                            <View key={item.key} style={styles.radioButtonItem}>
-                              <TouchableOpacity
-                                style={styles.circle}
-                                onPress={() => this.handlePressRadioButton(item.key)}
-                              >
-                                {radioButtonFocus === item.key && (<View style={styles.checkedCircle} />)}
-                              </TouchableOpacity>
-                              <Text>{item.text}</Text>
-                            </View>
+                            < TouchableOpacity
+                              onPress={() => { this.handlePress(item) }}
+                              style={styles.transactionItem}
+                            >
+                              <View style={styles.transactionItemSub}>
+                                <Image
+                                  source={imgSource}
+                                  style={styles.transactionItemMainImage}
+                                />
+                                <View>
+                                  <Text style={styles.transactionItemMainText}>{mainText}</Text>
+                                  <Text style={styles.transactionItemSubText}>{subText1}</Text>
+                                  <Text style={styles.transactionItemSubText}>{subText2}</Text>
+                                </View>
+                              </View>
+                              <View>
+                                <View style={styles.transactionItemSub2}>
+                                  <Image
+                                    source={iconCount}
+                                    style={styles.transactionItemCountImage}
+                                  />
+                                  <Text style={styles.transactionItemCountText}>{count}</Text>
+                                </View>
+                                <View style={styles.transactionItemSub2}>
+                                  <Image
+                                    source={iconTotal}
+                                    style={styles.transactionItemTotalImage}
+                                  />
+                                  <Text style={styles.transactionItemTotalText}>{totalAmount}</Text>
+                                </View>
+                              </View>
+                            </ TouchableOpacity>
                           );
                         })
                       }
                     </View>
                   </View>
-                  <VictoryChart
-                    padding={{
-                      left: 50, right: 20, top: 15, bottom: 30
-                    }}
-                    domainPadding={{ x: 30 }}
-                  >
-                    <VictoryAxis />
-                    <VictoryAxis
-                      dependentAxis
-                      tickValues={this.getTickValues(
-                        radioButtonFocus == "weekly" ?
-                          weeklyHighestY :
-                          monthlyHighestY
-                      )}
-                      tickFormat={(t) => getAxisTickFormat(t)}
-                    />
-                    <VictoryGroup
-                      offset={20}
-                      colorScale={["#ff0066", "#009900"]}
-                      animate={{
-                        duration: 500,
-                        onLoad: { duration: 250 }
-                      }}
-                      style={{
-                        data: {
-                          stroke: "black", strokeWidth: 3
-                        }
-                      }}
-                    >
-                      <VictoryBar
-                        data={
-                          radioButtonFocus === "weekly" ?
-                            weeklyDebitCreditTotal.debits :
-                            monthlyDebitCreditTotal.debits
-                        }
-                      />
-                      <VictoryBar
-                        data={
-                          radioButtonFocus === "weekly" ?
-                            weeklyDebitCreditTotal.credits :
-                            monthlyDebitCreditTotal.credits
-                        }
-                      />
-                    </VictoryGroup>
-                  </VictoryChart>
-                  <View style={styles.detail}>
-                    <Text style={styles.textSubtitle}>Detail</Text>
-                    <View style={styles.pickerView}>
-                      {
-                        radioButtonFocus == "weekly" &&
-                        weeklyDebitCreditTotal.debits != undefined &&
-                        weeklyDebitCreditTotal.debits.length > 0 &&
-                        <Picker
-                          dropdownIconColor="black"
-                          selectedValue={this.state.weeklyPickerFocus}
-                          style={styles.picker}
-                          onValueChange={(itemValue, itemIndex) =>
-                            this.setState({ weeklyPickerFocus: itemValue })
-                          }>
-                          {
-                            weeklyDebitCreditTotal.debits.map(item =>
-                              <Picker.Item key={item.week} label={item.week} value={item.week} />
-                            )
-                          }
-                        </Picker>
-                      }
-                      {
-                        radioButtonFocus == "monthly" &&
-                        monthlyDebitCreditTotal.debits != undefined &&
-                        monthlyDebitCreditTotal.debits.length > 0 &&
-                        <Picker
-                          dropdownIconColor="black"
-                          selectedValue={this.state.monthlyPickerFocus}
-                          style={styles.picker}
-                          onValueChange={(itemValue, itemIndex) =>
-                            this.setState({ monthlyPickerFocus: itemValue })
-                          }>
-                          {
-                            monthlyDebitCreditTotal.debits.map(item =>
-                              <Picker.Item key={item.month} label={item.month} value={item.month} />
-                            )
-                          }
-                        </Picker>
-                      }
-                    </View>
-                    <View style={styles.detailSub}>
-                      <View style={styles.detailSub2}>
-                        <View style={styles.debitLegend} />
-                        <Text>Total Debit</Text>
-                      </View>
-                      <Text style={styles.textDebit}>{formatCurrency(this.getTotalDebitDetail())}</Text>
-                    </View>
-                    <View style={styles.detailSub}>
-                      <View style={styles.detailSub2}>
-                        <View style={styles.creditLegend} />
-                        <Text>Total Credit</Text>
-                      </View>
-                      <Text style={styles.textCredit}>{formatCurrency(this.getTotalCreditDetail())}</Text>
-                    </View>
-                  </View>
-                  <View style={styles.line} />
-                  <Text style={styles.textTitle}>Top Transactions</Text>
-                  <View style={styles.transactionList}>
-                    {
-                      Array.isArray(transactionOut) && transactionOut.map(item => {
-                        let merchant = item.merchant;
-                        let transactionType = merchant == 0 ? 0 : 1;
-                        let imgSource = transactionType == 0 ?
-                          iconBank :
-                          merchant == 1 ?
-                            iconGopay :
-                            merchant == 2 ?
-                              iconOvo :
-                              iconTokopedia;
-                        let mainText = item.mainText;
-                        let subText1 = item.subText1;
-                        let subText2 = item.subText2 || "-";
-                        let count = item.count;
-                        let totalAmount = formatCurrency(item.totalAmount);
-
-                        return (
-                          < View style={styles.transactionItem} >
-                            <View style={styles.transactionItemSub}>
-                              <Image
-                                source={imgSource}
-                                style={styles.transactionItemMainImage}
-                              />
-                              <View>
-                                <Text style={styles.transactionItemMainText}>{mainText}</Text>
-                                <Text style={styles.transactionItemSubText}>{subText1}</Text>
-                                <Text style={styles.transactionItemSubText}>{subText2}</Text>
-                              </View>
-                            </View>
-                            <View>
-                              <View style={styles.transactionItemSub2}>
-                                <Image
-                                  source={iconCount}
-                                  style={styles.transactionItemCountImage}
-                                />
-                                <Text style={styles.transactionItemCountText}>{count}</Text>
-                              </View>
-                              <View style={styles.transactionItemSub2}>
-                                <Image
-                                  source={iconTotal}
-                                  style={styles.transactionItemTotalImage}
-                                />
-                                <Text style={styles.transactionItemTotalText}>{totalAmount}</Text>
-                              </View>
-                            </View>
-                          </View>
-                        );
-                      })
-                    }
-                  </View>
-                </View>
+                </>
               )
             }}
           />
@@ -488,5 +525,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getBankingSummary }
+  { getBankingSummary, refreshEasyPinLogin, setTargetAccount, setTargetSubscriber, setMerchantCode }
 )(BankingSummary);

@@ -14,6 +14,10 @@ import moment from 'moment'
 import { connect } from 'react-redux';
 
 import {
+  refreshEasyPinLogin
+} from '../../newFunction/loginFunction'
+
+import {
   checkTargetSubscriberExist,
   getBillPaymentConfirmation,
   sendBillPaymentOtp
@@ -59,6 +63,7 @@ class PaymentConfirmation extends Component {
 
   async handleConfirmPayment() {
     const { navigation, deviceId } = this.props;
+    this.props.dispatch(refreshEasyPinLogin(deviceId))
     if( await this.props.dispatch(checkTargetSubscriberExist(deviceId)) ) {
       navigation.navigate('ValidateEasyPin', { flow: 'billpayment' });
     } else {

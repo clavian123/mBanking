@@ -27,6 +27,10 @@ import {
     getAccountStatementsFilterMonth
 } from '../../../newFunction/homeFunction'
 
+import {
+    refreshEasyPinLogin
+} from '../../../newFunction/loginFunction'
+
 import iconNext from "../../../../assets/icon-next.png"
 import iconFilter from "../../../../assets/icon-filter.png"
 
@@ -57,7 +61,9 @@ class Statement extends React.Component {
     }
 
     async componentDidMount() {
+        const { deviceId } = this.props
         const { account } = this.props.route.params
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         this.setState({ statements: await this.props.dispatch(getAccountStatementsFilterMonth(account.account_number, this.state.month)) })
     }
 
@@ -83,17 +89,23 @@ class Statement extends React.Component {
     }
 
     handleStatementPressed = (item) => {
+        const { deviceId } = this.props
         const { navigation } = this.props
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         navigation.navigate('StatementDetail', {
             statement: item
         })
     }
 
     displayFilterModal = (show) => {
+        const { deviceId } = this.props
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         this.setState({ filterModalVisible: show })
     }
 
     async handleFilter(item) {
+        const { deviceId } = this.props
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         this.displayFilterModal(false)
         this.setState({ buttonTitle: item.name })
         this.setState({ month: item.value })
@@ -184,7 +196,7 @@ class Statement extends React.Component {
 }
 
 const mapStateToProps = state => ({
-
+    deviceId: state.newLogin.deviceId
 })
 
 export default connect(mapStateToProps)(Statement)

@@ -9,6 +9,10 @@ import SourceAccountListItem from '../../component/SourceAccountListItem';
 import { connect } from 'react-redux';
 
 import {
+  refreshEasyPinLogin
+} from '../../newFunction/loginFunction'
+
+import {
   getAccountList
 } from '../../newFunction/homeFunction';
 
@@ -23,6 +27,7 @@ class SelectSourceAccount extends React.Component {
 
   async componentDidMount() {
     const { deviceId } = this.props;
+    this.props.dispatch(refreshEasyPinLogin(deviceId))
     this.setState({ accountList: await this.props.dispatch(getAccountList(deviceId)) });
   }
 

@@ -17,6 +17,10 @@ import {
 import { connect } from 'react-redux';
 
 import {
+    refreshEasyPinLogin
+} from '../newFunction/loginFunction'
+
+import {
     getTargetAccount
 } from '../newFunction/transferFunction';
 
@@ -27,7 +31,9 @@ class SourceAccountListItem extends React.Component{
     }
 
     async handleAccountClicked(){
-        const { navigation } = this.props
+        const { deviceId, navigation } = this.props
+
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
 
         if(this.props.transactionType === "Billpayment"){
             navigation.navigate("PaymentSetAmount", {
@@ -110,7 +116,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    
+    deviceId: state.newLogin.deviceId
 })
 
 export default connect(mapStateToProps)(SourceAccountListItem);

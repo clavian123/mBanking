@@ -71,7 +71,7 @@ class EasyPinLogin extends Component {
         ToastAndroid.CENTER
       );
     } else {
-      // this.intervalValidate();
+      this.intervalValidate();
     }
   }
 

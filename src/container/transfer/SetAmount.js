@@ -18,6 +18,10 @@ import {
 import { connect } from 'react-redux';
 
 import {
+    refreshEasyPinLogin
+} from '../../newFunction/loginFunction'
+
+import {
     setTransferSourceAccount,
     setTransferMethod
 } from '../../newFunction/transferFunction';
@@ -34,15 +38,17 @@ class SetAmount extends React.Component{
     }
 
     handleSelectAccount = () => {
-        const{ navigation } = this.props;
+        const{ navigation, deviceId } = this.props;
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         navigation.navigate('SelectSource', {
             type: "fundTransfer"
         });
     }
 
     handleNext = async() => {
-        const { navigation, route } = this.props;
+        const { navigation, route, deviceId } = this.props;
         const amount = this.state.amount;
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         if(isNaN(amount)){
             ToastAndroid.show("Amount must be numeric", ToastAndroid.SHORT);
         }else if(amount < 1000){
@@ -304,7 +310,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    
+    deviceId: state.newLogin.deviceId
 })
 
 export default connect(mapStateToProps)(SetAmount);

@@ -7,12 +7,18 @@ import {
     FlatList
 } from 'react-native'
 
+import { connect } from 'react-redux'
+
 import styles from './AccountItemStyle'
 
 import AccountCard from '../AccountCard/AccountCardIndex'
 import LastTransaction from '../LastTransaction/LastTransactionIndex'
 
-export default class AccountItem extends React.Component {
+import {
+    refreshEasyPinLogin
+} from '../../../newFunction/loginFunction'
+
+class AccountItem extends React.Component {
 
     constructor(props) {
         super(props)
@@ -84,3 +90,9 @@ export default class AccountItem extends React.Component {
     }
 
 }
+
+const mapStateToProps = state => ({
+    deviceId: state.newLogin.deviceId
+})
+
+export default connect(mapStateToProps)(AccountItem)

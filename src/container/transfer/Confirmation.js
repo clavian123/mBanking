@@ -11,7 +11,10 @@ import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 import moment from 'moment';
-import Loading from '../../Loading';
+
+import { 
+    refreshEasyPinLogin
+} from '../../newFunction/loginFunction'
 
 import {
     transferConfirmation,
@@ -52,6 +55,7 @@ class Confirmation extends React.Component {
 
     async handleTransferClicked(){
         const { deviceId, navigation } = this.props;
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
 
         if(await this.props.dispatch(checkTargetAccountExist(deviceId))) {
             navigation.navigate('ValidateEasyPin', {

@@ -12,6 +12,10 @@ import BankListItem from '../../component/BankListItem';
 import { connect } from 'react-redux';
 
 import {
+    refreshEasyPinLogin
+} from '../../newFunction/loginFunction'
+
+import {
     getBankList
 } from '../../newFunction/transferFunction';
 
@@ -30,6 +34,8 @@ class SelectBank extends React.Component{
     }
 
     handleSearch = (text) => {
+        const { deviceId } = this.props
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         if(text != '') {
             if(isNaN(text)) { 
                 this.setState({ searchList: this.state.bankList.filter((item) => item.bank_name.includes(text.toUpperCase())) })

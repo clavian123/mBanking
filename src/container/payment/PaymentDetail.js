@@ -13,8 +13,11 @@ import {
 } from '../../utils/index'
 
 import {
-    createBillPaymentTransaction,
-    inactiveAccount
+    refreshEasyPinLogin
+} from '../../newFunction/loginFunction'
+
+import {
+    createBillPaymentTransaction
 } from '../../newFunction/paymentFunction'
 
 class PaymentDetail extends Component{
@@ -39,7 +42,8 @@ class PaymentDetail extends Component{
     }
 
     handleClose(){
-        const { navigation } = this.props;
+        const { deviceId, navigation } = this.props;
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         navigation.popToTop();
     }
 

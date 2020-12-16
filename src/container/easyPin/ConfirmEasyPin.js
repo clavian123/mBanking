@@ -21,8 +21,7 @@ import { connect } from 'react-redux';
 import { 
   checkUserLogin,
   createUserLogin,
-  handleLogin,
-  loginEasyPin
+  handleLogin
 } from '../../newFunction/loginFunction';
 
 class ConfirmEasyPin extends Component {

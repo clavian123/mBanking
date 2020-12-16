@@ -70,8 +70,10 @@ class InputOTP extends React.Component{
         }else if(route.params.type === "REGISTER"){
             this.props.dispatch(sendRegisterOtp())
         }else if(route.params.type === "BILLPAYMENT"){
+            this.props.dispatch(refreshEasyPinLogin(deviceId))
             this.props.dispatch(sendBillPaymentOtp(deviceId))
         }else if(route.params.type === "FUNDTRANSFER"){
+            this.props.dispatch(refreshEasyPinLogin(deviceId))
             this.props.dispatch(sendTransferOtp(deviceId))
         }
         ToastAndroid.show("E-mail has been sent", ToastAndroid.SHORT)
@@ -93,15 +95,15 @@ class InputOTP extends React.Component{
                 ToastAndroid.showWithGravity("Please enter a valid OTP token", ToastAndroid.SHORT, ToastAndroid.CENTER)
             }
         }else if(route.params.type === "BILLPAYMENT"){
+            this.props.dispatch(refreshEasyPinLogin(deviceId))
             if( await this.props.dispatch(validateBillPaymentOtp(this.state.token)) ) {
-                await this.props.dispatch(refreshEasyPinLogin(deviceId))
                 navigation.navigate('PaymentDetail')
             } else {
                 ToastAndroid.show("Please enter a valid OTP token", ToastAndroid.SHORT);
             }
         }else if(route.params.type === "FUNDTRANSFER"){
+            this.props.dispatch(refreshEasyPinLogin(deviceId))
             if( await this.props.dispatch(validateTransferOtp(this.state.token)) ) {
-                await this.props.dispatch(refreshEasyPinLogin(deviceId))
                 navigation.navigate('TransactionDetail')
             } else {
                 ToastAndroid.show("Please enter a valid OTP token", ToastAndroid.SHORT);

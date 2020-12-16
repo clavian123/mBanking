@@ -18,6 +18,10 @@ import {
 } from '../../utils/index';
 
 import {
+  refreshEasyPinLogin
+} from '../../newFunction/loginFunction'
+
+import {
   getBilledAmount,
   setBillPaymentSourceAccount
 } from '../../newFunction/paymentFunction';
@@ -56,15 +60,17 @@ class PaymentSetAmount extends Component {
   }
 
   handleNext = async () => {
-    const { route, navigation } = this.props;
+    const { deviceId, route, navigation } = this.props;
     const amount = this.state.amount;
+    this.props.dispatch(refreshEasyPinLogin(deviceId))
+
     if (isNaN(amount)) {
       ToastAndroid.show("Amount must be numeric", ToastAndroid.SHORT);
     } else if (amount < 20000) {
       ToastAndroid.show("Amount must at least 20000", ToastAndroid.SHORT);
     } else if (route.params == null) {
       ToastAndroid.show("Please select your source account", ToastAndroid.SHORT);
-    } else if (amount > parseInt(route.params.sourceAccBalance)) {
+    } else if (Number(amount) > Number(route.params.sourceAccBalance)) {
       ToastAndroid.show("Your balance is not enough", ToastAndroid.SHORT);
     } else {
       await this.props.dispatch(setBillPaymentSourceAccount(route.params.sourceAccNumber, route.params.sourceAccName, route.params.sourceAccBalance, amount));
@@ -294,7 +300,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-
+  deviceId: state.newLogin.deviceId
 })
 
 export default connect(mapStateToProps)(PaymentSetAmount);

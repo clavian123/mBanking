@@ -12,6 +12,10 @@ import { acc } from 'react-native-reanimated';
 import { connect } from 'react-redux';
 
 import {
+    refreshEasyPinLogin
+} from '../newFunction/loginFunction'
+
+import {
     checkAccountExist
 } from '../newFunction/transferFunction';
 
@@ -22,8 +26,9 @@ class BankListItem extends React.Component{
     }
 
     handlePress = async() => {
-        const{ navigation } = this.props;
+        const{ navigation, deviceId } = this.props;
         const accName = await this.props.dispatch(checkAccountExist(this.props.accNumber));
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         if (await accName != "") {
             navigation.navigate('SelectPayee', {
                 buttonColor: '#C10000',
@@ -85,6 +90,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
+    deviceId: state.newLogin.deviceId,
     destAcc: state.transfer.destAcc
 });
 

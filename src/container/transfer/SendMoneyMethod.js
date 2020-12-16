@@ -12,6 +12,10 @@ import { connect } from 'react-redux';
 import MethodListItem from '../../component/MethodListItem';
 
 import {
+    refreshEasyPinLogin
+} from '../../newFunction/loginFunction'
+
+import {
     setTransferMethod,
     getTransferMethod
 } from '../../newFunction/transferFunction'
@@ -41,7 +45,8 @@ class SendMoneyMethod extends Component{
     }
 
     handleNext = () => {
-        const { navigation } = this.props;
+        const { navigation, deviceId } = this.props;
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         navigation.navigate('Confirmation');
     }
 
@@ -94,6 +99,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
+    deviceId: state.newLogin.deviceId,
     methodList: state.transfer.methodList,
     sendMethod: state.transfer.sendMethod
 });

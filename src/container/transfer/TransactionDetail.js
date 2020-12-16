@@ -13,6 +13,10 @@ import { connect } from 'react-redux';
 import { ScrollView } from 'react-native-gesture-handler';
 
 import {
+    refreshEasyPinLogin
+} from '../../newFunction/loginFunction'
+
+import {
     createFundTransfer
 } from '../../newFunction/transferFunction'
 
@@ -46,7 +50,8 @@ class TransactionDetail extends Component{
     }
 
     handleClose(){
-        const { navigation } = this.props;
+        const { navigation, deviceId } = this.props;
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         navigation.popToTop(); 
     }
 

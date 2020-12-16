@@ -9,7 +9,7 @@ export const checkPanExist = (pan) => {
     let req = {
         pan: pan
     }
-    let address = "http://localhost:8181/checkPanExist"
+    let address = "http://192.168.0.100:8181/checkPanExist"
     return async dispatch => {
         try {
             let res = await axios.post(address, req)
@@ -23,7 +23,7 @@ export const checkPanExistWithLoading = (pan) => {
     let req = {
         pan: pan
     }
-    let address = "http://localhost:8181/checkPanExist"
+    let address = "http://192.168.0.100:8181/checkPanExist"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -37,7 +37,7 @@ export const checkPanExistWithLoading = (pan) => {
 }
 
 export const getEmail = () => {
-    let address = "http://localhost:8181/getEmail"
+    let address = "http://192.168.0.100:8181/getEmail"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -51,7 +51,7 @@ export const getEmail = () => {
 }
 
 export const sendRegisterOtp = () => {
-    let address = "http://localhost:8181/sendRegisterOTP"
+    let address = "http://192.168.0.100:8181/sendRegisterOTP"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -68,7 +68,7 @@ export const validateRegisterOtp = (token) => {
     let req = {
         token: token
     }
-    let address = "http://localhost:8181/validateRegisterOTP"
+    let address = "http://192.168.0.100:8181/validateRegisterOTP"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -85,7 +85,7 @@ export const validatePin = (pin) => {
     let req = {
         pin: pin
     } 
-    let address = "http://localhost:8181/validateCustomerPIN"
+    let address = "http://192.168.0.100:8181/validateCustomerPIN"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -99,7 +99,7 @@ export const validatePin = (pin) => {
 }
 
 export const checkCustomerExist = () => {
-    let address = "http://localhost:8080/checkCustomerExist"
+    let address = "http://192.168.0.100:8080/checkCustomerExist"
     return async dispatch => {
         try {
             let res = await axios.post(address)
@@ -110,7 +110,7 @@ export const checkCustomerExist = () => {
 }
 
 export const getUsername = () => {
-    let address = "http://localhost:8080/usernameResetPassword"
+    let address = "http://192.168.0.100:8080/usernameResetPassword"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -127,7 +127,7 @@ export const resetUserPassword = (password) => {
     let req = {
         password: password
     }
-    let address = "http://localhost:8080/resetPassword"
+    let address = "http://192.168.0.100:8080/resetPassword"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -144,7 +144,7 @@ export const checkUsernameExist = (username) => {
     let req = {
         username: username
     }
-    let address = "http://localhost:8080/checkUsernameExist"
+    let address = "http://192.168.0.100:8080/checkUsernameExist"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -162,7 +162,7 @@ export const createNewUser = (username, password) => {
         username: username,
         password: password
     }
-    let address = "http://localhost:8080/createNewUser"
+    let address = "http://192.168.0.100:8080/createNewUser"
     return async dispatch => {
         dispatch(setLoading(true))
         try {

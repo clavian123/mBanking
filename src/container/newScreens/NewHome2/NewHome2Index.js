@@ -32,6 +32,7 @@ import {
 
 import {
     logoutEasyPin,
+    handleLogout
 } from '../../../newFunction/loginFunction'
 
 import {

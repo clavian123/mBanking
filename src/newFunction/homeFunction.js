@@ -8,7 +8,7 @@ export const linkUnlinkAccount = (device_id) => {
     let req = {
         device_id: device_id
     }
-    let address = "http://localhost:8080/linkUnlinkAccount";
+    let address = "http://192.168.0.100:8080/linkUnlinkAccount";
     return async dispatch => {
         dispatch(setLoading(true));
         try {
@@ -25,7 +25,7 @@ export const getUserName = (device_id) => {
     let req = {
         device_id: device_id
     }
-    let address = "http://localhost:8080/getUserName";
+    let address = "http://192.168.0.100:8080/getUserName";
     return async dispatch => {
         dispatch(setLoading(true));
         try {
@@ -42,7 +42,7 @@ export const getAccountList = (device_id) => {
     let req = {
         device_id: device_id
     }
-    let address = "http://localhost:8080/getAccountListFromCore";
+    let address = "http://192.168.0.100:8080/getAccountListFromCore";
     return async dispatch => {
         dispatch(setLoading(true));
         try {
@@ -59,7 +59,7 @@ export const getLastTransactions = (account_number) => {
     let req = {
         account_number: account_number
     }
-    let address = "http://localhost:8080/getLastStatements"
+    let address = "http://192.168.0.100:8080/getLastStatements"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -77,7 +77,7 @@ export const getAccountStatementsFilterMonth = (account_number, month) => {
         account_number: account_number,
         month: month
     }
-    let address = "http://localhost:8080/getAccountStatementsFilterMonth"
+    let address = "http://192.168.0.100:8080/getAccountStatementsFilterMonth"
     return async dispatch => {
         dispatch(setLoading(true))
         try {

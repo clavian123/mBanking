@@ -19,7 +19,7 @@ export function getBalance(cif_code) {
     let req = {
         cif_code: cif_code
     };
-    let address = "http://localhost:8080/linkUnlinkAccount";
+    let address = "http://192.168.0.100:8080/linkUnlinkAccount";
     return dispatch => {
         dispatch(getAccountAndBalanceBegin());
         return axios.post(address, req).then(
@@ -37,7 +37,7 @@ export function getStatements(cif_code) {
     let req = {
         cif_code: cif_code,
     };
-    let address = "http://localhost:8080/getAllAccountStatementByCustomer";
+    let address = "http://192.168.0.100:8080/getAllAccountStatementByCustomer";
     return dispatch => {
         dispatch(getAccountStatementBegin());
         return axios.post(address, req).then(
@@ -56,7 +56,7 @@ export function getCustomerData(cif_code) {
     let req = {
         cif_code: cif_code
     };
-    let address = "http://localhost:8080/getCustomerDummyByCifCode";
+    let address = "http://192.168.0.100:8080/getCustomerDummyByCifCode";
 
     return dispatch => {
         dispatch(getCustomerDataBegin());
@@ -76,7 +76,7 @@ export function getTransactionRecommendation(cif_code){
     let req = {
         cif_code: cif_code
     }
-    let address = "http://localhost:8080/getTransactionRecommendation";
+    let address = "http://192.168.0.100:8080/getTransactionRecommendation";
 
     return dispatch => {
         dispatch(getTransactionRecommendationBegin());

@@ -12,6 +12,10 @@ import {
 import { connect } from 'react-redux';
 
 import {
+    refreshEasyPinLogin
+} from '../newFunction/loginFunction'
+
+import {
     setTargetAccount,
     inactiveTargetAccount,
     getTargetAccountList
@@ -26,7 +30,8 @@ class AccountListItem extends React.Component{
     }
 
     handleClick = () => {
-        const { navigation } = this.props;
+        const { deviceId, navigation } = this.props;
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         this.props.dispatch(setTargetAccount(this.props.name, this.props.accNumber, this.props.bankName));
         navigation.navigate('SetAmount', {
             bankName: this.props.bankName

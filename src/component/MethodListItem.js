@@ -14,6 +14,10 @@ import {
 } from '../utils/index'
 
 import {
+    refreshEasyPinLogin
+} from '../newFunction/loginFunction'
+
+import {
     setTransferMethod
 } from '../newFunction/transferFunction'
 
@@ -62,6 +66,8 @@ class MethodListItem extends React.Component{
     }
 
     onPress = async(item) =>{
+        const { deviceId } = this.props
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         this.props.handleSelected(item);
         await this.props.dispatch(setTransferMethod(this.props.name, this.props.fee));
     }
@@ -126,6 +132,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
+    deviceId: state.newLogin.deviceId,
     sendMethod: state.transfer.sendMethod
 });
 

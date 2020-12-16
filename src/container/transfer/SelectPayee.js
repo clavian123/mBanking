@@ -12,6 +12,10 @@ import { TextInput } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 
 import {
+    refreshEasyPinLogin
+} from '../../newFunction/loginFunction'
+
+import {
     setTargetAccount,
     getTargetAccount
 } from '../../newFunction/transferFunction';
@@ -28,19 +32,22 @@ class SelectPayee extends React.Component{
     }
 
     handleAccNumber = () => {
-        const{ navigation } = this.props;
+        const{ deviceId, navigation } = this.props;
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         navigation.goBack();
     }
 
     handleBankCode = () => {
-        const{ navigation, route } = this.props;
+        const{ navigation, route, deviceId } = this.props;
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         navigation.navigate('SelectBank', {
             accNumber: route.params.accNumber
         });
     }
 
     handleNext = async() => {
-        const{ navigation, route } = this.props;
+        const{ navigation, route, deviceId } = this.props;
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         if(route.params.accName == null){
             ToastAndroid.show("Enter a valid destination account", ToastAndroid.SHORT)
         }else{

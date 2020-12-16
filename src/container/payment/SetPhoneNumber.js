@@ -15,6 +15,10 @@ import PaymentListItem from '../../component/PaymentListItem';
 
 import { connect } from 'react-redux';
 
+import {
+    refreshEasyPinLogin
+} from '../../newFunction/loginFunction'
+
 import { 
     getUserTargetSubscribers,
     checkSubscriberExist,
@@ -40,6 +44,7 @@ class SetPhoneNumber extends Component {
 
     async componentDidMount(){
         const { deviceId, route } = this.props;
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         this.setState({ subscriberList: await this.props.dispatch(getUserTargetSubscribers(deviceId, route.params.code)) })
     }
 
@@ -58,7 +63,8 @@ class SetPhoneNumber extends Component {
     }
 
     handleNext = async() => {
-        const { navigation } = this.props;
+        const { deviceId, navigation } = this.props;
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         let name = await this.props.dispatch(checkSubscriberExist(this.state.phoneNumber));
         if(this.state.phoneNumber.length >= 10){
             if( name != "" ) {
@@ -71,16 +77,21 @@ class SetPhoneNumber extends Component {
     }
 
     handleSearch = (text) => {
+        const { deviceId } = this.props
         if(text != "") {
             if(isNaN(text)) {
+                this.props.dispatch(refreshEasyPinLogin(deviceId))
                 this.setState({ searchList: this.state.subscriberList.filter( (item) => item.name.toUpperCase().includes(text.toUpperCase()) ) })
             } else {
+                this.props.dispatch(refreshEasyPinLogin(deviceId))
                 this.setState({ searchList: this.state.subscriberList.filter( (item) => item.subscriber_number.includes(text) ) })
             }
         }
     }
 
     refreshList = (newList) => {
+        const { deviceId } = this.props
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         this.setState({ subscriberList: newList })
     }
 

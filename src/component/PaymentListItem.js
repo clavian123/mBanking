@@ -12,6 +12,10 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 import { connect } from 'react-redux';
 
+import { 
+    refreshEasyPinLogin
+} from '../newFunction/loginFunction'
+
 import {
     setTargetSubscriber,
     checkSubscriberExist,
@@ -26,6 +30,8 @@ class PaymentListItem extends Component {
     }
 
     handleClick = async() => {
+        const { deviceId } = this.props
+        this.props.dispatch(refreshEasyPinLogin(deviceId))
         if(this.props.merchant == "Tokopedia") {
             let name = await this.props.dispatch(checkSubscriberExist(this.props.number));
             if( name == "" ) {
