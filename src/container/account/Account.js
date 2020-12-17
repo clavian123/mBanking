@@ -27,7 +27,10 @@ class Account extends React.Component {
       [  
           {
               text: 'Yes', 
-              onPress: () => this.props.dispatch(handleLogout(deviceId)) 
+              onPress: () => {
+                this.props.dispatch(handleLogout(deviceId))
+                clearInterval(window.activeInterval)
+              } 
           }, 
           {  
               text: 'No',  

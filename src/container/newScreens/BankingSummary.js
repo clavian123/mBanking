@@ -299,6 +299,7 @@ class BankingSummary extends React.Component {
 
                           return (
                             < TouchableOpacity
+                              key={item.mainText}
                               onPress={() => { this.handlePress(item) }}
                               style={styles.transactionItem}
                             >
