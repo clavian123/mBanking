@@ -37,14 +37,14 @@ export function getTargetSubscriberList(keyword, merchantCode, cif_code) {
             keyword: keyword,
             cif_code: cif_code
         }
-        address = "http://192.168.0.100:8080/getTargetSubscriber";
+        address = "http://localhost:8080/getTargetSubscriber";
     }else{
         req = {
             keyword: keyword,
             merchantCode: merchantCode,
             cif_code: cif_code
         }
-        address = "http://192.168.0.100:8080/getTargetSubscriberByMerchant"
+        address = "http://localhost:8080/getTargetSubscriberByMerchant"
     }
 
     return dispatch => {
@@ -64,7 +64,7 @@ export function deleteTargetSubscriber(targetSubscriber) {
     let req = {
         targetSubscriber: targetSubscriber
     }
-    let address = "http://192.168.0.100:8080/deleteTargetSubscriber";
+    let address = "http://localhost:8080/deleteTargetSubscriber";
     
     return dispatch => {
         dispatch(deleteTargetSubscriberBegin());
@@ -84,7 +84,7 @@ export function checkPaymentAccountNumber(merchantCode, accNumber) {
         merchantCode: merchantCode,
         accNumber: accNumber
     }
-    let address = "http://192.168.0.100:8080/findBillpaymentAccountDummyByAccountNumberAndMerchant";
+    let address = "http://localhost:8080/findBillpaymentAccountDummyByAccountNumberAndMerchant";
     
     return dispatch => {
         dispatch(checkPaymentAccountNumberBegin());
@@ -105,7 +105,7 @@ export function getPaymentTransCharge(merchantCode, merchantName, accNumber, acc
     let req = {
         merchantCode: merchantCode,
     }
-    let address = "http://192.168.0.100:8080/getBillPaymentTransCharge";
+    let address = "http://localhost:8080/getBillPaymentTransCharge";
 
     return dispatch => {
         dispatch(getPaymentTransChargeBegin());
@@ -128,7 +128,7 @@ export function saveNewTargetSubscriber(merchantCode, subscriberNumber, cif_code
         subscriberNumber: subscriberNumber,
         cif_code: cif_code
     }
-    let address = 'http://192.168.0.100:8080/saveNewTargetSubscriber';
+    let address = 'http://localhost:8080/saveNewTargetSubscriber';
 
     return dispatch => {
         dispatch(saveNewTargetSubscriberBegin());
@@ -153,7 +153,7 @@ export function getPaymentToken(cif_code, code, totalAmount, currency, subscribe
         subscriberNumber: subscriberNumber,
         merchant: merchant
     }
-    let address = 'http://192.168.0.100:8080/saveTempOtp';
+    let address = 'http://localhost:8080/saveTempOtp';
 
     return dispatch => {
         dispatch(getPaymentTokenBegin());
@@ -174,7 +174,7 @@ export function validatePaymentToken(code, cif_code, token) {
         cif_code: cif_code,
         token: token
     }
-    let address = 'http://192.168.0.100:8080/validateTempOtp';
+    let address = 'http://localhost:8080/validateTempOtp';
 
     return dispatch => {
         dispatch(validatePaymentTokenBegin());
@@ -199,7 +199,7 @@ export function billPayment(customerNumber, customerName, accNumber, amount, ban
         merchantCode: merchantCode,
     }
 
-    let address = "http://192.168.0.100:8080/saveNewBillpaymentTransaction";
+    let address = "http://localhost:8080/saveNewBillpaymentTransaction";
 
     return dispatch => {
         dispatch(billPaymentBegin());

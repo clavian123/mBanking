@@ -309,7 +309,7 @@ class BankingSummary extends React.Component {
                                   style={styles.transactionItemMainImage}
                                 />
                                 <View>
-                                  <Text style={styles.transactionItemMainText}>{mainText}</Text>
+                                  <Text numberOfLines={1} ellipsizeMode="tail" style={styles.transactionItemMainText}>{mainText}</Text>
                                   <Text style={styles.transactionItemSubText}>{subText1}</Text>
                                   <Text style={styles.transactionItemSubText}>{subText2}</Text>
                                 </View>
@@ -462,7 +462,8 @@ const styles = StyleSheet.create({
   },
   transactionItemSub: {
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
+    maxWidth: 190
   },
   transactionItemMainImage: {
     width: 40,
@@ -470,7 +471,8 @@ const styles = StyleSheet.create({
     marginRight: 20
   },
   transactionItemMainText: {
-    fontWeight: "bold"
+    fontWeight: "bold",
+    maxWidth: 130
   },
   transactionItemSubText: {
     fontSize: 12,

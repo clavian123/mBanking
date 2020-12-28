@@ -7,7 +7,7 @@ import {
 
 export function getBankingSummary(deviceId) {
   let req = { deviceId };
-  let address = "http://192.168.0.100:8080/banking-summary";
+  let address = "http://localhost:8080/banking-summary";
 
   return dispatch => {
     dispatch(getBankingSummaryBegin);
