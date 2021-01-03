@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
     transferButton:{
-        backgroundColor: '#c10000',
+        backgroundColor: '#ff0066',
         marginHorizontal: 20,
         alignItems: 'center',
         justifyContent: 'center',

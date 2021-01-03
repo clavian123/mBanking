@@ -5,7 +5,7 @@ import {
 } from './loadingAction';
 
 export const getBillPaymentMerchants = () => {
-    let address = "http://localhost:8080/getBillPaymentMerchants"
+    let address = "http://192.168.0.105:8080/getBillPaymentMerchants"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -23,7 +23,7 @@ export const setMerchantCode = (merchant_code, merchant_name) => {
         merchant_code,
         merchant_name
     }
-    let address = "http://localhost:8080/setMerchantCode";
+    let address = "http://192.168.0.105:8080/setMerchantCode";
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -41,7 +41,7 @@ export const getUserTargetSubscribers = (device_id, merchant_code) => {
         device_id: device_id,
         merchant_code: merchant_code
     }
-    let address = "http://localhost:8080/getUserTargetSubscribers"
+    let address = "http://192.168.0.105:8080/getUserTargetSubscribers"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -59,7 +59,7 @@ export const inactiveTargetSubscriber = (device_id, subscriber_number) => {
         device_id: device_id,
         subscriber_number: subscriber_number
     }
-    let address = "http://localhost:8080/inactiveTargetSubscriber"
+    let address = "http://192.168.0.105:8080/inactiveTargetSubscriber"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -76,7 +76,7 @@ export const checkSubscriberExist = (subscriber_number) => {
     let req = {
         subscriber_number: subscriber_number
     }
-    let address = "http://localhost:8282/checkSubscriberExist"
+    let address = "http://192.168.0.105:8282/checkSubscriberExist"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -95,7 +95,7 @@ export const setTargetSubscriber = (subscriber_number, subscriber_name, alias) =
         subscriber_number: subscriber_number,
         alias: alias
     }
-    let address = "http://localhost:8080/setTargetSubscriber"
+    let address = "http://192.168.0.105:8080/setTargetSubscriber"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -109,7 +109,7 @@ export const setTargetSubscriber = (subscriber_number, subscriber_name, alias) =
 }
 
 export const getBilledAmount = () => {
-    let address = "http://localhost:8080/getBilledAmount"
+    let address = "http://192.168.0.105:8080/getBilledAmount"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -129,7 +129,7 @@ export const setBillPaymentSourceAccount = (source_account_number, source_accoun
         source_account_balance: source_account_balance,
         amount: amount
     }
-    let address = "http://localhost:8080/setBillPaymentSourceAccount"
+    let address = "http://192.168.0.105:8080/setBillPaymentSourceAccount"
     return async dispatch => {
         dispatch(setLoading(true))
         try { 
@@ -143,7 +143,7 @@ export const setBillPaymentSourceAccount = (source_account_number, source_accoun
 }
 
 export const getBillPaymentConfirmation = () => {
-    let address = "http://localhost:8080/getBillPaymentConfirmation"
+    let address = "http://192.168.0.105:8080/getBillPaymentConfirmation"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -160,7 +160,7 @@ export const checkTargetSubscriberExist = (device_id) => {
     let req = {
         device_id: device_id
     }
-    let address = "http://localhost:8080/checkTargetSubscriberExist"
+    let address = "http://192.168.0.105:8080/checkTargetSubscriberExist"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -177,7 +177,7 @@ export const sendBillPaymentOtp = (device_id) => {
     let req = {
         device_id: device_id
     }
-    let address = "http://localhost:8080/sendBillPaymentOTP"
+    let address = "http://192.168.0.105:8080/sendBillPaymentOTP"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -194,7 +194,7 @@ export const validateBillPaymentOtp = (token) => {
     let req = {
         token: token
     }
-    let address = "http://localhost:8080/validateBillPaymentOTP"
+    let address = "http://192.168.0.105:8080/validateBillPaymentOTP"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -211,7 +211,7 @@ export const createBillPaymentTransaction = (device_id) => {
     let req = {
         device_id: device_id
     }
-    let address = "http://localhost:8080/createBillPaymentTransaction"
+    let address = "http://192.168.0.105:8080/createBillPaymentTransaction"
     return async dispatch => {
         dispatch(setLoading(true))
         try {

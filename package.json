@@ -1,7 +1,7 @@
 {
   "name": "project",
   "version": "0.0.1",
-  "proxy": "http://localhost:8080/",
+  "proxy": "http://192.168.0.105:8080/",
   "private": true,
   "scripts": {
     "android": "react-native run-android",

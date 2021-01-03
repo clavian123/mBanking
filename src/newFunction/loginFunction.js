@@ -25,7 +25,7 @@ export const usernameLogin = (username, password) => {
         username: username,
         password: password
     }
-    let address = "http://localhost:8080/usernameLogin";
+    let address = "http://192.168.0.105:8080/usernameLogin";
     return async dispatch => {
         dispatch(setLoading(true));
         try {
@@ -39,7 +39,7 @@ export const usernameLogin = (username, password) => {
 }
 
 export const sendLoginOTP = () => {
-    let address = "http://localhost:8080/sendLoginOTP";
+    let address = "http://192.168.0.105:8080/sendLoginOTP";
     return async dispatch => {
         dispatch(setLoading(true));
         try {
@@ -53,7 +53,7 @@ export const sendLoginOTP = () => {
 }
 
 export const getUserEmail = () => {
-    let address = "http://localhost:8080/getUserEmail";
+    let address = "http://192.168.0.105:8080/getUserEmail";
     return async dispatch => {
         dispatch(setLoading(true));
         try {
@@ -70,7 +70,7 @@ export const validateLoginOTP = (token) => {
     let req = {
         token: token
     }
-    let address = "http://localhost:8080/validateLoginOTP";
+    let address = "http://192.168.0.105:8080/validateLoginOTP";
     return async dispatch => {
         dispatch(setLoading(true));
         try {
@@ -84,7 +84,7 @@ export const validateLoginOTP = (token) => {
 }
 
 export const checkUserLogin = () => {
-    let address = "http://localhost:8080/checkUserLoginExist";
+    let address = "http://192.168.0.105:8080/checkUserLoginExist";
     return async dispatch => {
         dispatch(setLoading(true));
         try {
@@ -102,7 +102,7 @@ export const createUserLogin = (deviceId, easyPin) => {
         device_id: deviceId,
         easy_pin: easyPin
     }
-    let address = "http://localhost:8080/createNewUserLogin";
+    let address = "http://192.168.0.105:8080/createNewUserLogin";
     return async dispatch => {
         dispatch(setLoading(true));
         try {
@@ -137,7 +137,7 @@ export const validateEasyPinLogin = (device_id) => {
     let req = {
         device_id: device_id
     }
-    let address = "http://localhost:8080/validateEasyPinLogin";
+    let address = "http://192.168.0.105:8080/validateEasyPinLogin";
     return async dispatch => {
         try { 
             const res = await axios.post(address, req);
@@ -148,12 +148,30 @@ export const validateEasyPinLogin = (device_id) => {
     }
 }
 
+export const validateEasyPin = (device_id, easy_pin) => {
+    let req = {
+        device_id: device_id,
+        easy_pin: easy_pin
+    }
+    let address = "http://192.168.0.105:8080/validateEasyPin"
+    return async dispatch => {
+        dispatch(setLoading(true))
+        try {
+            const res = await axios.post(address, req)
+            dispatch(setLoading(false))
+            return await res.data;
+        } catch {
+            dispatch(setLoading(false))
+        }
+    }
+}
+
 export const loginEasyPin = (device_id, easy_pin) => {
     let req = {
         device_id: device_id,
         easy_pin: easy_pin
     }
-    let address = "http://localhost:8080/easyPinLogin";
+    let address = "http://192.168.0.105:8080/easyPinLogin";
     return async dispatch => {
         dispatch(setLoading(true));
         try{
@@ -171,7 +189,7 @@ export const refreshEasyPinLogin = (device_id) => {
     let req = {
         device_id: device_id
     }
-    let address = "http://localhost:8080/refreshEasyPinLogin"
+    let address = "http://192.168.0.105:8080/refreshEasyPinLogin"
     return async dispatch => {
         try {
             const res = await axios.post(address, req)
@@ -206,7 +224,7 @@ export const handleLogout = (device_id) => {
     let req = {
         device_id: device_id
     }
-    let address = "http://localhost:8080/logout";
+    let address = "http://192.168.0.105:8080/logout";
     syncLogoutToStorage();
     return dispatch => {
         dispatch(setLoading(true));

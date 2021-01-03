@@ -62,7 +62,7 @@ class SelectPayee extends React.Component{
         if(this.state.accName == ""){
             this.setState({buttonColor: '#FA8072'})
         }else{
-            this.setState({buttonColor: '#C10000'})
+            this.setState({buttonColor: '#ff0066'})
         }
     } 
 

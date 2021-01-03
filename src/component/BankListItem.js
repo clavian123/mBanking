@@ -31,7 +31,7 @@ class BankListItem extends React.Component{
         this.props.dispatch(refreshEasyPinLogin(deviceId))
         if (await accName != "") {
             navigation.navigate('SelectPayee', {
-                buttonColor: '#C10000',
+                buttonColor: '#ff0066',
                 accName: accName,
                 bankName: this.props.name
             });

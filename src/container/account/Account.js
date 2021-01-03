@@ -49,15 +49,33 @@ class Account extends React.Component {
 
     return (
       <View style={styles.container}>
-        <TouchableOpacity style={styles.button} onPress={() => this.handleMenuClicked("ChangePIN")}>
-          <Text style={styles.buttonText}>Change PIN</Text>
+        <TouchableOpacity style={styles.logoutContainer} onPress={() => { this.handleLogout() }}>
+            <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => this.handleMenuClicked("AboutUs")}>
-          <Text style={styles.buttonText}>About Us</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => this.handleLogout()}>
-          <Text style={styles.buttonText}>Logout</Text>
-        </TouchableOpacity>
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleText}>mBanking</Text>
+        </View>
+        <View style={styles.descriptionContainer}>
+            <Text style={{fontSize: 18, textAlign: 'justify'}}>merupakan aplikasi mobile banking yang 
+              dikembangkan oleh mahasiswa Universitas Bina Nusantara 
+              guna memenuhi kebutuhan skripsi dan juga kebutuhan magang 
+              pada perusahaan PT. BANK SINARMAS, TBK. dengan menggunakan framework React Native sebagai front-end
+              dan framework Spring Boot sebagai back-end didukung dengan kemampuan stream processing dari platform
+              Apache Kafka.
+            </Text>
+            <Text style={{fontSize: 18, textAlign: 'justify', marginTop: 20}}>
+              Dikembangkan oleh:
+            </Text>
+            <Text style={{fontSize: 18, textAlign: 'justify', marginTop: 20}}>
+              - Rian Krishandi
+            </Text>
+            <Text style={{fontSize: 18, textAlign: 'justify'}}>
+              - Clavian Candrian
+            </Text>
+            <Text style={{fontSize: 18, textAlign: 'justify'}}>
+              - Jun Chandra
+            </Text>
+        </View>
       </View>
     );
   }
@@ -67,11 +85,34 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     height: "100%",
-    justifyContent: "center",
-    alignSelf: "center",
-    alignContent: "center",
-    alignItems: "center",
-    backgroundColor: '#dedede'
+    backgroundColor: 'white',
+    justifyContent: 'center'
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 20,
+    marginVertical: 20
+  },
+  titleText: {
+    fontSize: 21,
+    fontWeight: 'bold'
+  },
+  logoutContainer: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    backgroundColor: '#ff0066',
+    padding: 8,
+    borderRadius: 5
+  },
+  logoutText: {
+    fontSize: 18,
+    color: 'white'
+  },
+  descriptionContainer: {
+    marginHorizontal: 20,
+    alignItems: 'center'
   },
   buttonText: {
     fontSize: 17,

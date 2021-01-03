@@ -56,7 +56,7 @@ class SetPhoneNumber extends Component {
 
     handleChangeColor = () => {
         if(this.state.phoneNumber.length >= 10){
-          this.setState({ buttonColor: "#C10000" });
+          this.setState({ buttonColor: '#ff0066' });
         }else{
           this.setState({ buttonColor: "#FA8072" })
         }

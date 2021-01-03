@@ -95,7 +95,8 @@ const styles = StyleSheet.create({
         width: '45%'
     },
     bankDetail: {
-        width: '45%'
+        width: '45%',
+        justifyContent: 'center'
     },
     textBank: {
         fontSize: 14, 

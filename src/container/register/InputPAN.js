@@ -37,7 +37,7 @@ class InputPAN extends React.Component {
   checkPan = async() => {
     if(await this.props.dispatch(checkPanExist(this.state.pan))) {
         this.setState({isWrong : false})
-        this.setState({buttonColor : '#C10000'})
+        this.setState({buttonColor : '#ff0066'})
         this.setState({borderColor : "#888888"})
         this.setState({borderWidth : 1})
     } else {

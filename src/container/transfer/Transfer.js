@@ -54,7 +54,7 @@ class Transfer extends React.Component {
 
   handleChangeColor = () => {
     if(this.state.accNumber.length >= 6){
-      this.setState({ buttonColor: "#C10000" });
+      this.setState({ buttonColor: '#ff0066' });
     }else{
       this.setState({ buttonColor: "#FA8072" })
     }
@@ -64,7 +64,7 @@ class Transfer extends React.Component {
     const { deviceId, navigation } = this.props;
     this.props.dispatch(refreshEasyPinLogin(deviceId))
     const list = this.state.listDest;
-    if(this.state.buttonColor == '#C10000'){
+    if(this.state.buttonColor == '#ff0066'){
       if (list == undefined) {
         if(list.filter((item) => item.account_number == this.state.accNumber).length != 0) {
           let acc = listDest.filter((item) => item.account_number == this.state.accNumber)[0];

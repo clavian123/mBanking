@@ -83,7 +83,7 @@ const MainBottomTab = ({ isEasyPinLogin }) => {
             iconAddress = require("../assets/icon-home.png");
           } else if (route.name === "Transfer") {
             iconAddress = require("../assets/icon-transfer.png");
-          } else if (route.name === "Account") {
+          } else if (route.name === "About") {
             iconAddress = require("../assets/icon-account.png");
           }
 
@@ -119,7 +119,7 @@ const MainBottomTab = ({ isEasyPinLogin }) => {
         }
       />
       <Tab.Screen
-        name="Account"
+        name="About"
         component={isEasyPinLogin ?
           AccountScreen :
           EasyPinLoginScreen

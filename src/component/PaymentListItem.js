@@ -37,12 +37,12 @@ class PaymentListItem extends Component {
             if( name == "" ) {
                 ToastAndroid.show("This account didn't have bill", ToastAndroid.SHORT);
             } else {
-                await this.props.dispatch(setTargetSubscriber(this.props.number, name, this.props.name));
+                await this.props.dispatch(setTargetSubscriber(this.props.number, name, this.props.name, ""));
                 this.props.navigation.navigate('PaymentSetAmount');
             }
         } else{
             let name = await this.props.dispatch(checkSubscriberExist(this.props.number));
-            await this.props.dispatch(setTargetSubscriber(this.props.number, name, this.props.name));
+            await this.props.dispatch(setTargetSubscriber(this.props.number, name, this.props.name, ""));
             this.props.navigation.navigate('PaymentSetAmount');
         }
     }

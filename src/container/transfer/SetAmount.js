@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     },
     nextButton: {
         width: '90%',
-        backgroundColor: '#C10000',
+        backgroundColor: '#ff0066',
         borderRadius: 30,
         marginHorizontal: 20,
         marginBottom: 10
