@@ -12,7 +12,7 @@ import{
 import { connect } from 'react-redux';
 
 import { 
-    loginEasyPin
+    validateEasyPin
 } from '../../newFunction/loginFunction'
 
 class ValidateEasyPin extends Component{
@@ -28,7 +28,7 @@ class ValidateEasyPin extends Component{
         const { deviceId, navigation } = this.props;
         const { flow } = this.props.route.params
 
-        if( await this.props.dispatch(loginEasyPin(deviceId, this.state.easyPin)) ) {
+        if( await this.props.dispatch(validateEasyPin(deviceId, this.state.easyPin)) ) {
             if(flow == 'transfer'){
                 navigation.navigate('TransactionDetail')
             }else if(flow == 'billpayment'){

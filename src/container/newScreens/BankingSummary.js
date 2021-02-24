@@ -294,12 +294,18 @@ class BankingSummary extends React.Component {
                           let mainText = item.mainText;
                           let subText1 = item.subText1;
                           let subText2 = item.subText2 || "-";
+                          let itemkey = "";
+                          if(merchant == 0) { 
+                            itemkey = item.subText2
+                          } else {
+                            itemkey = item.subText1
+                          }
                           let count = item.count;
                           let totalAmount = formatCurrency(item.totalAmount);
 
                           return (
                             < TouchableOpacity
-                              key={item.mainText}
+                              key={item.itemkey}
                               onPress={() => { this.handlePress(item) }}
                               style={styles.transactionItem}
                             >

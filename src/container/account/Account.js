@@ -59,7 +59,7 @@ class Account extends React.Component {
             <Text style={{fontSize: 18, textAlign: 'justify'}}>merupakan aplikasi mobile banking yang 
               dikembangkan oleh mahasiswa Universitas Bina Nusantara 
               guna memenuhi kebutuhan skripsi dan juga kebutuhan magang 
-              pada perusahaan PT. BANK SINARMAS, TBK. dengan menggunakan framework React Native sebagai front-end
+              pada perusahaan dengan menggunakan framework React Native sebagai front-end
               dan framework Spring Boot sebagai back-end didukung dengan kemampuan stream processing dari platform
               Apache Kafka.
             </Text>
