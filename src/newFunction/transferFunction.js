@@ -7,7 +7,7 @@ export const getTargetAccountList = (device_id) => {
     let req = {
         device_id: device_id
     }
-    let address = "http://192.168.0.101:8080/getUserTargetAccounts";
+    let address = "http://localhost:8080/getUserTargetAccounts";
     return async dispatch => {
         dispatch(setLoading(true))
         try{
@@ -26,7 +26,7 @@ export const inactiveTargetAccount = (device_id, bank_name, account_number) => {
         bank_name: bank_name,
         account_number: account_number
     }
-    let address = "http://192.168.0.101:8080/inactiveTargetAccount";
+    let address = "http://localhost:8080/inactiveTargetAccount";
     return async dispatch => {
         dispatch(setLoading(true));
         try {
@@ -45,7 +45,7 @@ export const setTargetAccount = (target_account_name, target_account_number, tar
         target_account_number: target_account_number,
         target_bank_name: target_bank_name
     }
-    let address = "http://192.168.0.101:8080/setTargetAccount";
+    let address = "http://localhost:8080/setTargetAccount";
     return async dispatch => {
         dispatch(setLoading(true));
         try {
@@ -59,7 +59,7 @@ export const setTargetAccount = (target_account_name, target_account_number, tar
 }
 
 export const getTargetAccount = () => {
-    let address = "http://192.168.0.101:8080/getTargetAccount";
+    let address = "http://localhost:8080/getTargetAccount";
     return async dispatch => {
         dispatch(setLoading(true));
         try {
@@ -73,7 +73,7 @@ export const getTargetAccount = () => {
 }
 
 export const getBankList = () => {
-    let address = "http://192.168.0.101:8080/getExternalBanks";
+    let address = "http://localhost:8080/getExternalBanks";
     return async dispatch => {
         dispatch(setLoading(true));
         try {
@@ -90,7 +90,7 @@ export const checkAccountExist = (account_number) => {
     let req = {
         account_number: account_number
     }
-    let address = "http://192.168.0.101:8181/checkAccountExistFromCore";
+    let address = "http://localhost:8181/checkAccountExistFromCore";
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -111,7 +111,7 @@ export const setTransferSourceAccount = (source_account_number, source_account_n
         amount: amount,
         customer_note: customer_note
     }
-    let address = "http://192.168.0.101:8080/setTransferSourceAccount"
+    let address = "http://localhost:8080/setTransferSourceAccount"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -125,7 +125,7 @@ export const setTransferSourceAccount = (source_account_number, source_account_n
 }
 
 export const getTransferMethod = () => {
-    let address = "http://192.168.0.101:8080/getTransferMethod";
+    let address = "http://localhost:8080/getTransferMethod";
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -143,7 +143,7 @@ export const setTransferMethod = (method, fee) => {
         method: method,
         fee: fee
     }
-    let address = "http://192.168.0.101:8080/setTransferMethod"
+    let address = "http://localhost:8080/setTransferMethod"
     return async dispatch => {
         dispatch(setLoading(true))
         try{
@@ -157,7 +157,7 @@ export const setTransferMethod = (method, fee) => {
 }
 
 export const transferConfirmation = () => {
-    let address = "http://192.168.0.101:8080/transferConfirmation"
+    let address = "http://localhost:8080/transferConfirmation"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -174,7 +174,7 @@ export const checkTargetAccountExist = (device_id) => {
     let req = {
         device_id: device_id
     }
-    let address = "http://192.168.0.101:8080/checkTargetAccountExist"
+    let address = "http://localhost:8080/checkTargetAccountExist"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -191,7 +191,7 @@ export const sendTransferOtp = (device_id) => {
     let req = {
         device_id: device_id
     }
-    let address = "http://192.168.0.101:8080/sendTransferOTP"
+    let address = "http://localhost:8080/sendTransferOTP"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -208,7 +208,7 @@ export const transferGetUserEmail = (device_id) => {
     let req = {
         device_id: device_id
     }
-    let address = "http://192.168.0.101:8080/transferGetUserEmail"
+    let address = "http://localhost:8080/transferGetUserEmail"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -225,7 +225,7 @@ export const validateTransferOtp = (token) => {
     let req = {
         token: token
     }
-    let address = "http://192.168.0.101:8080/validateTransferOTP"
+    let address = "http://localhost:8080/validateTransferOTP"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
@@ -242,7 +242,7 @@ export const createFundTransfer = (device_id) => {
     let req = {
         device_id: device_id
     }
-    let address = "http://192.168.0.101:8080/createFundTransfer"
+    let address = "http://localhost:8080/createFundTransfer"
     return async dispatch => {
         dispatch(setLoading(true))
         try {
