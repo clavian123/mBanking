@@ -22,7 +22,7 @@
     "@valdio/react-native-scrollable-tabview": "^0.8.12",
     "axios": "^0.19.2",
     "install": "^0.13.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "pm": "^2.2.6",
     "react": "16.9.0",
     "react-native": "^0.63.3",
